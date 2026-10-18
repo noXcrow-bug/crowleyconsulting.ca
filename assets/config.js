@@ -4,6 +4,6 @@
    2. BOOKING_URL: paste your booking page (Calendly, Cal.com, Google Calendar appointment page).
       Until it is set, "Book a call" buttons open the contact page. */
 window.NCC_CONFIG = {
-  FORM_ENDPOINT: "",
+  FORM_ENDPOINT: "https://formspree.io/f/xnpjrlae",
   BOOKING_URL: ""
 };
