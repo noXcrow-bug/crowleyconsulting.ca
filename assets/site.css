@@ -253,3 +253,12 @@ table.tiers td.no { color: var(--slate); }
 .foot-legal { margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(185, 194, 206, .25); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: .85rem; }
 @media (max-width: 860px) { .foot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .foot-brand { grid-column: 1 / -1; } }
 @media (max-width: 480px) { .foot-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* FAQ */
+.faq { max-width: 860px; border-top: 1px solid var(--line); }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary { cursor: pointer; list-style: none; padding: 18px 40px 18px 0; font-weight: 600; font-size: 1.08rem; position: relative; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; position: absolute; right: 6px; top: 14px; font-size: 1.5rem; font-weight: 400; color: var(--slate); }
+.faq details[open] summary::after { content: "\2212"; }
+.faq details p { padding: 0 0 18px; color: var(--slate); max-width: var(--measure); }

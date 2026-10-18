@@ -73,7 +73,7 @@ def contact_bits():
 
 def head(title, desc, fname, schema=None):
     url = SITE["domain"] + "/" + ("" if fname == "index.html" else fname)
-    ld = f'<script type="application/ld+json">{json.dumps(schema)}</script>' if schema else ""
+    ld = "".join(f'<script type="application/ld+json">{json.dumps(x)}</script>' for x in (schema if isinstance(schema, list) else [schema])) if schema else ""
     return f"""<!doctype html>
 <html lang="en-CA">
 <head>
@@ -130,9 +130,18 @@ def footer():
 <script src="assets/site.js"></script>
 </body></html>"""
 
+BIZ_ID = SITE["domain"] + "/#business"
 def page(fname, title, desc, body, active=None, schema=None, extra_js=""):
+    import re
     PAGES.append(fname)
-    doc = head(title, desc, fname, schema) + header(active) + body + footer().replace("<script src=\"assets/config.js\">", extra_js + "<script src=\"assets/config.js\">")
+    schemas = schema if isinstance(schema, list) else ([schema] if schema else [])
+    if fname not in ("index.html", "404.html"):
+        m = re.search(r"<h1[^>]*>(.*?)</h1>", body, re.S)
+        name = re.sub(r"<[^>]+>", "", m.group(1)).strip() if m else title
+        schemas.append({"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE["domain"] + "/"},
+            {"@type": "ListItem", "position": 2, "name": H.unescape(name), "item": SITE["domain"] + "/" + fname}]})
+    doc = head(title, desc, fname, schemas or None) + header(active) + body + footer().replace("<script src=\"assets/config.js\">", extra_js + "<script src=\"assets/config.js\">")
     open(os.path.join(ROOT, fname), "w").write(doc)
 
 def cta(title="Find out what applies to you in two minutes.", text="Answer a few questions and the Obligation Check tells you which duties you carry, which program fits and what the first step costs.", href="obligation-check.html"):
@@ -142,6 +151,19 @@ def cta(title="Find out what applies to you in two minutes.", text="Answer a few
 def crumbs(*items):
     parts = ['<a href="index.html">Home</a>'] + [f'<a href="{h}">{t}</a>' if h else e(t) for h, t in items]
     return '<nav class="crumbs" aria-label="Breadcrumb">' + " / ".join(parts) + "</nav>"
+
+def faq(items):
+    html = '<section class="section white"><div class="wrap"><div class="section-head"><h2>Questions people ask</h2></div><div class="faq">' + "".join(
+        f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in items) + "</div></div></section>"
+    import re
+    sch = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+        {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": re.sub(r"<[^>]+>", "", a)}} for q, a in items]}
+    return html, sch
+
+def service_schema(name, desc, low):
+    return {"@context": "https://schema.org", "@type": "Service", "name": name, "description": desc, "provider": {"@id": BIZ_ID},
+        "areaServed": ["Windsor, ON", "Essex County, ON", "Chatham-Kent, ON", "Sarnia-Lambton, ON", "London, ON"],
+        "offers": {"@type": "Offer", "priceCurrency": "CAD", "price": str(low), "description": f"From ${low} a month before HST"}}
 
 def ul(items): return "<ul>" + "".join(f"<li>{x}</li>" for x in items) + "</ul>"
 
@@ -195,7 +217,8 @@ REGISTER = """<figure class="register" aria-label="Example of a live designated 
 </tbody></table>
 <figcaption class="reg-foot">Every program includes a register like this, with photos, results and condition history.</figcaption></figure>"""
 
-home_schema = {"@context": "https://schema.org", "@type": "ProfessionalService", "name": SITE["online"], "legalName": SITE["legal"],
+home_schema = {"@context": "https://schema.org", "@type": "ProfessionalService", "@id": BIZ_ID, "name": SITE["online"], "alternateName": SITE["legal"], "legalName": SITE["legal"],
+    "knowsAbout": ["Asbestos testing", "Designated substance survey", "O. Reg. 278/05 asbestos management", "O. Reg. 490/09 exposure assessment", "Type 3 asbestos clearance", "Silica exposure monitoring", "Isocyanate air monitoring", "Lead paint testing"],
     "url": SITE["domain"] + "/", "logo": SITE["domain"] + "/assets/ncc-logo-primary.svg", "image": SITE["domain"] + "/assets/og-image.png",
     "description": "Independent asbestos and designated substances surveys, registers, abatement oversight and exposure monitoring in southwestern Ontario.",
     "areaServed": [{"@type": "AdministrativeArea", "name": n} for n in ["Windsor-Essex", "Chatham-Kent", "Sarnia-Lambton", "London, Ontario"]],
@@ -264,7 +287,14 @@ home = f"""
 <p><a href="services.html">See every service</a></p></div>
 </div></section>
 """ + cta()
-page("index.html", f"{SITE['online']} | {SITE['tagline']}", f"Independent asbestos and designated substance surveys, registers and air monitoring in {REGIONS}. Monthly compliance programs from $199.", home, schema=home_schema)
+HOME_FAQ, HOME_FAQ_SCHEMA = faq([
+ ("What are Ontario's designated substances?", "There are 11: acrylonitrile, arsenic, asbestos, benzene, coke oven emissions, ethylene oxide, isocyanates, lead, mercury, silica and vinyl chloride. Asbestos, lead, mercury and silica are the ones usually found in buildings."),
+ ("How often does a building owner have to update the asbestos record?", "At least once every 12 months, and whenever new information comes to light, under O. Reg. 278/05. The record has to be kept on the premises."),
+ ("Who is responsible for the designated substance list before a renovation?", "The project owner. Under section 30 of the Occupational Health and Safety Act, the owner lists every designated substance in the work area before the project begins and includes the list in the tender."),
+ ("How much do your programs cost?", "Building Compliance starts at $199 a month, Rental Portfolio at $249, Workplace Exposure at $299 and the Pre-Work Clearance Pass at $850, all in CAD before HST. One-off surveys start at $550 for a single suite."),
+ ("Do you remove asbestos?", "No. We are independent consultants: we survey, write specifications, oversee abatement and test the air, but we never remove or abate anything and take no referral fees.")])
+home = home.replace('<section class="section white"><div class="wrap split">\n<div class="prose"><h2>Independent, on purpose</h2>', HOME_FAQ.replace('class="section white"', 'class="section"') + '<section class="section white"><div class="wrap split">\n<div class="prose"><h2>Independent, on purpose</h2>', 1)
+page("index.html", "Asbestos & Designated Substance Consulting in Windsor, ON | Noah Crowley", f"Independent asbestos and designated substance surveys, registers and air monitoring in {REGIONS}. Monthly compliance programs from $199.", home, schema=[home_schema, HOME_FAQ_SCHEMA])
 
 # ---------------------------------------------------------------- building owners
 b = segment_hero("Building owners", "Building Compliance Program",
@@ -302,7 +332,7 @@ b = segment_hero("Building owners", "Building Compliance Program",
 <h3>Included in every program</h3>{COMMON_RULES}</div>
 </div></section>
 """ + cta("Is your asbestos record within 12 months?", "The Obligation Check takes two minutes and tells you which tier fits your buildings.", "obligation-check.html#building")
-page("building-owners.html", "Building Compliance Program | Asbestos records and registers | Noah Crowley", "Annual asbestos reassessment, a live register of all 11 designated substances and pre-work desk reviews for building owners in southwestern Ontario. From $199 a month.", b, "building-owners.html")
+page("building-owners.html", "Building Compliance Program | Asbestos records and registers | Noah Crowley", "Annual asbestos reassessment, a live register of all 11 designated substances and pre-work desk reviews for building owners in southwestern Ontario. From $199 a month.", b, "building-owners.html", schema=service_schema("Building Compliance Program", "Monthly asbestos and designated substance compliance program in southwestern Ontario", 199))
 
 # ---------------------------------------------------------------- landlords
 r = segment_hero("Landlords", "Rental Portfolio Program",
@@ -338,7 +368,7 @@ r = segment_hero("Landlords", "Rental Portfolio Program",
 <h3>Included in every program</h3>{COMMON_RULES}</div>
 </div></section>
 """ + cta("Got a suite turning over soon?", "Book the first suite check, or take the Obligation Check to see which tier fits your portfolio.", "obligation-check.html#rental")
-page("landlords.html", "Rental Portfolio Program | Suite turnover asbestos checks | Noah Crowley", "Suite turnover checks, asbestos records and tenant notices for landlords, property managers and condo corporations in Windsor-Essex and southwestern Ontario. From $249 a month.", r, "landlords.html")
+page("landlords.html", "Rental Portfolio Program | Suite turnover asbestos checks | Noah Crowley", "Suite turnover checks, asbestos records and tenant notices for landlords, property managers and condo corporations in Windsor-Essex and southwestern Ontario. From $249 a month.", r, "landlords.html", schema=service_schema("Rental Portfolio Program", "Monthly asbestos and designated substance compliance program in southwestern Ontario", 249))
 
 # ---------------------------------------------------------------- employers
 w = segment_hero("Employers", "Workplace Exposure Program",
@@ -380,7 +410,7 @@ w = segment_hero("Employers", "Workplace Exposure Program",
 <h3>Included in every program</h3>{COMMON_RULES}</div>
 </div></section>
 """ + cta("Do you have a written exposure assessment?", "The Obligation Check tells you in two minutes whether O. Reg. 490/09 applies and which tier fits.", "obligation-check.html#employer")
-page("employers.html", "Workplace Exposure Program | O. Reg. 490/09 assessments and air monitoring | Noah Crowley", "Designated substance exposure assessments, control programs and air monitoring under O. Reg. 490/09 for employers in southwestern Ontario. From $299 a month.", w, "employers.html")
+page("employers.html", "Workplace Exposure Program | O. Reg. 490/09 assessments and air monitoring | Noah Crowley", "Designated substance exposure assessments, control programs and air monitoring under O. Reg. 490/09 for employers in southwestern Ontario. From $299 a month.", w, "employers.html", schema=service_schema("Workplace Exposure Program", "Monthly asbestos and designated substance compliance program in southwestern Ontario", 299))
 
 # ---------------------------------------------------------------- contractors
 c = segment_hero("Contractors", "Pre-Work Clearance Pass",
@@ -430,7 +460,7 @@ c = segment_hero("Contractors", "Pre-Work Clearance Pass",
 <p><a href="guide-demolition-renovation-dss.html">Read the demolition and renovation DSS guide</a></p></div>
 </div></section>
 """ + cta("Never stop a job for a week again.", "Book your first pre-work check, or take the Obligation Check to see which pass fits your volume.", "obligation-check.html#contractor")
-page("contractors.html", "Pre-Work Clearance Pass | Pre-renovation asbestos checks for contractors | Noah Crowley", "Monthly pre-work designated substance checks with reserved booking for contractors, renovators and restoration firms in southwestern Ontario. From $850 a month.", c, "contractors.html")
+page("contractors.html", "Pre-Work Clearance Pass | Pre-renovation asbestos checks for contractors | Noah Crowley", "Monthly pre-work designated substance checks with reserved booking for contractors, renovators and restoration firms in southwestern Ontario. From $850 a month.", c, "contractors.html", schema=service_schema("Pre-Work Clearance Pass", "Monthly asbestos and designated substance compliance program in southwestern Ontario", 850))
 
 # ---------------------------------------------------------------- services
 def svc_table(rows):
@@ -479,7 +509,12 @@ page("obligation-check.html", "Obligation Check | Which asbestos and designated 
      extra_js=f"<script>window.NCC_TIERS={json.dumps({k: {kk: v[kk] for kk in ['program', 'name', 'price', 'fits', 'page', 'inc']} for k, v in TIERS.items()})};</script>\n")
 
 # ---------------------------------------------------------------- local pages
-def local_page(fname, city, region, intro, local_points, towns):
+def local_page(fname, city, region, intro, local_points, towns, extra_faq=()):
+    items = [(f"How much does asbestos testing cost in {city}?", f"A project designated substance survey is $550 for one suite or up to 2,000 sq ft, and $1,300 to $4,800 for commercial work areas. Lab analysis is included, so there's no separate testing charge."),
+             ("How long do results take?", "Lab results come back within 1 week of the site visit. If work can't wait, we leave written interim instructions on site the same day."),
+             (f"Which buildings in {city} are likely to contain asbestos?", "Most buildings built after 1980 are largely free of asbestos; nearly anything older is a candidate. Floor tile and mastic, drywall compound, textured ceilings, pipe insulation and vermiculite are the usual suspects."),
+             ("Are you independent of abatement contractors?", "Yes. We never remove or abate anything and take no referral fees, so our survey results aren't shaped by anyone who profits from removal.")] + list(extra_faq)
+    FAQ_HTML, FAQ_SCHEMA = faq(items)
     body = f"""<section class="hero"><div class="wrap">{crumbs((None, f"Asbestos testing in {city}"))}
 <div class="hero-copy" style="max-width:860px"><h1>Asbestos testing and designated substance surveys in {city}</h1>
 <p class="lede">{intro}</p>
@@ -497,15 +532,17 @@ def local_page(fname, city, region, intro, local_points, towns):
 </div></section>
 <section class="section"><div class="wrap"><div class="section-head"><h2>Common reasons people call</h2></div>
 <div class="link-list">{"".join(f'<a href="{h}"><strong>{t}</strong><span>What it involves, what it costs and how fast you get results</span></a>' for h, t in TRIGGERS)}</div></div></section>
-""" + cta()
-    page(fname, f"Asbestos testing and designated substance surveys in {city} | Noah Crowley",
-         f"Independent asbestos testing, designated substance surveys, registers and air monitoring in {city} and {region}. Lab analysis included, results within 1 week.", body)
+""" + FAQ_HTML + cta()
+    page(fname, f"Asbestos Testing {city}, ON | Designated Substance Surveys | Noah Crowley",
+         f"Independent asbestos testing, designated substance surveys, registers and air monitoring in {city} and {region}. Lab analysis included, results within 1 week.", body,
+         schema=[FAQ_SCHEMA, {"@context": "https://schema.org", "@type": "Service", "name": f"Asbestos testing and designated substance surveys in {city}", "serviceType": "Asbestos testing", "provider": {"@id": BIZ_ID}, "areaServed": {"@type": "City", "name": f"{city}, Ontario"}}])
 
 local_page("asbestos-testing-windsor.html", "Windsor", "Windsor-Essex",
     "Independent asbestos and designated substance work for Windsor building owners, landlords, employers and contractors, with lab analysis included and results within 1 week.",
     ["More than one in three Windsor dwellings was built before 1960, and most of the city's industrial and institutional floor space dates from the same era. Nearly everything built before 1980 is a candidate for asbestos-containing materials.",
      "The City of Windsor's demolition permit checklist asks for a designated substance list, so every demolition starts with a survey. We write them ready to attach to the permit and the tender."],
-    "LaSalle, Tecumseh, Amherstburg and Lakeshore")
+    "LaSalle, Tecumseh, Amherstburg and Lakeshore",
+    [("Do I need a designated substance survey for a demolition permit in Windsor?", "Yes. The City of Windsor's demolition permit checklist asks for a list of designated substances. We write the survey ready to attach to the permit application and the demolition tender.")])
 local_page("asbestos-testing-leamington.html", "Leamington", "Essex County",
     "Asbestos testing, designated substance surveys and suite turnover checks for Leamington and the rest of Essex County, booked into regular route days.",
     ["Older commercial buildings, rental stock and industrial sites across Essex County carry the same duties as the city: an asbestos record updated every 12 months, and a designated substance list before any renovation or demolition.",
