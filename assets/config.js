@@ -5,5 +5,5 @@
       Until it is set, "Book a call" buttons open the contact page. */
 window.NCC_CONFIG = {
   FORM_ENDPOINT: "https://formspree.io/f/xnpjrlae",
-  BOOKING_URL: ""
+  BOOKING_URL: "https://cal.com/crowleyconsulting/call"
 };
