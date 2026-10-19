@@ -11,8 +11,8 @@ SITE = {
     "legal": "Noah Crowley Consulting",
     "online": "Noah Crowley Asbestos and Designated Substances Consulting",
     "tagline": "Asbestos & Designated Substances Compliance",
-    "phone": "",          # e.g. "519-555-0100"  (shown site-wide once set)
-    "email": "",          # e.g. "noah@crowleyconsulting.ca"
+    "phone": "519-890-9654",
+    "email": "info@crowleyconsulting.ca",
     "city": "Windsor",    # base city for search listings
     "founding": True,     # show the 15% founding-client offer
 }
