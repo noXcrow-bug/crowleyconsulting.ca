@@ -2,19 +2,90 @@
 (function () {
   var CFG = window.NCC_CONFIG || {};
 
-  // Mobile menu
-  var btn = document.querySelector(".menu-btn"), nav = document.getElementById("site-nav");
-  if (btn && nav) btn.addEventListener("click", function () {
-    var open = nav.classList.toggle("open");
+  var REDUCE = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)";
+
+  // Mobile menu: a panel under the header with a scrim; closes on scrim, Escape, link tap or resize
+  var btn = document.querySelector(".menu-btn"), nav = document.getElementById("site-nav"), scrim = document.querySelector(".scrim");
+  var mq = window.matchMedia("(max-width: 1060px)");
+  function setMenu(open) {
+    if (!btn || !nav) return;
+    nav.classList.toggle("open", open);
     btn.setAttribute("aria-expanded", String(open));
-  });
+    document.body.classList.toggle("menu-open", open);
+    if (scrim) {
+      if (open) { scrim.hidden = false; requestAnimationFrame(function () { scrim.classList.add("on"); }); }
+      else { scrim.classList.remove("on"); setTimeout(function () { if (!nav.classList.contains("open")) scrim.hidden = true; }, 200); }
+    }
+    if (actionBar) syncBar();
+  }
+  if (btn && nav) {
+    btn.addEventListener("click", function () { setMenu(!nav.classList.contains("open")); });
+    nav.addEventListener("click", function (e) { if (e.target.closest("a")) setMenu(false); });
+    if (scrim) scrim.addEventListener("click", function () { setMenu(false); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && nav.classList.contains("open")) { setMenu(false); btn.focus(); } });
+    (mq.addEventListener ? mq.addEventListener("change", function () { if (!mq.matches) setMenu(false); }) : null);
+  }
+
+  // Phone action bar: appears once the first section's buttons have scrolled away, hides over the footer
+  var actionBar = document.querySelector(".action-bar");
+  var pastHero = false, atFoot = false;
+  function syncBar() { actionBar.classList.toggle("on", pastHero && !atFoot && !(nav && nav.classList.contains("open"))); }
+  if (actionBar && "IntersectionObserver" in window) {
+    var hero = document.querySelector("main > section"), foot = document.querySelector(".site-foot");
+    if (hero) new IntersectionObserver(function (en) { pastHero = !en[0].isIntersecting; syncBar(); }, { rootMargin: "-25% 0px 0px 0px" }).observe(hero);
+    if (foot) new IntersectionObserver(function (en) { atFoot = en[0].isIntersecting; syncBar(); }).observe(foot);
+  }
 
   // Booking links: use the booking page when configured
-  if (CFG.BOOKING_URL) {
-    document.querySelectorAll("[data-book]").forEach(function (a) {
+  function wireBooking(scope) {
+    if (!CFG.BOOKING_URL) return;
+    scope.querySelectorAll("[data-book]").forEach(function (a) {
       a.setAttribute("href", CFG.BOOKING_URL); a.setAttribute("target", "_blank"); a.setAttribute("rel", "noopener");
     });
   }
+  wireBooking(document);
+
+  // Tier cards (phones): the segmented control follows the swipe 1:1; tapping a tier scrolls to it
+  document.querySelectorAll("[data-tiers]").forEach(function (box) {
+    var track = box.querySelector(".tc-track"), thumb = box.querySelector(".seg-thumb"), tabs = [].slice.call(box.querySelectorAll('[role="tab"]'));
+    var cards = track.children, n = cards.length, frame = 0, cur = 0;
+    function update() {
+      frame = 0;
+      var max = track.scrollWidth - track.clientWidth;
+      var p = max > 0 ? Math.min(1, Math.max(0, track.scrollLeft / max)) * (n - 1) : 0;
+      thumb.style.transform = "translateX(" + (p * 100) + "%)";
+      var i = Math.round(p);
+      if (i !== cur) { cur = i; tabs.forEach(function (t, j) { t.setAttribute("aria-selected", String(j === i)); }); }
+    }
+    track.addEventListener("scroll", function () { if (!frame) frame = requestAnimationFrame(update); }, { passive: true });
+    tabs.forEach(function (t, j) {
+      t.addEventListener("click", function () {
+        track.scrollTo({ left: cards[j].offsetLeft - track.firstElementChild.offsetLeft, behavior: REDUCE.matches ? "auto" : "smooth" });
+      });
+    });
+    window.addEventListener("resize", update);
+    update();
+  });
+
+  // FAQ: answers expand and collapse instead of snapping
+  document.querySelectorAll(".faq details").forEach(function (d) {
+    var sum = d.querySelector("summary"), body = d.querySelector(".faq-a"), anim = null;
+    if (!sum || !body || !body.animate) return;
+    sum.addEventListener("click", function (e) {
+      if (REDUCE.matches) return;
+      e.preventDefault();
+      var opening = !d.open || d.dataset.closing === "1";
+      var from = body.getBoundingClientRect().height;
+      if (anim) anim.cancel();
+      if (opening) { d.dataset.closing = ""; d.open = true; }
+      var to = opening ? body.scrollHeight : 0;
+      if (!opening) d.dataset.closing = "1";
+      anim = body.animate([{ height: from + "px", opacity: opening ? (from ? 1 : 0) : 1 }, { height: to + "px", opacity: opening ? 1 : 0 }],
+        { duration: opening ? 240 : 180, easing: EASE_OUT });
+      anim.onfinish = function () { anim = null; if (!opening) { d.open = false; d.dataset.closing = ""; } };
+    });
+  });
 
   // Forms
   function msg(form, kind, text) {
@@ -77,7 +148,20 @@
     restoration: [], abatement: [], homeowner: []
   };
 
-  var answers = {}, path = ["who"], idx = 0;
+  var answers = {}, path = ["who"], idx = 0, lastIdx = -1;
+
+  // Step transitions: forward steps arrive from the right, Back from the left; progress fills as you go
+  function enter(dir) {
+    var step = root.firstElementChild, fresh = root.querySelector(".quiz-progress span.fresh");
+    var still = !step || !step.animate || REDUCE.matches || dir === 0;
+    if (fresh && (still || dir < 0)) fresh.className = "done";
+    if (still) return;
+    step.animate([{ opacity: 0, transform: "translateX(" + (dir * 14) + "px)" }, { opacity: 1, transform: "none" }], { duration: 240, easing: EASE_OUT });
+    if (fresh && dir > 0) {
+      var bar = document.createElement("i"); bar.className = "qp-fill"; fresh.appendChild(bar);
+      bar.animate([{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], { duration: 360, delay: 60, easing: EASE_OUT, fill: "both" });
+    }
+  }
 
   function route(a) {
     switch (a.who) {
@@ -113,16 +197,18 @@
 
   function renderQ() {
     var key = path[idx], q = Q[key];
-    var bars = ""; for (var i = 0; i < total(); i++) bars += '<span class="' + (i < idx ? "done" : "") + '"></span>';
-    root.innerHTML = '<div class="quiz-progress" aria-hidden="true">' + bars + '</div>' +
+    var dir = lastIdx < 0 ? 0 : (idx >= lastIdx ? 1 : -1);
+    var bars = ""; for (var i = 0; i < total(); i++) bars += '<span class="' + (i < idx ? (i === idx - 1 && dir > 0 ? "fresh" : "done") : "") + '"></span>';
+    root.innerHTML = '<div class="q-step"><div class="quiz-progress" aria-hidden="true">' + bars + '</div>' +
       '<p class="small" style="margin-bottom:8px">Question ' + (idx + 1) + ' of ' + total() + '</p>' +
       '<h2 class="q-title" id="q-title" tabindex="-1">' + esc(q.title) + '</h2>' +
       (q.help ? '<p class="q-help">' + esc(q.help) + '</p>' : "") +
       '<div class="options" role="group" aria-labelledby="q-title">' + q.options.map(function (o) {
         return '<button type="button" class="opt" data-v="' + o[0] + '" aria-pressed="' + (answers[key] === o[0]) + '"><span>' + esc(o[1]) + (o[2] ? '<small>' + esc(o[2]) + '</small>' : "") + '</span></button>';
       }).join("") + '</div>' +
-      '<div class="quiz-nav">' + (idx > 0 ? '<button type="button" class="linkish" data-back>Back</button>' : "<span></span>") + '</div>';
-    var t = document.getElementById("q-title"); if (t && idx > 0) t.focus();
+      '<div class="quiz-nav">' + (idx > 0 ? '<button type="button" class="linkish" data-back>Back</button>' : "<span></span>") + '</div></div>';
+    enter(dir); lastIdx = idx;
+    var t = document.getElementById("q-title"); if (t && idx > 0) t.focus({ preventScroll: true });
   }
 
   function renderResult() {
@@ -171,21 +257,27 @@
       '<p class="small">We use your details to reply about this request. See our <a href="privacy.html">privacy notice</a>.</p></form>' +
       '<button type="button" class="linkish" data-restart>Start over</button></div>';
     wireForm(root.querySelector("form"));
-    if (CFG.BOOKING_URL) root.querySelectorAll("[data-book]").forEach(function (a) { a.href = CFG.BOOKING_URL; a.target = "_blank"; a.rel = "noopener"; });
-    document.getElementById("result").focus();
+    wireBooking(root);
+    enter(lastIdx < 0 ? 0 : 1); lastIdx = -1;
+    var res = document.getElementById("result"); res.focus({ preventScroll: true });
+    var top = root.getBoundingClientRect().top;
+    if (top < 0 || top > window.innerHeight * .6) root.scrollIntoView({ behavior: REDUCE.matches ? "auto" : "smooth", block: "start" });
     if (window.gtag) window.gtag("event", "quiz_complete", { result: recText });
   }
 
   root.addEventListener("click", function (e) {
     var o = e.target.closest(".opt");
     if (o) {
+      if (root.dataset.busy) return;
       var key = path[idx]; answers[key] = o.dataset.v;
+      root.querySelectorAll(".opt").forEach(function (x) { x.setAttribute("aria-pressed", String(x === o)); });
       if (key === "who") { Object.keys(answers).forEach(function (k) { if (k !== "who") delete answers[k]; }); path = ["who"].concat(FLOW[answers.who]); }
-      if (idx < path.length - 1) { idx++; renderQ(); } else renderResult();
+      root.dataset.busy = "1";
+      setTimeout(function () { delete root.dataset.busy; if (idx < path.length - 1) { idx++; renderQ(); } else renderResult(); }, REDUCE.matches ? 0 : 140);
       return;
     }
     if (e.target.closest("[data-back]")) { idx = Math.max(0, idx - 1); renderQ(); return; }
-    if (e.target.closest("[data-restart]")) { answers = {}; path = ["who"]; idx = 0; renderQ(); }
+    if (e.target.closest("[data-restart]")) { answers = {}; path = ["who"]; idx = 0; lastIdx = 1; renderQ(); }
   });
 
   // Preselect a segment from the link (obligation-check.html#building)

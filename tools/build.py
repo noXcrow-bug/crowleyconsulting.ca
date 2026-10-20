@@ -1,7 +1,7 @@
 """Builds the Noah Crowley Asbestos and Designated Substances Consulting website.
 Run:  python3 tools/build.py   (from the repo root). Writes the .html files, sitemap.xml and robots.txt.
 All copy is drawn from the NCC business plan. Edit SITE below for contact details, then rebuild."""
-import json, os, html as H
+import json, os, hashlib, html as H
 from datetime import date
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -19,6 +19,7 @@ SITE = {
 REGIONS = "Windsor-Essex, Chatham-Kent, Sarnia-Lambton and London"
 YEAR = date.today().year
 e = H.escape
+ASSET_V = hashlib.sha1(b"".join(open(os.path.join(ROOT, "assets", f), "rb").read() for f in ("site.css", "site.js", "config.js"))).hexdigest()[:8]
 
 # ---------------------------------------------------------------- tiers (from the plan)
 TIERS = {
@@ -67,7 +68,7 @@ PAGES = []
 
 def contact_bits():
     out = []
-    if SITE["phone"]: out.append(f'<a href="tel:{e(SITE["phone"].replace("-", ""))}">{e(SITE["phone"])}</a>')
+    if SITE["phone"]: out.append(f'<a href="{tel()}">{e(SITE["phone"])}</a>')
     if SITE["email"]: out.append(f'<a href="mailto:{e(SITE["email"])}">{e(SITE["email"])}</a>')
     return out
 
@@ -87,29 +88,45 @@ def head(title, desc, fname, schema=None):
 <meta property="og:description" content="{e(desc)}">
 <meta property="og:url" content="{url}">
 <meta property="og:image" content="{SITE['domain']}/assets/og-image.png">
-<meta name="theme-color" content="#14233A">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light">
+<meta name="format-detection" content="telephone=no">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/site.css">
+<link rel="preload" href="assets/fonts/ibm-plex-sans-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/site.css?v={ASSET_V}">
 {ld}
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>"""
 
+ICON = {
+ "phone": '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5h2.6l1.5 4.2-2 1.3a11 11 0 0 0 6.3 6.3l1.3-2 4.2 1.5v2.6a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2Z"/></svg>',
+ "cal": '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
+ "check": '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg>',
+ "chev": '<svg class="i chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5.5l6.5 6.5L9 18.5"/></svg>',
+}
+def tel(): return "tel:+1" + SITE["phone"].replace("-", "")
+
 def header(active):
     links = "".join(f'<a href="{h}"{" aria-current=\"page\"" if h == active else ""}>{t}</a>' for h, t in NAV)
+    call = f'<a class="icon-btn call-btn" href="{tel()}" aria-label="Call {e(SITE["phone"])}">{ICON["phone"]}</a>' if SITE["phone"] else ""
     return f"""<header class="site-head"><div class="wrap head-row">
-<a class="brand" href="index.html" aria-label="{e(SITE['online'])}, home"><img src="assets/ncc-logo-online-compact.svg" alt="{e(SITE['online'])}" width="420" height="96"></a>
-<button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+<a class="brand" href="index.html" aria-label="{e(SITE['online'])}, home"><img src="assets/ncc-logo-online-compact.svg" alt="{e(SITE['online'])}" width="606" height="128"></a>
+<div class="head-actions">{call}<button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><span class="burger" aria-hidden="true"><i></i><i></i></span><span class="menu-label">Menu</span></button></div>
 <nav class="nav" id="site-nav" aria-label="Main">{links}<a class="btn amber" href="obligation-check.html">Take the Obligation Check</a></nav>
 </div></header>
+<div class="scrim" hidden></div>
 <main id="main">"""
 
-def footer():
+def action_bar(fname):
+    if fname in ("contact.html", "404.html") or not SITE["phone"]: return ""
+    second = ('<a class="btn" href="contact.html#book" data-book>' + ICON["cal"] + 'Book a call</a>') if fname == "obligation-check.html" else '<a class="btn amber" href="obligation-check.html">Take the Obligation Check</a>'
+    return f'<div class="action-bar" aria-label="Quick actions"><a class="btn ghost" href="{tel()}">{ICON["phone"]}Call</a>{second}</div>'
+
+def footer(fname=""):
     cb = contact_bits()
     contact = ("<li>" + "</li><li>".join(cb) + "</li>") if cb else '<li><a href="contact.html">Send us a message</a></li>'
     return f"""</main>
@@ -126,8 +143,9 @@ def footer():
 </div>
 <div class="foot-legal"><span>© {YEAR} {e(SITE['legal'])}, operating as {e(SITE['online'])}. Prices in CAD before HST.</span><a href="privacy.html">Privacy notice</a></div>
 </div></footer>
-<script src="assets/config.js"></script>
-<script src="assets/site.js"></script>
+{action_bar(fname)}
+<script src="assets/config.js?v={ASSET_V}"></script>
+<script src="assets/site.js?v={ASSET_V}"></script>
 </body></html>"""
 
 BIZ_ID = SITE["domain"] + "/#business"
@@ -141,7 +159,7 @@ def page(fname, title, desc, body, active=None, schema=None, extra_js=""):
         schemas.append({"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE["domain"] + "/"},
             {"@type": "ListItem", "position": 2, "name": H.unescape(name), "item": SITE["domain"] + "/" + fname}]})
-    doc = head(title, desc, fname, schemas or None) + header(active) + body + footer().replace("<script src=\"assets/config.js\">", extra_js + "<script src=\"assets/config.js\">")
+    doc = head(title, desc, fname, schemas or None) + header(active) + body + footer(fname).replace("<script src=\"assets/config.js", extra_js + "<script src=\"assets/config.js", 1)
     open(os.path.join(ROOT, fname), "w").write(doc)
 
 def cta(title="Find out what applies to you in two minutes.", text="Answer a few questions and the Obligation Check tells you which duties you carry, which program fits and what the first step costs.", href="obligation-check.html"):
@@ -154,7 +172,7 @@ def crumbs(*items):
 
 def faq(items):
     html = '<section class="section white"><div class="wrap"><div class="section-head"><h2>Questions people ask</h2></div><div class="faq">' + "".join(
-        f'<details><summary>{q}</summary><p>{a}</p></details>' for q, a in items) + "</div></div></section>"
+        f'<details><summary>{q}</summary><div class="faq-a"><p>{a}</p></div></details>' for q, a in items) + "</div></div></section>"
     import re
     sch = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
         {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": re.sub(r"<[^>]+>", "", a)}} for q, a in items]}
@@ -170,13 +188,22 @@ def ul(items): return "<ul>" + "".join(f"<li>{x}</li>" for x in items) + "</ul>"
 def tier_table(keys, rows):
     th = "".join(f'<th scope="col"><span class="tname">{TIERS[k]["name"]}</span><span class="tprice">{money(TIERS[k]["price"])} <small>a month</small></span></th>' for k in keys)
     body = ""
+    def cls(v): return "yes" if v == "Yes" else ("no" if v.startswith("Not included") or v in ("No", "None") else "")
     for label, vals in rows:
-        tds = ""
-        for v in vals:
-            cls = ' class="yes"' if v == "Yes" else (' class="no"' if v.startswith("Not included") or v == "No" else "")
-            tds += f"<td{cls}>{v}</td>"
+        tds = "".join(f'<td class="{cls(v)}">{v}</td>' if cls(v) else f"<td>{v}</td>" for v in vals)
         body += f'<tr><th scope="row">{label}</th>{tds}</tr>'
-    return f'<div class="table-wrap"><table class="data tiers wide"><thead><tr><th scope="col"><span class="small">Monthly, CAD before HST</span></th>{th}</tr></thead><tbody>{body}</tbody></table></div>'
+    table = f'<div class="table-wrap tier-table"><table class="data tiers wide"><thead><tr><th scope="col"><span class="small">Monthly, CAD before HST</span></th>{th}</tr></thead><tbody>{body}</tbody></table></div>'
+    # Phone version: one card per tier in a snap-scrolling row, with a segmented control above it
+    gid = keys[0].split("_")[0]
+    seg = "".join(f'<button type="button" role="tab" aria-selected="{"true" if i == 0 else "false"}" aria-controls="tc-{k}" data-i="{i}">{TIERS[k]["name"]}</button>' for i, k in enumerate(keys))
+    cards = ""
+    for i, k in enumerate(keys):
+        T = TIERS[k]
+        dl = "".join(f'<div class="{cls(vals[i])}"><dt>{label}</dt><dd>{vals[i]}</dd></div>' for label, vals in rows if label != "Fits")
+        fits = next((vals[i] for label, vals in rows if label == "Fits"), T["fits"])
+        cards += f'<article class="tier-card" id="tc-{k}" role="tabpanel" aria-label="{T["name"]}"><header><h3>{T["name"]}</h3><p class="tc-price">{money(T["price"])}<small> a month</small></p><p class="tc-fits">{fits}</p></header><dl>{dl}</dl></article>'
+    mobile = f'<div class="tier-cards" data-tiers><div class="seg" role="tablist" aria-label="Choose a tier"><span class="seg-thumb" aria-hidden="true"></span>{seg}</div><div class="tc-track">{cards}</div><p class="small tc-note">Monthly, CAD before HST. Swipe to compare.</p></div>'
+    return table + mobile
 
 def value_table(rows, total, program, saving=""):
     body = "".join(f'<tr><th scope="row">{a}</th><td class="num">{money(b)}</td></tr>' for a, b in rows)
@@ -209,11 +236,11 @@ REGISTER = """<figure class="register" aria-label="Example of a live designated 
 <div class="reg-head"><b>Designated substance register</b><span>Example</span></div>
 <div class="reg-meta"><span><strong>Last reassessed</strong> Sep 14, 2026</span><span><strong>Next due</strong> Sep 2027</span><span><strong>Pre-work reviews left</strong> 3</span></div>
 <table class="reg-table"><thead><tr><th>Location</th><th>Material</th><th>Status</th></tr></thead><tbody>
-<tr><td class="loc">Boiler room</td><td class="mat">Pipe elbow insulation</td><td><span class="status act">Act now</span></td></tr>
-<tr><td class="loc">Corridor, 2nd floor</td><td class="mat">9-inch floor tile and mastic</td><td><span class="status monitor">Monitor</span></td></tr>
-<tr><td class="loc">Stairwell B</td><td class="mat">Textured ceiling finish</td><td><span class="status monitor">Monitor</span></td></tr>
-<tr><td class="loc">Suite 204</td><td class="mat">Drywall joint compound</td><td><span class="status good">Good</span></td></tr>
-<tr><td class="loc">Front entrance</td><td class="mat">Window glazing (lead)</td><td><span class="status good">Good</span></td></tr>
+<tr><td class="loc" data-mat="Pipe elbow insulation">Boiler room</td><td class="mat">Pipe elbow insulation</td><td><span class="status act">Act now</span></td></tr>
+<tr><td class="loc" data-mat="9-inch floor tile and mastic">Corridor, 2nd floor</td><td class="mat">9-inch floor tile and mastic</td><td><span class="status monitor">Monitor</span></td></tr>
+<tr><td class="loc" data-mat="Textured ceiling finish">Stairwell B</td><td class="mat">Textured ceiling finish</td><td><span class="status monitor">Monitor</span></td></tr>
+<tr><td class="loc" data-mat="Drywall joint compound">Suite 204</td><td class="mat">Drywall joint compound</td><td><span class="status good">Good</span></td></tr>
+<tr><td class="loc" data-mat="Window glazing (lead)">Front entrance</td><td class="mat">Window glazing (lead)</td><td><span class="status good">Good</span></td></tr>
 </tbody></table>
 <figcaption class="reg-foot">Every program includes a register like this, with photos, results and condition history.</figcaption></figure>"""
 
@@ -241,10 +268,10 @@ home = f"""
 <section class="section tight" id="doors"><div class="wrap">
 <div class="section-head"><h2>Start with what you're responsible for</h2></div>
 <div class="doors">
-<a class="door" href="building-owners.html"><h3>I own or manage a building</h3><p>Keep your asbestos record current, answer contractors before they drill, and stay ready for an inspector.</p><span class="go">Building Compliance, from $199 a month</span></a>
-<a class="door" href="landlords.html"><h3>I rent out units</h3><p>Check suites before turnover crews lift tile or sand ceilings, and keep tenant notices up to date.</p><span class="go">Rental Portfolio, from $249 a month</span></a>
-<a class="door" href="employers.html"><h3>My workers handle a designated substance</h3><p>Exposure assessments, control programs and air monitoring under O. Reg. 490/09.</p><span class="go">Workplace Exposure, from $299 a month</span></a>
-<a class="door" href="contractors.html"><h3>I'm about to open walls or floors</h3><p>Pre-work checks booked before you mobilize, so a find never idles your crew for a week.</p><span class="go">Clearance Pass, from $850 a month</span></a>
+<a class="door" href="building-owners.html"><h3>I own or manage a building</h3><p>Keep your asbestos record current, answer contractors before they drill, and stay ready for an inspector.</p><span class="go">Building Compliance, from $199 a month{ICON["chev"]}</span></a>
+<a class="door" href="landlords.html"><h3>I rent out units</h3><p>Check suites before turnover crews lift tile or sand ceilings, and keep tenant notices up to date.</p><span class="go">Rental Portfolio, from $249 a month{ICON["chev"]}</span></a>
+<a class="door" href="employers.html"><h3>My workers handle a designated substance</h3><p>Exposure assessments, control programs and air monitoring under O. Reg. 490/09.</p><span class="go">Workplace Exposure, from $299 a month{ICON["chev"]}</span></a>
+<a class="door" href="contractors.html"><h3>I'm about to open walls or floors</h3><p>Pre-work checks booked before you mobilize, so a find never idles your crew for a week.</p><span class="go">Clearance Pass, from $850 a month{ICON["chev"]}</span></a>
 </div></div></section>
 
 <section class="section white"><div class="wrap">
@@ -447,12 +474,12 @@ c = segment_hero("Contractors", "Pre-Work Clearance Pass",
 
 <section class="section white"><div class="wrap split">
 <div class="prose"><h2>The business case for Starter</h2>
-<div class="table-wrap"><table class="data wide"><thead><tr><th scope="col">Two jobs a month</th><th scope="col">Without the Pass</th><th scope="col">With Starter</th></tr></thead><tbody>
-<tr><th scope="row">Cost per check</th><td>$550, booked job by job</td><td>$425</td></tr>
-<tr><th scope="row">Booking</th><td>Next available slot</td><td>Visit within 5 business days, reserved</td></tr>
-<tr><th scope="row">How it's paid</th><td>Rarely quoted, so absorbed or skipped</td><td>Billed to the client as a $550 line item</td></tr>
-<tr><th scope="row">Monthly result</th><td>$1,100 absorbed if tested, or the risk carried if skipped</td><td>$1,100 billed against $850 paid: $250 a month ahead</td></tr>
-<tr><th scope="row">Suspect material</th><td>Found mid-job: stop work, notify, wait a week</td><td>Found before mobilizing and priced into the quote</td></tr>
+<div class="table-wrap stack"><table class="data wide"><thead><tr><th scope="col">Two jobs a month</th><th scope="col">Without the Pass</th><th scope="col">With Starter</th></tr></thead><tbody>
+<tr><th scope="row">Cost per check</th><td data-label="Without the Pass">$550, booked job by job</td><td data-label="With Starter">$425</td></tr>
+<tr><th scope="row">Booking</th><td data-label="Without the Pass">Next available slot</td><td data-label="With Starter">Visit within 5 business days, reserved</td></tr>
+<tr><th scope="row">How it's paid</th><td data-label="Without the Pass">Rarely quoted, so absorbed or skipped</td><td data-label="With Starter">Billed to the client as a $550 line item</td></tr>
+<tr><th scope="row">Monthly result</th><td data-label="Without the Pass">$1,100 absorbed if tested, or the risk carried if skipped</td><td data-label="With Starter">$1,100 billed against $850 paid: $250 a month ahead</td></tr>
+<tr><th scope="row">Suspect material</th><td data-label="Without the Pass">Found mid-job: stop work, notify, wait a week</td><td data-label="With Starter">Found before mobilizing and priced into the quote</td></tr>
 </tbody></table></div>
 <p class="small">Prefer not to bill the line? Absorb it and market “checked before we cut” to clients and insurers instead.</p></div>
 <div class="prose"><h2>How it starts</h2>{start_steps("First pre-work check", "One check on your next job in an older building. The fee is credited if you take the Pass.")}
@@ -464,8 +491,8 @@ page("contractors.html", "Pre-Work Clearance Pass | Pre-renovation asbestos chec
 
 # ---------------------------------------------------------------- services
 def svc_table(rows):
-    body = "".join(f'<tr><th scope="row">{a}</th><td>{t}</td><td>{d}</td><td class="num">{p}</td></tr>' for a, t, d, p in rows)
-    return f'<div class="table-wrap"><table class="data wide"><thead><tr><th scope="col">Service</th><th scope="col">Typical trigger</th><th scope="col">What you get</th><th scope="col" class="num">List price</th></tr></thead><tbody>{body}</tbody></table></div>'
+    body = "".join(f'<tr><th scope="row">{a}</th><td data-label="Typical trigger">{t}</td><td data-label="What you get">{d}</td><td class="num" data-label="List price">{p}</td></tr>' for a, t, d, p in rows)
+    return f'<div class="table-wrap stack"><table class="data wide"><thead><tr><th scope="col">Service</th><th scope="col">Typical trigger</th><th scope="col">What you get</th><th scope="col" class="num">List price</th></tr></thead><tbody>{body}</tbody></table></div>'
 s = f"""<section class="hero"><div class="wrap">{crumbs((None, "Services"))}
 <div class="hero-copy" style="max-width:860px"><h1>One-off services and list prices</h1>
 <p class="lede">Every price includes the lab analysis the service needs, so testing never appears as a separate line on a quote. Results come back within 1 week. Program members pay 10% to 20% less.</p></div></div></section>
@@ -703,18 +730,21 @@ page("about.html", "How we work | Independent asbestos consulting | Noah Crowley
 
 # ---------------------------------------------------------------- contact
 cb = contact_bits()
-contact_side = ("<p>" + "<br>".join(cb) + "</p>") if cb else ""
+rows = []
+if SITE["phone"]: rows.append(f'<a class="contact-row" href="{tel()}">{ICON["phone"]}<span><b>{e(SITE["phone"])}</b><small>Call us</small></span></a>')
+if SITE["email"]: rows.append(f'<a class="contact-row" href="mailto:{e(SITE["email"])}"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M4 7.5l8 5.5 8-5.5"/></svg><span><b>{e(SITE["email"])}</b><small>We reply within one business day</small></span></a>')
+contact_side = ('<div class="contact-list">' + "".join(rows) + "</div>") if rows else ""
 ct = f"""<section class="hero"><div class="wrap">{crumbs((None, "Contact"))}
 <div class="split">
 <div class="hero-copy"><h1>Talk to us about a building, a workplace or a job</h1>
 <p class="lede">Tell us what you're dealing with and we'll reply within one business day with a price or a time to visit.</p>
 {contact_side}
-<div id="book" class="duty" style="margin-top:8px"><h3>Prefer to book a call?</h3><p>Pick a 15-minute slot and we'll call you.</p><div class="btn-row"><a class="btn" href="contact.html#book" data-book>Book a call</a></div></div>
+<div id="book" class="duty"><h3>Prefer to book a call?</h3><p>Pick a 15-minute slot and we'll call you.</p><div class="btn-row"><a class="btn" href="contact.html#book" data-book>{ICON["cal"]}Book a call</a></div></div>
 <p class="area">Serving {REGIONS}.</p></div>
-<form class="form" data-form data-name="contact" style="background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:28px">
+<form class="form panel" data-form data-name="contact">
 <input type="hidden" name="_subject" value="Website enquiry">
 <div class="row2"><label class="field">Your name<input name="name" required autocomplete="name"></label><label class="field">Company<input name="company" autocomplete="organization"></label></div>
-<div class="row2"><label class="field">Email<input name="email" type="email" required autocomplete="email"></label><label class="field">Phone<input name="phone" type="tel" autocomplete="tel"></label></div>
+<div class="row2"><label class="field">Email<input name="email" type="email" required autocomplete="email" autocapitalize="none" spellcheck="false"></label><label class="field">Phone<input name="phone" type="tel" inputmode="tel" autocomplete="tel"></label></div>
 <label class="field">What do you need?<select name="need">
 <option>A designated substance survey before renovation or demolition</option><option>An asbestos reassessment or register for my building</option>
 <option>Suite turnover checks for rental units</option><option>A workplace exposure assessment or air monitoring</option>
@@ -723,7 +753,7 @@ ct = f"""<section class="hero"><div class="wrap">{crumbs((None, "Contact"))}
 <label class="field">Details<textarea name="message" placeholder="Building age, size, what work is planned and when"></textarea></label>
 <label class="check"><input type="checkbox" name="consent_updates" value="yes"> Also send me occasional compliance reminders and updates by email. You can unsubscribe at any time.</label>
 <div class="hp" aria-hidden="true"><label>Leave this empty<input name="website_url" tabindex="-1" autocomplete="off"></label></div>
-<button class="btn" type="submit">Send message</button>
+<button class="btn block" type="submit">Send message</button>
 <p class="small">We use your details only to reply to this request. See our <a href="privacy.html">privacy notice</a>.</p>
 </form></div></div></section>"""
 page("contact.html", "Contact | Noah Crowley Asbestos and Designated Substances Consulting", f"Ask for a designated substance survey, asbestos reassessment, suite check or exposure monitoring quote in {REGIONS}.", ct, "contact.html")
@@ -737,7 +767,7 @@ pv = f"""<section class="hero"><div class="wrap">{crumbs((None, "Privacy notice"
 <h2>Email</h2>
 <p>We send commercial emails only with your consent or where Canada's Anti-Spam Legislation otherwise allows it. The reminders checkbox on our forms is optional and unticked by default. Every email we send includes a way to unsubscribe, and we act on unsubscribe requests within 10 business days.</p>
 <h2>Who processes it</h2>
-<p>Form submissions are delivered to us by our form provider, and calls are booked through our scheduling provider. Fonts are loaded from Google Fonts. We don't sell or rent personal information, and this site does not use advertising trackers.</p>
+<p>Form submissions are delivered to us by our form provider, and calls are booked through our scheduling provider. Fonts are served from this website, not a third party. We don't sell or rent personal information, and this site does not use advertising trackers.</p>
 <h2>Keeping and correcting it</h2>
 <p>We keep enquiry records for as long as needed to serve you and meet our legal and insurance obligations. You can ask to see, correct or delete your information by contacting us{(" at " + e(SITE['email'])) if SITE['email'] else ' through the <a href="contact.html">contact page</a>'}.</p>
 <p class="small">Last updated {date.today().strftime("%B %-d, %Y")}.</p>
