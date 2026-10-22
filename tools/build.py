@@ -41,12 +41,12 @@ TIERS = {
    inc=["Annual assessment review plus a mid-year walk-through", "3 exposure monitoring days a year", "8 change-of-process reviews a year", "2 training sessions a year", "Medical surveillance coordination with your physician", "15% off project work"]),
  "we_site": dict(program="Workplace Exposure Program", name="Site Partner", price=2190, fits="Several processes or sites", page="employers.html",
    inc=["Annual assessment review plus quarterly reviews", "8 exposure monitoring days a year", "Unlimited change-of-process reviews", "4 training sessions a year", "Attendance at your JHSC quarterly", "20% off project work"]),
- "pw_start": dict(program="Pre-Work Clearance Pass", name="Starter", price=850, fits="Renovators and trades with 1–3 jobs a month in pre-1990 buildings", page="contractors.html",
+ "pw_start": dict(program="Cleared-to-Start Pass", name="Starter", price=850, fits="Renovators and trades with 1–3 jobs a month in pre-1990 buildings", page="contractors.html",
    inc=["2 pre-work checks a month covering all 11 designated substances", "Site visit within 5 business days, report within 1 week", "Written interim instructions on site when the job can't wait", "A due-diligence file for every job", "Extra checks $475"]),
- "pw_pro": dict(program="Pre-Work Clearance Pass", name="Pro", price=2090, fits="General contractors and fit-out firms with 4 or more jobs a month", page="contractors.html",
+ "pw_pro": dict(program="Cleared-to-Start Pass", name="Pro", price=2090, fits="General contractors and fit-out firms with 4 or more jobs a month", page="contractors.html",
    inc=["5 pre-work checks a month", "Site visit within 3 business days, report within 1 week", "Reports branded for your client", "1 live worker awareness session a year", "Extra checks $450"]),
- "pw_rr": dict(program="Pre-Work Clearance Pass", name="Restoration Rapid", price=2290, fits="Fire, flood and mould restoration firms", page="contractors.html",
-   inc=["4 emergency checks a month", "Same or next-day visits, 7 days a week", "Adjuster-ready reports with photos and quantities within 1 week", "Written interim instructions on every call", "Extra checks $625"]),
+ "pw_rr": dict(program="Cleared-to-Start Pass", name="Restoration Priority", price=2290, fits="Restoration firms, for the reconstruction phase of a claim", page="contractors.html",
+   inc=["4 priority checks a month", "Next-business-day visits, Monday to Friday", "Adjuster-ready reports with photos and quantities within 1 week", "Written interim instructions on every call", "Extra checks $625"]),
 }
 
 def money(n): return "${:,.0f}".format(n)
@@ -136,7 +136,7 @@ def footer(fname=""):
 <p>Independent asbestos and designated substances consulting for {REGIONS}. We never remove or abate anything and take no referral fees.</p></div>
 <div><h4>Programs</h4><ul>
 <li><a href="building-owners.html">Building Compliance</a></li><li><a href="landlords.html">Rental Portfolio</a></li>
-<li><a href="employers.html">Workplace Exposure</a></li><li><a href="contractors.html">Pre-Work Clearance Pass</a></li>
+<li><a href="employers.html">Workplace Exposure</a></li><li><a href="contractors.html">Cleared-to-Start Pass</a></li>
 <li><a href="services.html">One-off services</a></li><li><a href="obligation-check.html">Obligation Check</a></li></ul></div>
 <div><h4>Where we work</h4><ul>{"".join(f'<li><a href="{h}">Asbestos testing in {t}</a></li>' for h, t in CITIES)}</ul></div>
 <div><h4>Guides and contact</h4><ul>{"".join(f'<li><a href="{h}">{t}</a></li>' for h, t, _ in GUIDES)}{contact}<li><a href="about.html">How we work</a></li></ul></div>
@@ -271,7 +271,7 @@ home = f"""
 <a class="door" href="building-owners.html"><h3>I own or manage a building</h3><p>Keep your asbestos record current, answer contractors before they drill, and stay ready for an inspector.</p><span class="go">Building Compliance, from $199 a month{ICON["chev"]}</span></a>
 <a class="door" href="landlords.html"><h3>I rent out units</h3><p>Check suites before turnover crews lift tile or sand ceilings, and keep tenant notices up to date.</p><span class="go">Rental Portfolio, from $249 a month{ICON["chev"]}</span></a>
 <a class="door" href="employers.html"><h3>My workers handle a designated substance</h3><p>Exposure assessments, control programs and air monitoring under O. Reg. 490/09.</p><span class="go">Workplace Exposure, from $299 a month{ICON["chev"]}</span></a>
-<a class="door" href="contractors.html"><h3>I'm about to open walls or floors</h3><p>Pre-work checks booked before you mobilize, so a find never idles your crew for a week.</p><span class="go">Clearance Pass, from $850 a month{ICON["chev"]}</span></a>
+<a class="door" href="contractors.html"><h3>I'm about to open walls or floors</h3><p>Pre-work checks booked before you mobilize, so a find never idles your crew for a week.</p><span class="go">Cleared-to-Start Pass, from $850 a month{ICON["chev"]}</span></a>
 </div></div></section>
 
 <section class="section white"><div class="wrap">
@@ -299,14 +299,14 @@ home = f"""
 <a class="program" href="building-owners.html"><h3>Building Compliance Program</h3><span class="price">from $199/mo</span><p>Annual reassessment, a live register of every designated substance, pre-work desk reviews and priority response for commercial, industrial and institutional buildings.</p></a>
 <a class="program" href="landlords.html"><h3>Rental Portfolio Program</h3><span class="price">from $249/mo</span><p>The same compliance core plus suite turnover checks, so units can be renovated between tenants without surprises.</p></a>
 <a class="program" href="employers.html"><h3>Workplace Exposure Program</h3><span class="price">from $299/mo</span><p>Annual assessment review with your JHSC, control program upkeep, exposure monitoring days and training.</p></a>
-<a class="program" href="contractors.html"><h3>Pre-Work Clearance Pass</h3><span class="price">from $850/mo</span><p>A monthly bank of pre-work checks with reserved booking, billed to your client or kept as due diligence.</p></a>
+<a class="program" href="contractors.html"><h3>Cleared-to-Start Pass</h3><span class="price">from $850/mo</span><p>A monthly bank of pre-work checks with reserved booking, billed to your client or kept as due diligence.</p></a>
 </div>
 <p class="small" style="margin-top:18px">Need a single survey, an abatement specification or a Type 3 clearance? <a href="services.html">See one-off services and list prices.</a></p>
 </div></section>
 
 <section class="section white"><div class="wrap split">
 <div class="prose"><h2>Independent, on purpose</h2>
-<p>We never remove or abate anything, we take no referral fees, and we don't sell the Clearance Pass to abatement contractors. When we tell you a material is fine to leave in place, nobody on our side gains from the opposite answer.</p>
+<p>We never remove or abate anything, we take no referral fees, and we don't sell the Cleared-to-Start Pass to abatement contractors. When we tell you a material is fine to leave in place, nobody on our side gains from the opposite answer.</p>
 <p>You deal with one named consultant who knows your buildings, backed by a qualified occupational hygienist for workplace monitoring.</p>
 <p><a href="about.html">How we work</a></p></div>
 <div class="prose"><h2>All 11 designated substances</h2>
@@ -318,7 +318,7 @@ HOME_FAQ, HOME_FAQ_SCHEMA = faq([
  ("What are Ontario's designated substances?", "There are 11: acrylonitrile, arsenic, asbestos, benzene, coke oven emissions, ethylene oxide, isocyanates, lead, mercury, silica and vinyl chloride. Asbestos, lead, mercury and silica are the ones usually found in buildings."),
  ("How often does a building owner have to update the asbestos record?", "At least once every 12 months, and whenever new information comes to light, under O. Reg. 278/05. The record has to be kept on the premises."),
  ("Who is responsible for the designated substance list before a renovation?", "The project owner. Under section 30 of the Occupational Health and Safety Act, the owner lists every designated substance in the work area before the project begins and includes the list in the tender."),
- ("How much do your programs cost?", "Building Compliance starts at $199 a month, Rental Portfolio at $249, Workplace Exposure at $299 and the Pre-Work Clearance Pass at $850, all in CAD before HST. One-off surveys start at $550 for a single suite."),
+ ("How much do your programs cost?", "Building Compliance starts at $199 a month, Rental Portfolio at $249, Workplace Exposure at $299 and the Cleared-to-Start Pass at $850, all in CAD before HST. One-off surveys start at $550 for a single suite."),
  ("Do you remove asbestos?", "No. We are independent consultants: we survey, write specifications, oversee abatement and test the air, but we never remove or abate anything and take no referral fees.")])
 home = home.replace('<section class="section white"><div class="wrap split">\n<div class="prose"><h2>Independent, on purpose</h2>', HOME_FAQ.replace('class="section white"', 'class="section"') + '<section class="section white"><div class="wrap split">\n<div class="prose"><h2>Independent, on purpose</h2>', 1)
 page("index.html", "Asbestos & Designated Substance Consulting in Windsor, ON | Noah Crowley", f"Independent asbestos and designated substance surveys, registers and air monitoring in {REGIONS}. Monthly compliance programs from $199.", home, schema=[home_schema, HOME_FAQ_SCHEMA])
@@ -440,7 +440,7 @@ w = segment_hero("Employers", "Workplace Exposure Program",
 page("employers.html", "Workplace Exposure Program | O. Reg. 490/09 assessments and air monitoring | Noah Crowley", "Designated substance exposure assessments, control programs and air monitoring under O. Reg. 490/09 for employers in southwestern Ontario. From $299 a month.", w, "employers.html", schema=service_schema("Workplace Exposure Program", "Monthly asbestos and designated substance compliance program in southwestern Ontario", 299))
 
 # ---------------------------------------------------------------- contractors
-c = segment_hero("Contractors", "Pre-Work Clearance Pass",
+c = segment_hero("Contractors", "Cleared-to-Start Pass",
     "Buy pre-work checks wholesale, with reserved booking. Every job in an older building starts with a designated substance list you can bill to the client and keep as your due diligence.", "contractor") + f"""
 <section class="section white"><div class="wrap split">
 <div class="prose"><h2>The problem it solves</h2>
@@ -450,26 +450,26 @@ c = segment_hero("Contractors", "Pre-Work Clearance Pass",
 <div class="duty"><h3>What you get</h3>{ul([
  "A monthly bank of pre-work checks: a site visit to the work area (one suite or up to 2,000 sq ft) covering all 11 designated substances.",
  "Reserved booking: book when the client accepts your quote and results arrive before you mobilize.",
- "Written interim instructions on site if the client can't wait, so work can proceed lawfully.",
+ "Written interim instructions on site if the client can't wait: leave the suspect materials alone until results arrive, or proceed treating them as asbestos. You choose, and the owner gets a copy.",
  "A due-diligence file per job: report, photos and instructions.",
  "A standard quote line, a one-page client explainer and a member badge for your website and trucks.",
  "Unused checks roll over within the 12-month term."])}
-<p class="small">“Clearance” here means cleared to start work. Type 3 clearance air testing is a separate service retained by the building owner.</p></div>
+<p class="small">“Cleared to start” means the work area was checked before work began. It is not Type 3 clearance air testing, which the building owner retains separately, and we never do clearance on work a Pass holder abates.</p></div>
 </div></section>
 
 <section class="section"><div class="wrap">
 <div class="section-head"><h2>Compare the passes</h2>{FOUNDING}</div>
 {tier_table(["pw_start", "pw_pro", "pw_rr"], [
- ("Fits", ["Renovators and trades, 1–3 jobs a month in pre-1990 buildings", "General contractors, fit-out and multi-trade firms, 4 or more jobs a month", "Fire, flood and mould restoration firms"]),
- ("Checks included", ["2 a month", "5 a month", "4 emergency checks a month"]),
+ ("Fits", ["Renovators and trades, 1–3 jobs a month in pre-1990 buildings", "General contractors, fit-out and multi-trade firms, 4 or more jobs a month", "Restoration firms, for the reconstruction phase of a claim"]),
+ ("Checks included", ["2 a month", "5 a month", "4 priority checks a month"]),
  ("Cost per included check", ["$425", "$418", "$573"]),
- ("Site visit", ["Within 5 business days", "Within 3 business days", "Same or next day, 7 days a week"]),
+ ("Site visit", ["Within 5 business days", "Within 3 business days", "Next business day, Monday to Friday; weekends by arrangement, not guaranteed"]),
  ("Report", ["Within 1 week of the visit", "Within 1 week of the visit", "Within 1 week, adjuster-ready with photos and quantities"]),
  ("Interim instructions on site", ["When needed", "When needed", "Every call"]),
  ("Reports branded for your client", ["No", "Yes", "Yes"]),
  ("Worker awareness", ["Toolbox talk templates", "1 live session a year", "1 live session a year"]),
  ("Extra checks", ["$475", "$450", "$625"])])}
-<p class="small" style="margin-top:12px">The independent list price of a check is $550; an emergency check is $700. Members pay less because their visits are grouped into route days.</p>
+<p class="small" style="margin-top:12px">The independent list price of a check is $550; a priority (next-business-day) check is $700. Members pay less because their visits are grouped into route days. Lab results come back within 1 week on every pass; we don't offer rush results.</p>
 </div></section>
 
 <section class="section white"><div class="wrap split">
@@ -483,11 +483,11 @@ c = segment_hero("Contractors", "Pre-Work Clearance Pass",
 </tbody></table></div>
 <p class="small">Prefer not to bill the line? Absorb it and market “checked before we cut” to clients and insurers instead.</p></div>
 <div class="prose"><h2>How it starts</h2>{start_steps("First pre-work check", "One check on your next job in an older building. The fee is credited if you take the Pass.")}
-<h3>Independence</h3><p>Each report is addressed to the building owner, because it's the owner's list. We do no removal, pay no referral fees, and don't sell the Pass to abatement contractors.</p>
+<h3>Independence</h3><p>Each report is addressed to the building owner, because it's the owner's list. We do no removal, pay no referral fees, don't sell the Pass to abatement contractors, and never do clearance on work a Pass holder abates.</p>
 <p><a href="guide-demolition-renovation-dss.html">Read the demolition and renovation DSS guide</a></p></div>
 </div></section>
 """ + cta("Never stop a job for a week again.", "Book your first pre-work check, or take the Obligation Check to see which pass fits your volume.", "obligation-check.html#contractor")
-page("contractors.html", "Pre-Work Clearance Pass | Pre-renovation asbestos checks for contractors | Noah Crowley", "Monthly pre-work designated substance checks with reserved booking for contractors, renovators and restoration firms in southwestern Ontario. From $850 a month.", c, "contractors.html", schema=service_schema("Pre-Work Clearance Pass", "Monthly asbestos and designated substance compliance program in southwestern Ontario", 850))
+page("contractors.html", "Cleared-to-Start Pass | Pre-renovation asbestos checks for contractors | Noah Crowley", "Monthly pre-work designated substance checks with reserved booking for contractors, renovators and restoration firms in southwestern Ontario. From $850 a month.", c, "contractors.html", schema=service_schema("Cleared-to-Start Pass", "Monthly asbestos and designated substance compliance program in southwestern Ontario", 850))
 
 # ---------------------------------------------------------------- services
 def svc_table(rows):
@@ -610,7 +610,7 @@ trigger_page("asbestos-testing-before-renovation.html", "Asbestos testing before
   [("What the law requires", "<p>The project owner must list all designated substances before a renovation, repair or demolition project begins and include the list in the tender (OHSA section 30). An owner who leaves one off is liable to the contractors when it turns up mid-job.</p><p>Most buildings built after 1980 are largely free of asbestos; nearly everything older is a candidate.</p>"),
    ("What we test for", ul(["Floor tile and mastic, drywall joint compound, plaster and stipple ceilings", "Pipe and boiler insulation, cement board and vermiculite", "Lead in paint, solder, pipes and glazing", "Mercury in thermostats, switches and lamps", "Silica released when concrete, masonry or tile is cut", "All 11 designated substances, as the project list requires"])),
    ("Price and timing", "<p>$550 for one suite or up to 2,000 sq ft, and $1,300 to $4,800 for commercial work areas. Lab analysis is included and results come back within 1 week.</p><p>If the job can't wait, we leave written interim instructions on site: which materials to treat as asbestos-containing and which procedures apply until results are in.</p>"),
-   ("If you renovate often", "<p>Contractors can buy checks wholesale with the <a href=\"contractors.html\">Pre-Work Clearance Pass</a> from $425 a check, and landlords can add <a href=\"landlords.html\">suite turnover checks</a> to their program.</p>")],
+   ("If you renovate often", "<p>Contractors can buy checks wholesale with the <a href=\"contractors.html\">Cleared-to-Start Pass</a> from $425 a check, and landlords can add <a href=\"landlords.html\">suite turnover checks</a> to their program.</p>")],
   rel(("guide-demolition-renovation-dss.html", "Demolition and renovation DSS guide", "What a survey covers and what to do if you find suspect material mid-job"),
       ("guide-suite-turnover-checklist.html", "Suite turnover checklist", "The materials to stop and test in older rental suites")))
 
@@ -714,13 +714,13 @@ guide_page("guide-demolition-renovation-dss.html", "Demolition and renovation DS
    ("Mid-job find: notify right away", "The constructor or employer notifies the Ministry, the owner, the contractor and the JHSC."),
    ("Mid-job find: test or presume", "Wait for results, about a week, or treat the material as asbestos-containing and follow the matching procedures."),
    ("Mid-job find: get written interim instructions", "A consultant can tell you on site which materials to treat as asbestos-containing so lawful work can continue.")],
-  "<p>Contractors who check before they cut avoid all of the second half. See the <a href=\"contractors.html\">Pre-Work Clearance Pass</a>.</p>", "obligation-check.html#contractor")
+  "<p>Contractors who check before they cut avoid all of the second half. See the <a href=\"contractors.html\">Cleared-to-Start Pass</a>.</p>", "obligation-check.html#contractor")
 
 # ---------------------------------------------------------------- about
 a = f"""<section class="hero"><div class="wrap">{crumbs((None, "How we work"))}
 <div class="hero-copy" style="max-width:860px"><h1>How we work</h1><p class="lede">{e(SITE['online'])} is the online name of {e(SITE['legal'])}, an independent consultancy covering all 11 of Ontario's designated substances across {REGIONS}.</p></div></div></section>
 <section class="section white"><div class="wrap split">
-<div class="prose"><h2>Independence</h2><p>We never remove or abate anything and take no referral fees. We don't sell the Pre-Work Clearance Pass to abatement contractors, and we don't do clearance on work a Pass holder abates. It's written into every agreement.</p>
+<div class="prose"><h2>Independence</h2><p>We never remove or abate anything and take no referral fees. We don't sell the Cleared-to-Start Pass to abatement contractors, and we don't do clearance on work a Pass holder abates. It's written into every agreement.</p>
 <h2>One named consultant</h2><p>You deal with the same person who walks your building, writes your register and answers your pre-work questions. Workplace exposure monitoring is done by or under our qualified occupational hygienist.</p></div>
 <div class="prose"><h2>How pricing works</h2><p>Every price includes the lab analysis the service needs, so testing never shows up as a surprise line. Results come back within 1 week, and when work can't wait we leave written interim instructions on site.</p>
 <p>Programs run on 12-month agreements at a monthly fee, priced at about what the same year of compliance costs bought one job at a time.</p>

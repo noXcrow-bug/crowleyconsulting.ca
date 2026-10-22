@@ -222,7 +222,7 @@
     if (answers.e_assess === "old") flags.push(["", "A change that could significantly affect exposure means the assessment has to be redone."]);
 
     if (r.special === "abatement") {
-      html = '<div class="rec"><span class="t">One-off services</span><p>We offer surveys, specifications, air monitoring and clearance to abatement contractors job by job. To keep clearance work independent, we don’t sell the Pre-Work Clearance Pass to abatement firms, and we don’t clear work our Pass holders abate.</p></div>';
+      html = '<div class="rec"><span class="t">One-off services</span><p>We offer surveys, specifications, air monitoring and clearance to abatement contractors job by job. To keep clearance work independent, we don’t sell the Cleared-to-Start Pass to abatement firms, and we don’t clear work our Pass holders abate.</p></div>';
     } else if (r.special === "homeowner") {
       html = '<div class="rec"><span class="t">Project designated substance survey</span><span class="p">$550 for one suite or up to 2,000 sq ft</span><p>Homes need testing once per renovation, not a subscription. The survey covers all 11 designated substances in the work area, lab analysis included, with results within 1 week.</p></div>';
     } else {
