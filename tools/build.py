@@ -45,8 +45,8 @@ TIERS = {
    inc=["2 pre-work checks a month covering all 11 designated substances", "Site visit within 5 business days, report within 1 week", "Written interim instructions on site when the job can't wait", "A due-diligence file for every job", "Extra checks $475"]),
  "pw_pro": dict(program="Cleared-to-Start Pass", name="Pro", price=2090, fits="General contractors and fit-out firms with 4 or more jobs a month", page="contractors.html",
    inc=["5 pre-work checks a month", "Site visit within 3 business days, report within 1 week", "Reports branded for your client", "1 live worker awareness session a year", "Extra checks $450"]),
- "pw_rr": dict(program="Cleared-to-Start Pass", name="Restoration Priority", price=2290, fits="Restoration firms, for the reconstruction phase of a claim", page="contractors.html",
-   inc=["4 priority checks a month", "Next-business-day visits, Monday to Friday", "Adjuster-ready reports with photos and quantities within 1 week", "Written interim instructions on every call", "Extra checks $625"]),
+ "pw_rr": dict(program="Cleared-to-Start Pass", name="Restoration Priority", price=1690, fits="Restoration firms, for the reconstruction phase of a claim", page="contractors.html",
+   inc=["3 priority checks a month", "Next-business-day visits, Monday to Friday", "Adjuster-ready reports with photos and quantities within 1 week", "Written interim instructions on every call", "Extra checks $625"]),
 }
 
 def money(n): return "${:,.0f}".format(n)
@@ -271,7 +271,7 @@ home = f"""
 <a class="door" href="building-owners.html"><h3>I own or manage a building</h3><p>Keep your asbestos record current, answer contractors before they drill, and stay ready for an inspector.</p><span class="go">Building Compliance, from $199 a month{ICON["chev"]}</span></a>
 <a class="door" href="landlords.html"><h3>I rent out units</h3><p>Check suites before turnover crews lift tile or sand ceilings, and keep tenant notices up to date.</p><span class="go">Rental Portfolio, from $249 a month{ICON["chev"]}</span></a>
 <a class="door" href="employers.html"><h3>My workers handle a designated substance</h3><p>Exposure assessments, control programs and air monitoring under O. Reg. 490/09.</p><span class="go">Workplace Exposure, from $299 a month{ICON["chev"]}</span></a>
-<a class="door" href="contractors.html"><h3>I'm about to open walls or floors</h3><p>Pre-work checks booked before you mobilize, so a find never idles your crew for a week.</p><span class="go">Cleared-to-Start Pass, from $850 a month{ICON["chev"]}</span></a>
+<a class="door" href="contractors.html"><h3>I'm about to open walls or floors</h3><p>Pre-work checks booked when the quote is accepted, so you know what is in the work area before your crew arrives.</p><span class="go">Cleared-to-Start Pass, from $850 a month{ICON["chev"]}</span></a>
 </div></div></section>
 
 <section class="section white"><div class="wrap">
@@ -449,7 +449,7 @@ c = segment_hero("Contractors", "Cleared-to-Start Pass",
 <p>The owner who failed to list is liable for your losses, but few renovators sue the client who's paying them.</p></div>
 <div class="duty"><h3>What you get</h3>{ul([
  "A monthly bank of pre-work checks: a site visit to the work area (one suite or up to 2,000 sq ft) covering all 11 designated substances.",
- "Reserved booking: book when the client accepts your quote and results arrive before you mobilize.",
+ "Reserved booking: book as soon as the client accepts your quote. Allow about 2 weeks from booking to results, so the report is back before you mobilize.",
  "Written interim instructions on site if the client can't wait: leave the suspect materials alone until results arrive, or proceed treating them as asbestos. You choose, and the owner gets a copy.",
  "A due-diligence file per job: report, photos and instructions.",
  "A standard quote line, a one-page client explainer and a member badge for your website and trucks.",
@@ -461,20 +461,21 @@ c = segment_hero("Contractors", "Cleared-to-Start Pass",
 <div class="section-head"><h2>Compare the passes</h2>{FOUNDING}</div>
 {tier_table(["pw_start", "pw_pro", "pw_rr"], [
  ("Fits", ["Renovators and trades, 1–3 jobs a month in pre-1990 buildings", "General contractors, fit-out and multi-trade firms, 4 or more jobs a month", "Restoration firms, for the reconstruction phase of a claim"]),
- ("Checks included", ["2 a month", "5 a month", "4 priority checks a month"]),
- ("Cost per included check", ["$425", "$418", "$573"]),
+ ("Checks included", ["2 a month", "5 a month", "3 priority checks a month"]),
+ ("Cost per included check", ["$425", "$418", "$563"]),
  ("Site visit", ["Within 5 business days", "Within 3 business days", "Next business day, Monday to Friday; weekends by arrangement, not guaranteed"]),
  ("Report", ["Within 1 week of the visit", "Within 1 week of the visit", "Within 1 week, adjuster-ready with photos and quantities"]),
  ("Interim instructions on site", ["When needed", "When needed", "Every call"]),
  ("Reports branded for your client", ["No", "Yes", "Yes"]),
  ("Worker awareness", ["Toolbox talk templates", "1 live session a year", "1 live session a year"]),
  ("Extra checks", ["$475", "$450", "$625"])])}
-<p class="small" style="margin-top:12px">The independent list price of a check is $550; a priority (next-business-day) check is $700. Members pay less because their visits are grouped into route days. Lab results come back within 1 week on every pass; we don't offer rush results.</p>
+<p class="small" style="margin-top:12px">The independent list price of a check is $550; a priority (next-business-day) check is $700. Members pay less because their visits are grouped into route days. Lab results come back within 1 week on every pass.</p>
+<div class="panel" style="margin-top:16px"><h3>Faster results</h3><p><strong>Expedited analysis on request:</strong> when a job can't wait, we can ask the lab to expedite, usually about 3 business days, for $195 extra per check. This depends on the lab and is not guaranteed; if it can't wait at all, interim instructions let the work proceed lawfully.</p><p><strong>Guaranteed rush results: coming soon.</strong> We're building a dependable rush option with our laboratory partners and will only offer it once we can stand behind the turnaround.</p></div>
 </div></section>
 
 <section class="section white"><div class="wrap split">
 <div class="prose"><h2>The business case for Starter</h2>
-<div class="table-wrap stack"><table class="data wide"><thead><tr><th scope="col">Two jobs a month</th><th scope="col">Without the Pass</th><th scope="col">With Starter</th></tr></thead><tbody>
+<div class="table-wrap stack"><table class="data"><thead><tr><th scope="col">Two jobs a month</th><th scope="col">Without the Pass</th><th scope="col">With Starter</th></tr></thead><tbody>
 <tr><th scope="row">Cost per check</th><td data-label="Without the Pass">$550, booked job by job</td><td data-label="With Starter">$425</td></tr>
 <tr><th scope="row">Booking</th><td data-label="Without the Pass">Next available slot</td><td data-label="With Starter">Visit within 5 business days, reserved</td></tr>
 <tr><th scope="row">How it's paid</th><td data-label="Without the Pass">Rarely quoted, so absorbed or skipped</td><td data-label="With Starter">Billed to the client as a $550 line item</td></tr>
@@ -486,7 +487,7 @@ c = segment_hero("Contractors", "Cleared-to-Start Pass",
 <h3>Independence</h3><p>Each report is addressed to the building owner, because it's the owner's list. We do no removal, pay no referral fees, don't sell the Pass to abatement contractors, and never do clearance on work a Pass holder abates.</p>
 <p><a href="guide-demolition-renovation-dss.html">Read the demolition and renovation DSS guide</a></p></div>
 </div></section>
-""" + cta("Never stop a job for a week again.", "Book your first pre-work check, or take the Obligation Check to see which pass fits your volume.", "obligation-check.html#contractor")
+""" + cta("Know what's in the walls before your crew arrives.", "Book your first pre-work check, or take the Obligation Check to see which pass fits your volume.", "obligation-check.html#contractor")
 page("contractors.html", "Cleared-to-Start Pass | Pre-renovation asbestos checks for contractors | Noah Crowley", "Monthly pre-work designated substance checks with reserved booking for contractors, renovators and restoration firms in southwestern Ontario. From $850 a month.", c, "contractors.html", schema=service_schema("Cleared-to-Start Pass", "Monthly asbestos and designated substance compliance program in southwestern Ontario", 850))
 
 # ---------------------------------------------------------------- services
