@@ -218,7 +218,7 @@
     } else {
       var T = TIERS[r.tier];
       var perB = T.program === "Building programs" ? ", per building, priced by size" : "";
-      html = '<div class="rec"><span class="small">Recommended for you</span><span class="t">' + esc(T.program) + ': ' + esc(T.name) + '</span><span class="p">' + (T.price ? 'From $' + T.price.toLocaleString("en-CA") + ' a month' : 'Price on request') + ' <span class="small">CAD before HST' + perB + ', 12-month agreement</span></span><p class="small">' + esc(T.fits) + '</p>' +
+      html = '<div class="rec"><span class="small">Recommended for you</span><span class="t">' + esc(T.program) + ': ' + esc(T.name) + '</span><span class="p">' + (T.price ? (perB ? 'From $' : '$') + T.price.toLocaleString("en-CA") + ' a month' : 'Price on request') + ' <span class="small">CAD before HST' + perB + ', 12-month agreement</span></span><p class="small">' + esc(T.fits) + '</p>' +
         '<ul>' + T.inc.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + '</ul>' +
         '<p><a href="' + T.page + '">See the full ' + esc(T.program) + ' comparison</a></p></div>' +
         '<div><h3 style="margin-bottom:6px">Your next step: ' + esc(r.entry) + '</h3><p>' + esc(ENTRY_DESC[r.entry]) + '</p></div>';

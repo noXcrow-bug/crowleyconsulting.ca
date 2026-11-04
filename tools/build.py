@@ -33,9 +33,9 @@ TIERS = {
    inc=["Record update and condition inspection twice a year", "Notices prepared, issued and tracked", "Unlimited written desk reviews, answered within 1 business day", "2 staff awareness sessions a year and a yearly board or JHSC presentation", "20% off reports, site visits and project work; extra lab layers at cost", "Fieldwork within 2 business days, a same-day visit if something turns up, and a yearly abatement budget"]),
  "pw_start": dict(program="Cleared-to-Start Pass", name="Starter", price=199, fits="Renovators and trades with 1–3 jobs a month in older buildings", page="contractors.html",
    inc=["A compliance desk to call before you bid or cut, business hours", "1 pre-bid review of the owner's designated substance report a month", "Site visit within 5 business days when a job needs testing", "10% off pre-work checks; extra lab layers at cost", "Written interim instructions on site when a job can't wait", "25% off work-classification letters, a due-diligence file per job, toolbox talk templates"]),
- "pw_pro": dict(program="Cleared-to-Start Pass", name="Pro", price=None, fits="General contractors and fit-out firms with 4 or more jobs a month", page="contractors.html",
+ "pw_pro": dict(program="Cleared-to-Start Pass", name="Pro", price=499, fits="General contractors and fit-out firms with 4 or more jobs a month", page="contractors.html",
    inc=["The compliance desk, business hours", "3 pre-bid reviews a month", "Site visit within 3 business days", "15% off pre-work checks; extra lab layers at cost", "Reports branded for your client", "1 live worker awareness session a year"]),
- "pw_rr": dict(program="Cleared-to-Start Pass", name="Restoration Priority", price=None, fits="Fire, flood and mould restoration firms, for the rebuild phase of a claim", page="contractors.html",
+ "pw_rr": dict(program="Cleared-to-Start Pass", name="Restoration Priority", price=699, fits="Fire, flood and mould restoration firms, for the rebuild phase of a claim", page="contractors.html",
    inc=["Next-business-day site visits, Monday to Friday", "The compliance desk, business hours", "3 pre-bid reviews a month", "15% off pre-work checks; extra lab layers at cost", "Written interim instructions on every call, adjuster-ready reports", "Reports branded for your client and 1 worker awareness session a year"]),
 }
 
@@ -52,7 +52,7 @@ REPORTS = [
 def money(n): return "${:,.0f}".format(n)
 def plabel(k, small=" a month"):
     p = TIERS[k]["price"]
-    return f'from {money(p)}<small>{small}</small>' if p else '<small>Price on request</small>'
+    return (f'from {money(p)}' if k.startswith('bp_') else money(p)) + f'<small>{small}</small>' if p else '<small>Price on request</small>'
 
 # ---------------------------------------------------------------- page chrome
 NAV = [("building-owners.html", "Building owners"), ("landlords.html", "Landlords"), ("contractors.html", "Contractors"),
