@@ -123,29 +123,26 @@
   var TIERS = window.NCC_TIERS || {};
   var Q = {
     who: { title: "Which describes you best?", options: [
-      ["building", "I own or manage a commercial, industrial or institutional building", "Offices, plants, churches, private schools, municipal buildings"],
-      ["rental", "I rent out units or manage a residential building", "Landlords, property managers, condominium corporations"],
-      ["employer", "My workers use, handle or store a designated substance", "Paint booths, cutting lines, foundries, labs, sterilization"],
+      ["building", "I own or manage a commercial or institutional building", "Offices, plazas, churches, schools, clinics, municipal buildings"],
+      ["rental", "I own or manage a rental or condo building", "Landlords with 5+ units, property managers, condominium corporations"],
       ["contractor", "I'm a contractor about to open walls or floors", "Renovators, trades, general contractors, fit-out firms"],
       ["restoration", "I run a fire, flood or mould restoration company", ""],
+      ["project", "I just need a report for one project", "Renovation, tender, purchase or demolition permit"],
+      ["employer", "My workers use, handle or store a designated substance", ""],
       ["abatement", "I'm an abatement contractor", ""],
       ["homeowner", "I'm a homeowner planning a renovation", ""] ] },
     b_age: { title: "Was the building built before 1990?", help: "Most buildings built after 1980 are largely free of asbestos; nearly everything older is a candidate.", options: [["yes", "Yes, before 1990"], ["no", "No, 1990 or later"], ["unsure", "I'm not sure"]] },
-    b_size: { title: "How many buildings do you look after?", options: [["one", "One building", "Up to about 25,000 sq ft"], ["few", "Two or three buildings", "Or up to about 100,000 sq ft"], ["big", "An industrial plant, campus or portfolio", "Planned shutdowns, several large buildings"]] },
-    b_staff: { title: "Do you have in-house maintenance staff?", options: [["yes", "Yes"], ["no", "No, we call contractors"]] },
+    b_count: { title: "How many buildings do you look after?", options: [["one", "One"], ["two", "Two"], ["many", "Three or more"]] },
+    b_board: { title: "Is a board or a joint health and safety committee asking about asbestos?", options: [["yes", "Yes"], ["no", "No"]] },
+    b_contractors: { title: "How often are contractors or maintenance staff working in the building?", options: [["often", "Several times a year or more"], ["rarely", "Rarely"]] },
     b_record: { title: "When was your asbestos record last updated?", help: "Owners must re-inspect and update it at least once every 12 months.", options: [["recent", "Within the last 12 months"], ["old", "More than 12 months ago"], ["none", "We don't have one, or I don't know"]] },
-    r_units: { title: "How many rental units?", options: [["small", "Fewer than 30"], ["mid", "30 to 150"], ["large", "More than 150"], ["condo", "We're a condominium corporation"]] },
-    r_super: { title: "Is there a superintendent or maintenance staff on site?", options: [["yes", "Yes"], ["no", "No"]] },
-    e_scope: { title: "How much of your operation involves designated substances?", options: [["shop", "One process", "A paint booth, one cutting line, one sterilizer"], ["plant", "Up to 3 substances or 50 exposed workers", "One site"], ["site", "Several processes or several sites", ""]] },
-    e_assess: { title: "Do you have a written exposure assessment done with your JHSC?", options: [["yes", "Yes, and it's current"], ["old", "Yes, but processes have changed since"], ["no", "No, or I'm not sure"]] },
     c_jobs: { title: "How many jobs a month are in buildings built before 1990?", options: [["few", "1 to 3 a month"], ["many", "4 or more a month"]] }
   };
   var FLOW = {
-    building: ["b_age", "b_size", "b_staff", "b_record"],
-    rental: ["r_units", "r_super", "b_record"],
-    employer: ["e_scope", "e_assess"],
+    building: ["b_age", "b_count", "b_board", "b_contractors", "b_record"],
+    rental: ["b_age", "b_count", "b_board", "b_contractors", "b_record"],
     contractor: ["c_jobs"],
-    restoration: [], abatement: [], homeowner: []
+    restoration: [], project: [], employer: [], abatement: [], homeowner: []
   };
 
   var answers = {}, path = ["who"], idx = 0, lastIdx = -1;
@@ -165,31 +162,22 @@
 
   function route(a) {
     switch (a.who) {
-      case "building":
-        if (a.b_size === "big") return { tier: "bc_fp", entry: "Discovery call" };
-        if (a.b_size === "few" || a.b_staff === "yes") return { tier: "bc_man", entry: "Compliance gap audit" };
-        return { tier: "bc_ess", entry: "Compliance gap audit" };
-      case "rental":
-        if (a.r_units === "large" || a.r_units === "condo") return { tier: "rp_l", entry: "Discovery call" };
-        if (a.r_units === "mid" || a.r_super === "yes") return { tier: "rp_m", entry: "First suite check" };
-        return { tier: "rp_s", entry: "First suite check" };
-      case "employer":
-        if (a.e_scope === "site") return { tier: "we_site", entry: "Discovery call" };
-        if (a.e_scope === "plant") return { tier: "we_plant", entry: "Exposure gap audit" };
-        return { tier: "we_shop", entry: "Exposure gap audit" };
+      case "building": case "rental":
+        var entry = a.b_record === "none" ? "Baseline survey" : "DSS update";
+        if (a.b_count === "many" || a.b_board === "yes") return { tier: "bp_fp", entry: "Discovery call" };
+        if (a.b_contractors === "often" || a.b_count === "two") return { tier: "bp_pr", entry: entry };
+        return { tier: "bp_ess", entry: entry };
       case "contractor":
         return a.c_jobs === "many" ? { tier: "pw_pro", entry: "First pre-work check" } : { tier: "pw_start", entry: "First pre-work check" };
       case "restoration": return { tier: "pw_rr", entry: "Discovery call" };
-      case "abatement": return { special: "abatement" };
-      case "homeowner": return { special: "homeowner" };
+      default: return { special: a.who };
     }
   }
   var ENTRY_DESC = {
-    "Compliance gap audit": "A short paid review of your building against what a Ministry inspector checks. The fee is credited if you join the program.",
-    "First suite check": "One suite turnover check on your next unit, so you see the process start to finish. The fee is credited if you join the program.",
-    "Exposure gap audit": "A short paid review of your assessment, control program and monitoring records. The fee is credited if you join the program.",
-    "First pre-work check": "One pre-work check on your next job in an older building. The fee is credited if you take the Pass.",
-    "Discovery call": "A 30-minute call to scope your sites, shutdowns or project calendar, followed by a written proposal."
+    "DSS update": "We review your existing report, walk the building and fill any sampling gaps, from $900 depending on the building's size. Sign a program within 30 days and the update is repriced at your member rate.",
+    "Baseline survey": "An asbestos building survey becomes your on-site record, from $2,300 depending on the building's size. Commit to a 12-month program before the work starts and the survey is 15% off.",
+    "First pre-work check": "One limited sampling visit or project report on your next job in an older building, at the list price (from $650), so you see a report before you commit.",
+    "Discovery call": "A 30-minute call to scope your buildings or jobs, followed by a written proposal."
   };
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
@@ -217,17 +205,20 @@
     if (answers.b_age === "yes" || answers.b_age === "unsure") flags.push(["", "In a pre-1990 building, assume asbestos-containing materials may be present. Owners must identify them, keep a record on site and re-inspect at least every 12 months."]);
     if (answers.b_record === "old") flags.push(["", "Your asbestos record is overdue. Owners must update it at least once every 12 months, and a missing or stale record was the most common order in the Ministry's 2023–24 asbestos campaign."]);
     if (answers.b_record === "none") flags.push(["", "No record on file is the gap inspectors find most often. Before any renovation, repair or demolition you'll also need a list of every designated substance in the work area."]);
-    if (answers.b_record === "recent") flags.push(["ok", "Good: your record is within the 12-month window. The program keeps it that way and answers “can we drill here?” from the register."]);
-    if (answers.e_assess === "no") flags.push(["", "O. Reg. 490/09 requires a written exposure assessment made with your joint health and safety committee wherever workers are likely to be exposed."]);
-    if (answers.e_assess === "old") flags.push(["", "A change that could significantly affect exposure means the assessment has to be redone."]);
+    if (answers.b_record === "recent") flags.push(["ok", "Good: your record is within the 12-month window. A program keeps it that way and answers “can we drill here?” from the register."]);
 
-    if (r.special === "abatement") {
+    if (r.special === "project") {
+      html = '<div class="rec"><span class="t">A report for your project</span><span class="p">From $650</span><p>A limited sampling visit for one to three materials starts at $650; a project-specific designated substance report for a whole work area starts at $1,700. Prices depend on the building\u2019s size and include lab analysis up to the layer allowance in your quote. Lab results take 5 business days.</p><p><a href="services.html">See the report menu</a></p></div>';
+    } else if (r.special === "employer") {
+      html = '<div class="rec"><span class="t">Exposure monitoring, quoted per job</span><p>O. Reg. 490/09 asks for a written exposure assessment made with your JHSC, and air monitoring where workers may be exposed. We offer exposure monitoring as a one-off service and quote each job in writing.</p><p><a href="guide-designated-substance-self-check.html">Take the one-page self-check</a></p></div>';
+    } else if (r.special === "abatement") {
       html = '<div class="rec"><span class="t">One-off services</span><p>We offer surveys, specifications, air monitoring and clearance to abatement contractors job by job. To keep clearance work independent, we don’t sell the Cleared-to-Start Pass to abatement firms, and we don’t clear work our Pass holders abate.</p></div>';
     } else if (r.special === "homeowner") {
-      html = '<div class="rec"><span class="t">Project designated substance survey</span><span class="p">$550 for one suite or up to 2,000 sq ft</span><p>Homes need testing once per renovation, not a subscription. The survey covers all 11 designated substances in the work area, lab analysis included, with results within 1 week.</p></div>';
+      html = '<div class="rec"><span class="t">Limited sampling visit</span><span class="p">From $650</span><p>Homes need testing once per renovation, not a subscription. We sample the materials your work will disturb, lab analysis included, and lab results take 5 business days.</p></div>';
     } else {
       var T = TIERS[r.tier];
-      html = '<div class="rec"><span class="small">Recommended for you</span><span class="t">' + esc(T.program) + ': ' + esc(T.name) + '</span><span class="p">$' + T.price.toLocaleString("en-CA") + ' a month <span class="small">CAD before HST, 12-month agreement</span></span><p class="small">' + esc(T.fits) + '</p>' +
+      var perB = T.program === "Building programs" ? ", per building, priced by size" : "";
+      html = '<div class="rec"><span class="small">Recommended for you</span><span class="t">' + esc(T.program) + ': ' + esc(T.name) + '</span><span class="p">' + (T.price ? 'From $' + T.price.toLocaleString("en-CA") + ' a month' : 'Price on request') + ' <span class="small">CAD before HST' + perB + ', 12-month agreement</span></span><p class="small">' + esc(T.fits) + '</p>' +
         '<ul>' + T.inc.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + '</ul>' +
         '<p><a href="' + T.page + '">See the full ' + esc(T.program) + ' comparison</a></p></div>' +
         '<div><h3 style="margin-bottom:6px">Your next step: ' + esc(r.entry) + '</h3><p>' + esc(ENTRY_DESC[r.entry]) + '</p></div>';
@@ -237,7 +228,7 @@
       var q = Q[k], o = q && q.options.filter(function (x) { return x[0] === answers[k]; })[0];
       return q && o ? q.title + " " + o[1] : "";
     }).filter(Boolean).join(" | ");
-    var recText = r.special ? (r.special === "abatement" ? "One-off services (abatement contractor)" : "Project DSS (homeowner)") : TIERS[r.tier].program + " " + TIERS[r.tier].name + " → " + r.entry;
+    var recText = r.special ? ({ abatement: "One-off services (abatement contractor)", homeowner: "Limited sampling visit (homeowner)", project: "One-off report", employer: "Exposure monitoring quote" }[r.special] || r.special) : TIERS[r.tier].program + " " + TIERS[r.tier].name + " → " + r.entry;
 
     root.innerHTML = '<div class="result" id="result" tabindex="-1">' +
       '<h2 class="q-title" style="margin:0">Your Obligation Check result</h2>' + flagHtml + html +
