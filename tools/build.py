@@ -14,7 +14,6 @@ SITE = {
     "phone": "519-890-9654",
     "email": "info@crowleyconsulting.ca",
     "city": "Windsor",    # base city for search listings
-    "founding": False,    # show the 10% founding-client offer (first 5 clients per program, 12 months)
 }
 REGIONS = "Windsor-Essex, Chatham-Kent, Sarnia-Lambton and London"
 YEAR = date.today().year
@@ -337,9 +336,6 @@ def program_rules(member=True):
     "Every program starts from a current asbestos record: a baseline survey, or a DSS update of a recent report. Sign within 30 days of receiving a DSS update and it's repriced at your member rate. Commit to the 12 months before a baseline survey and the survey is 15% off.",
     "Lab results take 5 business days from when the lab receives the samples. No rush analysis. If work can't wait, we leave written interim instructions on site.",
     "We never remove or abate anything and take no referral fees, so no result is shaped by someone with a stake in the job."])
-FOUNDING = ('<p class="flag ok" style="max-width:760px">Founding clients: the first five clients in each program get 10% off the monthly fee for their first 12 months, in exchange for a short case study.</p>'
-            if SITE["founding"] else "")
-
 # ---------------------------------------------------------------- building owners
 b = segment_hero("Building owners", "Building programs",
     "For owners and facility managers of commercial, institutional and multi-unit residential buildings: offices, plazas, schools, churches, clinics and small municipalities. Your 12-month asbestos update, your paper trail and your “can we drill here?” answers, handled for one monthly fee per building.", "building") + f"""
@@ -356,7 +352,7 @@ b = segment_hero("Building owners", "Building programs",
 </div></section>
 
 <section class="section"><div class="wrap">
-<div class="section-head"><h2>Compare the programs</h2>{FOUNDING}</div>
+<div class="section-head"><h2>Compare the programs</h2></div>
 {tier_table(["bp_ess", "bp_pr", "bp_fp"], BP_ROWS)}
 <p class="small" style="margin-top:12px">Monthly, CAD before HST, per building. The price depends on the building's size; the figures above are the lowest. Facility Partner isn't offered for buildings under 465 m² [5,000 sq ft]. Three or more buildings get a portfolio discount.</p>
 </div></section>
@@ -388,7 +384,7 @@ r = segment_hero("Landlords", "Building programs for landlords and condos",
 </div></section>
 
 <section class="section"><div class="wrap">
-<div class="section-head"><h2>The same programs as every building</h2>{FOUNDING}</div>
+<div class="section-head"><h2>The same programs as every building</h2></div>
 {tier_table(["bp_ess", "bp_pr", "bp_fp"], BP_ROWS)}
 <p class="small" style="margin-top:12px">Monthly, CAD before HST, per building, priced by the building's size. Condo boards usually choose Facility Partner for the yearly board presentation and abatement budget for reserve fund planning.</p>
 </div></section>
@@ -435,7 +431,7 @@ c = segment_hero("Contractors", "Cleared-to-Start Pass",
 </div></section>
 
 <section class="section"><div class="wrap">
-<div class="section-head"><h2>Compare the passes</h2>{FOUNDING}</div>
+<div class="section-head"><h2>Compare the passes</h2></div>
 {tier_table(["pw_start", "pw_pro", "pw_rr"], [
  ("Fits", ["Renovators and trades, 1–3 jobs a month in older buildings", "General contractors and fit-out firms, 4 or more jobs a month", "Restoration firms, for the rebuild phase of a claim"]),
  ("Compliance desk", ["Yes", "Yes", "Yes"]),
