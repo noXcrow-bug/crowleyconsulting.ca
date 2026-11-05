@@ -164,6 +164,8 @@ def page(fname, title, desc, body, active=None, schema=None, extra_js=""):
     doc = head(title, desc, fname, schemas or None) + header(active) + body + footer(fname).replace("<script src=\"assets/config.js", extra_js + "<script src=\"assets/config.js", 1)
     open(os.path.join(ROOT, fname), "w").write(doc)
 
+DSS_CHECK = '<p class="dss-check"><a href="obligation-check.html#project">Not sure if your project needs a DSS? <strong>Check in 60 seconds</strong></a></p>'
+
 def cta(title="Find out what applies to you in two minutes.", text="Answer a few questions and the Obligation Check tells you which duties you carry, which program fits and what the first step costs.", href="obligation-check.html"):
     return f"""<section class="cta-band"><div class="wrap"><div><h2>{title}</h2><p>{text}</p></div>
 <div class="btn-row"><a class="btn" href="{href}">Take the Obligation Check</a><a class="btn ghost" href="contact.html#book" data-book>Book a call</a></div></div></section>"""
@@ -253,6 +255,7 @@ home = f"""
 <h1>Asbestos and designated substance compliance, kept current all year.</h1>
 <p class="lede">Independent surveys and designated substance reports when a project needs one, and a building program that keeps your asbestos record current in between. For owners, facility managers, landlords and contractors.</p>
 <div class="btn-row"><a class="btn amber" href="obligation-check.html">Take the Obligation Check</a><a class="btn ghost" href="#doors">Find what fits</a></div>
+{DSS_CHECK}
 <p class="area">Serving {REGIONS}.</p>
 </div>
 {REGISTER}
@@ -463,7 +466,7 @@ page("contractors.html", "Cleared-to-Start Pass | The contractor compliance desk
 # ---------------------------------------------------------------- services
 s = f"""<section class="hero"><div class="wrap">{crumbs((None, "Reports and prices"))}
 <div class="hero-copy" style="max-width:860px"><h1>Reports and prices</h1>
-<p class="lede">Every report covers Ontario's 11 designated substances and is priced as a report fee plus the samples taken. Your quote sets the report fee and an estimated range of samples for your building, and you pay for the samples actually taken. Samples are $100 each ($150 on a demolition survey), and extra layers are $45 each. These are the starting prices. Program members pay 10% to 20% less on the report fee and our time on each sample; lab costs and extra layers are not discounted.</p></div></div></section>
+<p class="lede">Every report covers Ontario's 11 designated substances and is priced as a report fee plus the samples taken. Your quote sets the report fee and an estimated range of samples for your building, and you pay for the samples actually taken. Samples are $100 each ($150 on a demolition survey), and extra layers are $45 each. These are the starting prices. Program members pay 10% to 20% less on the report fee and our time on each sample; lab costs and extra layers are not discounted.</p>{DSS_CHECK}</div></div></section>
 <section class="section white"><div class="wrap">
 <div class="section-head"><h2>Report menu</h2></div>
 <div class="table-wrap stack"><table class="data wide"><thead><tr><th scope="col">Report</th><th scope="col">When you need it</th><th scope="col">What you get</th><th scope="col">Turnaround</th><th scope="col" class="num">From</th></tr></thead><tbody>
@@ -488,8 +491,8 @@ page("services.html", "Asbestos and designated substance reports and prices | No
 # ---------------------------------------------------------------- quiz
 q = f"""<section class="hero"><div class="wrap">{crumbs((None, "Obligation Check"))}
 <div class="split" style="align-items:start">
-<div class="hero-copy"><h1>The Obligation Check</h1><p class="lede">Answer up to five questions. You'll see which legal duties apply to you, what fits, and what the first step is. Nothing is sent until you choose to send it.</p>
-<p class="small">Covers O. Reg. 278/05 (asbestos in buildings) and OHSA section 30 (designated substances on projects).</p></div>
+<div class="hero-copy"><h1>The Obligation Check</h1><p class="lede">Answer a few questions. You'll see which legal duties apply to you, what fits, and what the first step is. Planning a renovation or demolition? Choose the project option to see whether it needs a designated substance survey. Nothing is sent until you choose to send it.</p>
+<p class="small">Covers O. Reg. 278/05 (asbestos in buildings) and OHSA section 30 (designated substances on projects). General guidance only, not a site-specific assessment.</p></div>
 <div class="quiz" id="quiz" aria-live="polite"><noscript>The Obligation Check needs JavaScript. You can <a href="contact.html">send us a message</a> instead.</noscript></div>
 </div></div></section>"""
 page("obligation-check.html", "Obligation Check | Which asbestos and designated substance duties apply to you? | Noah Crowley",
@@ -698,7 +701,7 @@ ct = f"""<section class="hero"><div class="wrap">{crumbs((None, "Contact"))}
 <div class="hero-copy"><h1>Talk to us about a building, a workplace or a job</h1>
 <p class="lede">Tell us what you're dealing with and we'll reply within one business day with a price or a time to visit.</p>
 {contact_side}
-<div id="book" class="duty"><h3>Prefer to book a call?</h3><p>Pick a 15-minute slot and we'll call you.</p><div class="btn-row"><a class="btn" href="contact.html#book" data-book>{ICON["cal"]}Book a call</a></div></div>
+<div id="book" class="duty"><h3>Prefer to book a call?</h3><p>Pick a free 30-minute slot and we'll call you.</p><div class="btn-row"><a class="btn" href="contact.html#book" data-book>{ICON["cal"]}Book a call</a></div></div>
 <p class="area">Serving {REGIONS}.</p></div>
 <form class="form panel" data-form data-name="contact">
 <input type="hidden" name="_subject" value="Website enquiry">
