@@ -231,7 +231,7 @@ REGISTER = """<figure class="register" aria-label="Example of a live designated 
 <div class="reg-meta"><span><strong>Last reassessed</strong> Sep 14, 2026</span><span><strong>Next due</strong> Sep 2027</span><span><strong>Pre-work reviews left</strong> 3</span></div>
 <table class="reg-table"><thead><tr><th>Location</th><th>Material</th><th>Status</th></tr></thead><tbody>
 <tr><td class="loc" data-mat="Pipe elbow insulation">Boiler room</td><td class="mat">Pipe elbow insulation</td><td><span class="status act">Act now</span></td></tr>
-<tr><td class="loc" data-mat="9-inch floor tile and mastic">Corridor, 2nd floor</td><td class="mat">9-inch floor tile and mastic</td><td><span class="status monitor">Monitor</span></td></tr>
+<tr><td class="loc" data-mat="23 cm [9-inch] floor tile and mastic">Corridor, 2nd floor</td><td class="mat">23 cm [9-inch] floor tile and mastic</td><td><span class="status monitor">Monitor</span></td></tr>
 <tr><td class="loc" data-mat="Textured ceiling finish">Stairwell B</td><td class="mat">Textured ceiling finish</td><td><span class="status monitor">Monitor</span></td></tr>
 <tr><td class="loc" data-mat="Drywall joint compound">Suite 204</td><td class="mat">Drywall joint compound</td><td><span class="status good">Good</span></td></tr>
 <tr><td class="loc" data-mat="Window glazing (lead)">Front entrance</td><td class="mat">Window glazing (lead)</td><td><span class="status good">Good</span></td></tr>
@@ -358,7 +358,7 @@ b = segment_hero("Building owners", "Building programs",
 <section class="section"><div class="wrap">
 <div class="section-head"><h2>Compare the programs</h2>{FOUNDING}</div>
 {tier_table(["bp_ess", "bp_pr", "bp_fp"], BP_ROWS)}
-<p class="small" style="margin-top:12px">Monthly, CAD before HST, per building. The price depends on the building's size; the figures above are the lowest. Facility Partner isn't offered for buildings under 5,000 sq ft. Three or more buildings get a portfolio discount.</p>
+<p class="small" style="margin-top:12px">Monthly, CAD before HST, per building. The price depends on the building's size; the figures above are the lowest. Facility Partner isn't offered for buildings under 465 m² [5,000 sq ft]. Three or more buildings get a portfolio discount.</p>
 </div></section>
 
 <section class="section white"><div class="wrap split">
@@ -374,7 +374,7 @@ page("building-owners.html", "Building programs | Asbestos records and registers
 
 # ---------------------------------------------------------------- landlords
 r = segment_hero("Landlords", "Building programs for landlords and condos",
-    "For landlords with five or more units, property managers and condominium corporations. A suite turns over, the crew lifts 9-inch floor tile or sands a stippled ceiling, and you now have exposed workers, a contaminated unit and an unhappy tenant. Check first, and keep the record that tells you where to look.", "rental") + f"""
+    "For landlords with five or more units, property managers and condominium corporations. A suite turns over, the crew lifts 23 cm [9-inch] floor tile or sands a stippled ceiling, and you now have exposed workers, a contaminated unit and an unhappy tenant. Check first, and keep the record that tells you where to look.", "rental") + f"""
 <section class="section white"><div class="wrap split">
 <div class="duty"><h3>What the law asks of rental owners</h3>{ul([
  "Keep an asbestos record, update it at least every 12 months, and give tenants written notice of asbestos in the areas they occupy.",
@@ -479,7 +479,7 @@ s = f"""<section class="hero"><div class="wrap">{crumbs((None, "Reports and pric
 <div class="prose"><h2>Samples and layers</h2>
 <p>A sample is what we take from a material. The lab analyzes every layer in it: a floor tile and its glue are two layers, a plaster wall with a skim coat can be three. Each sample is $100 ($150 on a demolition survey) and includes lab analysis of its first layer. Extra layers are $45 each, billed per layer analyzed. Demolition surveys take more samples, because walls, floors and ceilings are opened up.</p>
 <h2>Terms</h2>
-{ul(["Deposit at booking: 50% on projects of estimated $5,000 or more before HST, 30% under estimated $5,000 before HST, worked out on the top of your quoted range. The balance is due 30 days after the invoice.", "Minimum charge for a site visit: $450 before HST.", "Travel is free within 60 km of Windsor.", "Quotes are valid for 30 days."])}</div>
+{ul(["Deposit at booking: 50% on projects of estimated $5,000 or more before HST, 30% under estimated $5,000 before HST, worked out on the top of your quoted range. The balance is due 30 days after the invoice.", "Minimum charge for a site visit: $450 before HST.", "Travel is free within 60 km [37 mi] of Windsor.", "Quotes are valid for 30 days."])}</div>
 <div class="prose"><h2>After the report</h2>
 <p>If materials have to come out, we write the abatement specification contractors bid on, review the bids, inspect the work and test the air, including Type 3 clearance. These are quoted per project. We never do the removal ourselves.</p>
 <h2>Lab turnaround</h2>
@@ -639,7 +639,7 @@ guide_page("guide-suite-turnover-checklist.html", "Suite turnover checklist",
   "Suite turnover asbestos checklist for Ontario landlords | Noah Crowley",
   "Which materials to stop and test before renovating a rental suite in an older building, as a printable checklist for landlords and property managers.",
   "Before a turnover crew starts in a pre-1990 suite, check whether the work will disturb any of these. If it will and you don't know what's in them, stop and test first.",
-  [("9-inch floor tile and its mastic", "Common in older suites and hallways; lifting or grinding it disturbs both layers."),
+  [("23 cm [9-inch] floor tile and its mastic", "Common in older suites and hallways; lifting or grinding it disturbs both layers."),
    ("Drywall joint compound and plaster", "Sanding, cutting or demolishing walls releases it."),
    ("Stipple and textured ceilings", "Scraping or sanding a textured ceiling is a classic exposure."),
    ("Pipe lagging and boiler insulation", "Often in basements, risers and mechanical rooms."),
