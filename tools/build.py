@@ -1,6 +1,6 @@
 """Builds the Noah Crowley Asbestos and Designated Substances Consulting website.
 Run:  python3 tools/build.py   (from the repo root). Writes the .html files, sitemap.xml and robots.txt.
-All copy is drawn from the NCC business plan; every price comes from the public list in price book PB-2026.11. Edit SITE below for contact details, then rebuild."""
+All copy is drawn from the NCC business plan; every price comes from the public list in price book PB-2026.11b. Edit SITE below for contact details, then rebuild."""
 import json, os, hashlib, html as H
 from datetime import date
 
@@ -21,9 +21,9 @@ YEAR = date.today().year
 e = H.escape
 ASSET_V = hashlib.sha1(b"".join(open(os.path.join(ROOT, "assets", f), "rb").read() for f in ("site.css", "site.js", "config.js"))).hexdigest()[:8]
 
-# ---------------------------------------------------------------- tiers (price book PB-2026.11)
+# ---------------------------------------------------------------- tiers (price book PB-2026.11b)
 # The website may quote only the public "from" prices in the price book. Anything more specific is quoted per building.
-PRICE_BOOK = "PB-2026.11"
+PRICE_BOOK = "PB-2026.11b"
 TIERS = {
  "bp_ess": dict(program="Building programs", name="Compliance Essentials", price=69, fits="Owners who need the yearly record kept current", page="building-owners.html",
    inc=["Yearly asbestos record update and visual condition inspection", "Hosted online register and an on-site inspector binder", "Occupier and contractor notice templates", "Annual compliance letter for insurers, lenders and tenants", "10% off reports, site visits and project work; extra lab layers at cost", "Phone advice if suspect material turns up"]),
@@ -42,11 +42,11 @@ TIERS = {
 # The public report menu: the lowest price of each product, always said as "from".
 REPORTS = [
  ("Limited sampling visit", 650, "One to three suspect materials before a small repair: one floor, one pipe run, one wall", "A letter with lab results and the work classification for the planned job", "About 7 business days"),
- ("DSS update or re-assessment", 900, "An existing report that is out of date, or another firm's report that fell short", "A walk-through, gap sampling and a current, tender-ready report", "5 business days; 8–10 with sampling"),
- ("Project-specific DSS", 1700, "Renovation, repair or a tender for one work area", "All 11 designated substances in the work area, ready to attach to the tender", "8–10 business days"),
- ("Asbestos building survey", 2300, "No asbestos record on site, or the start of a building program", "The whole-building inventory that becomes your O. Reg. 278/05 record", "10–15 business days"),
- ("Full-building DSS and hazardous materials survey", 3050, "Acquisition, capital planning, several projects in one building", "All 11 substances plus PCBs, mould and refrigerants across the building", "10–20 business days"),
- ("Pre-demolition DSS", 4000, "A vacant building coming down, or a demolition permit", "A destructive survey of every space so materials can come out before demolition", "15–25 business days"),
+ ("DSS update or re-assessment", 550, "An existing report that is out of date, or another firm's report that fell short", "A walk-through, gap sampling and a current, tender-ready report", "5 business days; 8–10 with sampling"),
+ ("Project-specific DSS", 1500, "Renovation, repair or a tender for one work area", "All 11 designated substances in the work area, ready to attach to the tender", "8–10 business days"),
+ ("Asbestos building survey", 1800, "No asbestos record on site, or the start of a building program", "The whole-building inventory that becomes your O. Reg. 278/05 record", "10–15 business days"),
+ ("Full-building DSS and hazardous materials survey", 2400, "Acquisition, capital planning, several projects in one building", "All 11 substances plus PCBs, mould and refrigerants across the building", "10–20 business days"),
+ ("Pre-demolition DSS", 3900, "A vacant building coming down, or a demolition permit", "A destructive survey of every space so materials can come out before demolition", "15–25 business days"),
 ]
 
 def money(n): return "${:,.0f}".format(n)
@@ -310,7 +310,7 @@ HOME_FAQ, HOME_FAQ_SCHEMA = faq([
  ("What are Ontario's designated substances?", "There are 11: acrylonitrile, arsenic, asbestos, benzene, coke oven emissions, ethylene oxide, isocyanates, lead, mercury, silica and vinyl chloride. Asbestos, lead, mercury and silica are the ones usually found in buildings."),
  ("How often does a building owner have to update the asbestos record?", "At least once every 12 months, and whenever new information comes to light, under O. Reg. 278/05. The record has to be kept on the premises."),
  ("Who is responsible for the designated substance list before a renovation?", "The project owner. Under section 30 of the Occupational Health and Safety Act, the owner lists every designated substance in the work area before the project begins and includes the list in the tender."),
- ("How much does it cost?", "Reports start at $650 for a limited sampling visit and $1,700 for a project-specific designated substance report, priced by building size. Building programs start at $69 a month per building and the Cleared-to-Start Pass at $199 a month. All prices are CAD before HST."),
+ ("How much does it cost?", "Reports start at $650 for a limited sampling visit and $1,500 for a project-specific designated substance report. Each report is a report fee plus the samples taken, so the total depends on the building. Building programs start at $69 a month per building and the Cleared-to-Start Pass at $199 a month. All prices are CAD before HST."),
  ("Does a program include my designated substance report?", "No, on purpose. A report is triggered by a project, not the calendar, so you'd be paying for it in years you don't need it. The program keeps your record current and gives you a member rate on every report."),
  ("How long do lab results take?", "5 business days from when the lab receives the samples. We don't offer rush analysis. If work can't wait, we leave written interim instructions on site."),
  ("Do you remove asbestos?", "No. We are independent consultants: we survey, write specifications, oversee abatement and test the air, but we never remove or abate anything and take no referral fees.")])
@@ -367,7 +367,7 @@ b = segment_hero("Building owners", "Building programs",
 <p>A designated substance report is triggered by a project: a renovation, a tender, a sale, a demolition. It isn't something you need every year, so we don't bundle it into a monthly fee you'd pay in years without a project.</p>
 <p>What you need every year is the record kept current, notices out, staff trained and a straight answer when a contractor asks what's in the ceiling. That's the program. When a project comes, the report costs you 10% to 20% less.</p>
 <p><a href="services.html">See the report menu</a></p></div>
-<div class="prose"><h2>How it starts</h2>{start_steps("DSS update", "We review your existing report, walk the building and fill any sampling gaps, from $900 depending on size. No report yet? A baseline asbestos survey starts at $2,300.")}
+<div class="prose"><h2>How it starts</h2>{start_steps("DSS update", "We review your existing report, walk the building and fill any sampling gaps, from $550 plus samples. No report yet? A baseline asbestos survey starts at $1,800.")}
 <h3>Included in every program</h3>{program_rules()}</div>
 </div></section>
 """ + cta("Is your asbestos record within 12 months?", "The Obligation Check takes two minutes and tells you which program fits your buildings.", "obligation-check.html#building")
@@ -395,7 +395,7 @@ r = segment_hero("Landlords", "Building programs for landlords and condos",
 </div></section>
 
 <section class="section white"><div class="wrap split">
-<div class="prose"><h2>How it starts</h2>{start_steps("DSS update", "We bring your existing report up to date, from $900 depending on size. No report yet? A baseline survey of the building starts at $2,300.")}</div>
+<div class="prose"><h2>How it starts</h2>{start_steps("DSS update", "We bring your existing report up to date, from $550 plus samples. No report yet? A baseline survey of the building starts at $1,800.")}</div>
 <div class="prose"><h3>Included in every program</h3>{program_rules()}</div>
 </div></section>
 """ + cta("Got a suite turning over soon?", "Book a limited sampling visit, or take the Obligation Check to see which program fits your buildings.", "obligation-check.html#rental")
@@ -468,19 +468,19 @@ page("contractors.html", "Cleared-to-Start Pass | The contractor compliance desk
 # ---------------------------------------------------------------- services
 s = f"""<section class="hero"><div class="wrap">{crumbs((None, "Reports and prices"))}
 <div class="hero-copy" style="max-width:860px"><h1>Reports and prices</h1>
-<p class="lede">Every report covers Ontario's 11 designated substances and includes the lab analysis it needs, up to an allowance of sample layers set in your quote. Prices depend on the building's size; these are the starting prices. Program members pay 10% to 20% less.</p></div></div></section>
+<p class="lede">Every report covers Ontario's 11 designated substances and is priced as a report fee plus the samples taken. Your quote sets the report fee and an estimated range of samples for your building, and you pay for the samples actually taken. These are the starting prices. Program members pay 10% to 20% less on our fees; lab costs are passed through at cost.</p></div></div></section>
 <section class="section white"><div class="wrap">
 <div class="section-head"><h2>Report menu</h2></div>
 <div class="table-wrap stack"><table class="data wide"><thead><tr><th scope="col">Report</th><th scope="col">When you need it</th><th scope="col">What you get</th><th scope="col">Turnaround</th><th scope="col" class="num">From</th></tr></thead><tbody>
 {"".join(f'<tr><th scope="row">{n}</th><td data-label="When you need it">{w_}</td><td data-label="What you get">{g}</td><td data-label="Turnaround">{t}</td><td class="num" data-label="From">{money(p)}</td></tr>' for n, p, w_, g, t in REPORTS)}
 </tbody></table></div>
-<p class="small" style="margin-top:12px">CAD before HST (13%). Turnarounds are business days from the end of fieldwork and include the lab's 5 business days. We confirm a fixed price in writing before any work starts.</p>
+<p class="small" style="margin-top:12px">CAD before HST (13%). Turnarounds are business days from the end of fieldwork and include the lab's 5 business days. We confirm the report fee and the estimated sample range in writing before any work starts, and we ask before going over the top of that range.</p>
 </div></section>
 <section class="section"><div class="wrap split">
 <div class="prose"><h2>Samples and layers</h2>
-<p>A sample is what we take from a material. The lab analyzes every layer in it: a floor tile and its glue are two layers, a plaster wall with a skim coat can be three. Your quote includes an allowance of layers sized to the building. If a building needs more, extra layers are billed per layer, and we tell you on site before we take them.</p>
+<p>A sample is what we take from a material. The lab analyzes every layer in it: a floor tile and its glue are two layers, a plaster wall with a skim coat can be three. Each sample includes lab analysis of its first layer. Extra layers are billed per layer analyzed. Once the lab finds asbestos in a material, it stops analyzing the rest of that material's samples, so you aren't billed extra layers the lab didn't analyze. Demolition surveys take more samples, because walls, floors and ceilings are opened up.</p>
 <h2>Terms</h2>
-{ul(["Deposit at booking: 50% on projects of $5,000 or more before HST, 30% under $5,000. The balance is due 30 days after the invoice.", "Minimum charge for a site visit: $450 before HST.", "Travel is free within 60 km of Windsor.", "Quotes are valid for 30 days."])}</div>
+{ul(["Deposit at booking: 50% on projects of $5,000 or more before HST, 30% under $5,000, worked out on the top of your quoted range. The balance is due 30 days after the invoice.", "Minimum charge for a site visit: $450 before HST.", "Travel is free within 60 km of Windsor.", "Quotes are valid for 30 days."])}</div>
 <div class="prose"><h2>After the report</h2>
 <p>If materials have to come out, we write the abatement specification contractors bid on, review the bids, inspect the work and test the air, including Type 3 clearance. These are quoted per project. We never do the removal ourselves.</p>
 <h2>Lab turnaround</h2>
@@ -488,7 +488,7 @@ s = f"""<section class="hero"><div class="wrap">{crumbs((None, "Reports and pric
 </div></section>
 <section class="section white"><div class="wrap"><div class="section-head"><h2>Common jobs</h2></div>
 <div class="link-list">{"".join(f'<a href="{h}"><strong>{t}</strong><span>What it involves, what it costs and how long it takes</span></a>' for h, t in TRIGGERS)}</div></div></section>""" + cta("Not sure which report you need?", "The Obligation Check points you to the right one, or send us the job details and we'll quote it.")
-page("services.html", "Asbestos and designated substance reports and prices | Noah Crowley", "Designated substance reports and asbestos surveys in southwestern Ontario, priced by building size: from $650 for a limited sampling visit and $1,700 for a project-specific DSS.", s, "services.html")
+page("services.html", "Asbestos and designated substance reports and prices | Noah Crowley", "Designated substance reports and asbestos surveys in southwestern Ontario, priced as a report fee plus samples: from $650 for a limited sampling visit and $1,500 for a project-specific DSS.", s, "services.html")
 
 # ---------------------------------------------------------------- quiz
 q = f"""<section class="hero"><div class="wrap">{crumbs((None, "Obligation Check"))}
@@ -503,7 +503,7 @@ page("obligation-check.html", "Obligation Check | Which asbestos and designated 
 
 # ---------------------------------------------------------------- local pages
 def local_page(fname, city, region, intro, local_points, towns, extra_faq=()):
-    items = [(f"How much does asbestos testing cost in {city}?", "A limited sampling visit for one to three materials starts at $650, and a project-specific designated substance report starts at $1,700. Prices depend on the building's size, and lab analysis is included up to the layer allowance in your quote."),
+    items = [(f"How much does asbestos testing cost in {city}?", "A limited sampling visit for one to three materials starts at $650, and a project-specific designated substance report starts at $1,500. Each report is priced as a report fee plus the samples taken, with the first layer of every sample analyzed by the lab included, so the total depends on the building."),
              ("How long do results take?", "Lab results take 5 business days from when the lab receives the samples. If work can't wait, we leave written interim instructions on site."),
              (f"Which buildings in {city} are likely to contain asbestos?", "Most buildings built after 1980 are largely free of asbestos; nearly anything older is a candidate. Floor tile and mastic, drywall compound, textured ceilings, pipe insulation and vermiculite are the usual suspects."),
              ("Are you independent of abatement contractors?", "Yes. We never remove or abate anything and take no referral fees, so our survey results aren't shaped by anyone who profits from removal.")] + list(extra_faq)
@@ -574,18 +574,18 @@ trigger_page("asbestos-testing-before-renovation.html", "Asbestos testing before
   "Before walls, floors or ceilings open in an older building, Ontario law requires a list of every designated substance in the work area. We survey it, test it and hand you a report ready for the contractor.",
   [("What the law requires", "<p>The project owner must list all designated substances before a renovation, repair or demolition project begins and include the list in the tender (OHSA section 30). An owner who leaves one off is liable to the contractors when it turns up mid-job.</p><p>Most buildings built after 1980 are largely free of asbestos; nearly everything older is a candidate.</p>"),
    ("What we test for", ul(["Floor tile and mastic, drywall joint compound, plaster and stipple ceilings", "Pipe and boiler insulation, cement board and vermiculite", "Lead in paint, solder, pipes and glazing", "Mercury in thermostats, switches and lamps", "Silica released when concrete, masonry or tile is cut", "All 11 designated substances, as the project list requires"])),
-   ("Price and timing", "<p>A limited sampling visit for one to three materials starts at $650. A project-specific report for a whole work area starts at $1,700. Both depend on the building's size and include lab analysis up to the layer allowance in your quote. Lab results take 5 business days.</p><p>If the job can't wait, we leave written interim instructions on site: which materials to treat as asbestos-containing and which procedures apply until results are in.</p>"),
+   ("Price and timing", "<p>A limited sampling visit for one to three materials starts at $650. A project-specific report for a whole work area starts at $1,500. Each report is priced as a report fee plus the samples taken, with the first layer of every sample analyzed by the lab included, so the total depends on the building. Lab results take 5 business days.</p><p>If the job can't wait, we leave written interim instructions on site: which materials to treat as asbestos-containing and which procedures apply until results are in.</p>"),
    ("If you renovate often", "<p>Contractors can get the owner's report reviewed before they bid and pay member rates on every check with the <a href=\"contractors.html\">Cleared-to-Start Pass</a>, and owners pay less for every report with a <a href=\"building-owners.html\">building program</a>.</p>")],
   rel(("guide-demolition-renovation-dss.html", "Demolition and renovation DSS guide", "What a survey covers and what to do if you find suspect material mid-job"),
       ("guide-suite-turnover-checklist.html", "Suite turnover checklist", "The materials to stop and test in older rental suites")))
 
 trigger_page("designated-substance-survey-demolition-permit.html", "Designated substance survey for a demolition permit",
   "Designated substance survey for a demolition permit in Windsor | Noah Crowley",
-  "The City of Windsor's demolition permit checklist asks for a designated substance list. We write the pre-demolition survey ready to attach to the permit application and the tender. From $4,000.",
+  "The City of Windsor's demolition permit checklist asks for a designated substance list. We write the pre-demolition survey ready to attach to the permit application and the tender. From $3,900.",
   "The City of Windsor's demolition permit checklist asks for a list of designated substances. We survey the building and write a report you can attach to the permit application and the demolition tender.",
   [("What the survey covers", "<p>A destructive survey of every space, because the building is coming down: walls opened, flooring lifted and roofs cored, so concealed materials are found before demolition. It covers all 11 designated substances plus PCBs, mould and ozone-depleting refrigerants. The building has to be vacant.</p>"),
    ("What usually follows", ul(["<strong>Abatement specification:</strong> scope of work, procedure type, quantities and bid review", "<strong>Abatement oversight and air monitoring:</strong> inspections and reports during Type 2 or Type 3 work", "<strong>Type 3 clearance:</strong> visual inspection and air testing before the enclosure comes down"]) + "<p class=\"small\">Each is quoted per project.</p>"),
-   ("Price and timing", "<p>A pre-demolition survey starts at $4,000 and depends on the building's size. The report takes 15 to 25 business days after fieldwork, including the lab's 5 business days. Projects of $5,000 or more take a 50% deposit at booking.</p>"),
+   ("Price and timing", "<p>A pre-demolition survey starts at $3,900, priced as a report fee plus the samples taken. Demolition surveys take more samples than a renovation report because concealed spaces are opened up. The report takes 15 to 25 business days after fieldwork, including the lab's 5 business days. Projects of $5,000 or more take a 50% deposit at booking.</p>"),
    ("Independent from the abatement", "<p>We never remove or abate anything and take no referral fees, so the survey, the specification and the clearance are all written by someone with no stake in how much removal there is.</p>")],
   rel(("guide-demolition-renovation-dss.html", "Demolition and renovation DSS guide", "Built around the City of Windsor's demolition permit checklist"),
       ("services.html", "Reports and prices", "Every report, from a limited sampling visit to a pre-demolition survey")))
@@ -596,7 +596,7 @@ trigger_page("silica-exposure-assessment.html", "Silica on renovation and demoli
   "Cutting, grinding or coring concrete, masonry and tile releases respirable crystalline silica, one of Ontario's 11 designated substances. If the work will disturb it, it belongs on the project's designated substance list.",
   [("Where it shows up", "<p>Concrete, mortar, brick, block, ceramic tile, drywall and plaster all contain silica. Every project-specific report we write records where silica-containing materials are and what the planned work will do to them.</p>"),
    ("What the contractor needs", ul(["The designated substance list, with silica-generating work identified", "Work classified by type, with controls such as wet cutting and local exhaust", "Training and respiratory protection where the work calls for it"]) + "<p>We write work-classification letters for silica and lead as a project service.</p>"),
-   ("Price", "<p>Silica is covered in every project-specific report, from $1,700. Exposure monitoring for employers is quoted per job; see <a href=\"employers.html\">designated substances at work</a>.</p>"),
+   ("Price", "<p>Silica is covered in every project-specific report, from $1,500. Exposure monitoring for employers is quoted per job; see <a href=\"employers.html\">designated substances at work</a>.</p>"),
    ("For contractors", "<p>Pass holders get 25% off work-classification letters. See the <a href=\"contractors.html\">Cleared-to-Start Pass</a>.</p>")],
   rel(("services.html", "Reports and prices", "Every report, from a limited sampling visit to a pre-demolition survey"),
       ("contractors.html", "Cleared-to-Start Pass", "The compliance desk for contractors")))
@@ -618,7 +618,7 @@ def guide_page(fname, h1, title, desc, lede, items, after, cta_href):
 <div class="hero-copy" style="max-width:860px"><h1>{h1}</h1><p class="lede">{lede}</p>
 <div class="btn-row no-print"><button class="btn ghost" type="button" onclick="window.print()">Print this checklist</button><a class="btn amber" href="{cta_href}">Take the Obligation Check</a></div></div></div></section>
 <section class="section white"><div class="wrap"><div class="prose" style="max-width:820px"><ul class="checklist">{lis}</ul>{after}
-<p class="small">This checklist is general guidance, not legal advice. Ontario regulations referenced: O. Reg. 278/05, OHSA section 30 and O. Reg. 490/09.</p></div></div></section>""" + cta("Want someone to check it for you?", "A DSS update brings your existing report current, from $900. Join a program within 30 days and it's repriced at your member rate.", cta_href)
+<p class="small">This checklist is general guidance, not legal advice. Ontario regulations referenced: O. Reg. 278/05, OHSA section 30 and O. Reg. 490/09.</p></div></div></section>""" + cta("Want someone to check it for you?", "A DSS update brings your existing report current, from $550 plus samples. Join a program within 30 days and it's repriced at your member rate.", cta_href)
     page(fname, title, desc, body)
 
 guide_page("guide-inspector-ready-binder.html", "Inspector-ready binder checklist",
@@ -686,7 +686,7 @@ a = f"""<section class="hero"><div class="wrap">{crumbs((None, "How we work"))}
 <section class="section white"><div class="wrap split">
 <div class="prose"><h2>Independence</h2><p>We never remove or abate anything and take no referral fees. We don't sell the Cleared-to-Start Pass to abatement contractors, and we don't do clearance on work a Pass holder abates. It's written into every agreement.</p>
 <h2>One named consultant</h2><p>You deal with the same person who walks your building, writes your report and answers your pre-work questions.</p></div>
-<div class="prose"><h2>How pricing works</h2><p>Reports are priced by the building's size and include lab analysis up to an allowance of sample layers set in your quote. The lab analyzes every layer of a sample, so if a building needs more, we tell you on site before we take them. Lab results take 5 business days; we don't offer rush analysis.</p>
+<div class="prose"><h2>How pricing works</h2><p>Reports are priced as a report fee plus the samples taken. Your quote gives an estimated range of samples, you pay for the samples actually taken, and we ask on site before going over the top of the range. Each sample includes lab analysis of its first layer; extra layers are billed per layer. Lab results take 5 business days; we don't offer rush analysis.</p>
 <p>Programs run on 12-month agreements at a monthly fee per building. They keep your record current and give you a member rate on reports; they never include a report themselves.</p>
 <h2>Where we work</h2><p>{", ".join(f'<a href="{h}">{t}</a>' for h, t in CITIES)}, and the towns around them.</p></div>
 </div></section>""" + cta()

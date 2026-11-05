@@ -174,8 +174,8 @@
     }
   }
   var ENTRY_DESC = {
-    "DSS update": "We review your existing report, walk the building and fill any sampling gaps, from $900 depending on the building's size. Sign a program within 30 days and the update is repriced at your member rate.",
-    "Baseline survey": "An asbestos building survey becomes your on-site record, from $2,300 depending on the building's size. Commit to a 12-month program before the work starts and the survey is 15% off.",
+    "DSS update": "We review your existing report, walk the building and fill any sampling gaps, from $550 plus samples. Sign a program within 30 days and the update is repriced at your member rate.",
+    "Baseline survey": "An asbestos building survey becomes your on-site record, from $1,800 plus samples. Commit to a 12-month program before the work starts and the survey is 15% off.",
     "First pre-work check": "One limited sampling visit or project report on your next job in an older building, at the list price (from $650), so you see a report before you commit.",
     "Discovery call": "A 30-minute call to scope your buildings or jobs, followed by a written proposal."
   };
@@ -208,7 +208,7 @@
     if (answers.b_record === "recent") flags.push(["ok", "Good: your record is within the 12-month window. A program keeps it that way and answers “can we drill here?” from the register."]);
 
     if (r.special === "project") {
-      html = '<div class="rec"><span class="t">A report for your project</span><span class="p">From $650</span><p>A limited sampling visit for one to three materials starts at $650; a project-specific designated substance report for a whole work area starts at $1,700. Prices depend on the building\u2019s size and include lab analysis up to the layer allowance in your quote. Lab results take 5 business days.</p><p><a href="services.html">See the report menu</a></p></div>';
+      html = '<div class="rec"><span class="t">A report for your project</span><span class="p">From $650</span><p>A limited sampling visit for one to three materials starts at $650; a project-specific designated substance report for a whole work area starts at $1,500. Each report is priced as a report fee plus the samples taken, with lab analysis of the first layer of each sample included. Lab results take 5 business days.</p><p><a href="services.html">See the report menu</a></p></div>';
     } else if (r.special === "employer") {
       html = '<div class="rec"><span class="t">Exposure monitoring, quoted per job</span><p>O. Reg. 490/09 asks for a written exposure assessment made with your JHSC, and air monitoring where workers may be exposed. We offer exposure monitoring as a one-off service and quote each job in writing.</p><p><a href="guide-designated-substance-self-check.html">Take the one-page self-check</a></p></div>';
     } else if (r.special === "abatement") {

@@ -18,7 +18,7 @@ Plain HTML, CSS and JavaScript, hosted free on GitHub Pages. No build step is ne
 | `guide-*.html` | The four lead-magnet checklists |
 | `about.html`, `contact.html`, `privacy.html`, `404.html` | Supporting pages |
 | `assets/config.js` | **Your form and booking links go here** |
-| `tools/build.py` | Regenerates every page from one place (copy, prices, contact details). Prices follow price book PB-2026.11: the site quotes only its public "from" prices |
+| `tools/build.py` | Regenerates every page from one place (copy, prices, contact details). Prices follow price book PB-2026.11b: the site quotes only its public "from" prices |
 
 ## Settings
 
