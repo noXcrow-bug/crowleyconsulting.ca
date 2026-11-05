@@ -26,17 +26,17 @@ ASSET_V = hashlib.sha1(b"".join(open(os.path.join(ROOT, "assets", f), "rb").read
 PRICE_BOOK = "PB-2026.11b"
 TIERS = {
  "bp_ess": dict(program="Building programs", name="Compliance Essentials", price=69, fits="Owners who need the yearly record kept current", page="building-owners.html",
-   inc=["Yearly asbestos record update and visual condition inspection", "Hosted online register and an on-site inspector binder", "Occupier and contractor notice templates", "Annual compliance letter for insurers, lenders and tenants", "10% off reports, site visits and project work; extra lab layers at cost", "Phone advice if suspect material turns up"]),
+   inc=["Yearly asbestos record update and visual condition inspection", "Hosted online register and an on-site inspector binder", "Occupier and contractor notice templates", "Annual compliance letter for insurers, lenders and tenants", "10% off reports, site visits and project work", "Phone advice if suspect material turns up"]),
  "bp_pr": dict(program="Building programs", name="Project Ready", price=149, fits="Buildings where contractors are working several times a year", page="building-owners.html",
-   inc=["Yearly asbestos record update and visual condition inspection", "Notices prepared and issued to occupiers and contractors for you", "6 written “can we drill here?” desk reviews a year, answered within 1 business day", "1 maintenance staff awareness session a year", "15% off reports, site visits and project work; extra lab layers at cost", "Fieldwork booked within 5 business days; site visit the next business day if something turns up"]),
+   inc=["Yearly asbestos record update and visual condition inspection", "Notices prepared and issued to occupiers and contractors for you", "6 written “can we drill here?” desk reviews a year, answered within 1 business day", "1 maintenance staff awareness session a year", "15% off reports, site visits and project work", "Fieldwork booked within 5 business days; site visit the next business day if something turns up"]),
  "bp_fp": dict(program="Building programs", name="Facility Partner", price=529, fits="Three or more buildings, or a board or JHSC asking questions", page="building-owners.html",
-   inc=["Record update and condition inspection twice a year", "Notices prepared, issued and tracked", "Unlimited written desk reviews, answered within 1 business day", "2 staff awareness sessions a year and a yearly board or JHSC presentation", "20% off reports, site visits and project work; extra lab layers at cost", "Fieldwork within 2 business days, a same-day visit if something turns up, and a yearly abatement budget"]),
+   inc=["Record update and condition inspection twice a year", "Notices prepared, issued and tracked", "Unlimited written desk reviews, answered within 1 business day", "2 staff awareness sessions a year and a yearly board or JHSC presentation", "20% off reports, site visits and project work", "Fieldwork within 2 business days, a same-day visit if something turns up, and a yearly abatement budget"]),
  "pw_start": dict(program="Cleared-to-Start Pass", name="Starter", price=199, fits="Renovators and trades with 1–3 jobs a month in older buildings", page="contractors.html",
-   inc=["A compliance desk to call before you bid or cut, business hours", "1 pre-bid review of the owner's designated substance report a month", "Site visit within 5 business days when a job needs testing", "10% off pre-work checks; extra lab layers at cost", "Written interim instructions on site when a job can't wait", "25% off work-classification letters, a due-diligence file per job, toolbox talk templates"]),
+   inc=["A compliance desk to call before you bid or cut, business hours", "1 pre-bid review of the owner's designated substance report a month", "Site visit within 5 business days when a job needs testing", "10% off pre-work checks", "Written interim instructions on site when a job can't wait", "25% off work-classification letters, a due-diligence file per job, toolbox talk templates"]),
  "pw_pro": dict(program="Cleared-to-Start Pass", name="Pro", price=499, fits="General contractors and fit-out firms with 4 or more jobs a month", page="contractors.html",
-   inc=["The compliance desk, business hours", "3 pre-bid reviews a month", "Site visit within 3 business days", "15% off pre-work checks; extra lab layers at cost", "Reports branded for your client", "1 live worker awareness session a year"]),
+   inc=["The compliance desk, business hours", "3 pre-bid reviews a month", "Site visit within 3 business days", "15% off pre-work checks", "Reports branded for your client", "1 live worker awareness session a year"]),
  "pw_rr": dict(program="Cleared-to-Start Pass", name="Restoration Priority", price=699, fits="Fire, flood and mould restoration firms, for the rebuild phase of a claim", page="contractors.html",
-   inc=["Next-business-day site visits, Monday to Friday", "The compliance desk, business hours", "3 pre-bid reviews a month", "15% off pre-work checks; extra lab layers at cost", "Written interim instructions on every call, adjuster-ready reports", "Reports branded for your client and 1 worker awareness session a year"]),
+   inc=["Next-business-day site visits, Monday to Friday", "The compliance desk, business hours", "3 pre-bid reviews a month", "15% off pre-work checks", "Written interim instructions on every call, adjuster-ready reports", "Reports branded for your client and 1 worker awareness session a year"]),
 }
 
 # The public report menu: the lowest price of each product, always said as "from".
@@ -326,7 +326,6 @@ BP_ROWS = [
  ("“Can we drill here?” desk reviews, within 1 business day", ["Not included", "6 a year", "Unlimited"]),
  ("Maintenance staff awareness training", ["Not included", "1 session a year", "2 sessions a year"]),
  ("Member rate on reports, site visits and project work", ["10% off", "15% off", "20% off"]),
- ("Extra lab layers", ["At the lab's cost", "At the lab's cost", "At the lab's cost"]),
  ("Fieldwork scheduling", ["Standard", "Within 5 business days", "Within 2 business days"]),
  ("If suspect material turns up", ["Phone advice", "Site visit next business day", "Site visit same business day"]),
  ("Board or JHSC presentation, abatement budget", ["No", "No", "Once a year"])]
@@ -384,7 +383,7 @@ r = segment_hero("Landlords", "Building programs for landlords and condos",
  "Older suites also hide lead paint and mercury thermostats; the same check picks them up."])}</div>
 <div class="prose"><h2>Before a suite is renovated</h2>
 <p>A limited sampling visit checks the one to three materials your crew will disturb, from $650 with lab analysis included. You get a written result about 7 business days after the visit, so book it before the tenant leaves.</p>
-<p>Program members pay 10% to 20% less for every suite check and get extra lab layers at cost.</p>
+<p>Program members pay 10% to 20% less on the report fee and our time on each sample for every suite check.</p>
 <p><a href="guide-suite-turnover-checklist.html">Get the suite turnover checklist</a></p></div>
 </div></section>
 
@@ -431,7 +430,7 @@ c = segment_hero("Contractors", "Cleared-to-Start Pass",
  "Pre-bid reviews: send us the owner's designated substance report before you price the job, and we tell you whether it covers your work.",
  "When it doesn't, a pre-work check at your member rate: a limited sampling visit or a project report for the work area. Put the independent list price on your quote and the owner pays it.",
  "Written interim instructions on site if the client can't wait for results: leave the suspect materials alone, or proceed treating them as asbestos. You choose, and the owner gets a copy.",
- "Extra lab layers at the lab's cost, 25% off work-classification letters, and a due-diligence file for every job."])}
+ "25% off work-classification letters, and a due-diligence file for every job."])}
 <p class="small">“Cleared to start” means the work area was checked before work began. It is not Type 3 clearance air testing, which the building owner retains separately, and we never do clearance on work a Pass holder abates.</p></div>
 </div></section>
 
@@ -468,7 +467,7 @@ page("contractors.html", "Cleared-to-Start Pass | The contractor compliance desk
 # ---------------------------------------------------------------- services
 s = f"""<section class="hero"><div class="wrap">{crumbs((None, "Reports and prices"))}
 <div class="hero-copy" style="max-width:860px"><h1>Reports and prices</h1>
-<p class="lede">Every report covers Ontario's 11 designated substances and is priced as a report fee plus the samples taken. Your quote sets the report fee and an estimated range of samples for your building, and you pay for the samples actually taken. These are the starting prices. Program members pay 10% to 20% less on our fees; lab costs are passed through at cost.</p></div></div></section>
+<p class="lede">Every report covers Ontario's 11 designated substances and is priced as a report fee plus the samples taken. Your quote sets the report fee and an estimated range of samples for your building, and you pay for the samples actually taken. Samples are $100 each ($150 on a demolition survey), and extra layers are $45 each. These are the starting prices. Program members pay 10% to 20% less on the report fee and our time on each sample; lab costs and extra layers are not discounted.</p></div></div></section>
 <section class="section white"><div class="wrap">
 <div class="section-head"><h2>Report menu</h2></div>
 <div class="table-wrap stack"><table class="data wide"><thead><tr><th scope="col">Report</th><th scope="col">When you need it</th><th scope="col">What you get</th><th scope="col">Turnaround</th><th scope="col" class="num">From</th></tr></thead><tbody>
@@ -478,9 +477,9 @@ s = f"""<section class="hero"><div class="wrap">{crumbs((None, "Reports and pric
 </div></section>
 <section class="section"><div class="wrap split">
 <div class="prose"><h2>Samples and layers</h2>
-<p>A sample is what we take from a material. The lab analyzes every layer in it: a floor tile and its glue are two layers, a plaster wall with a skim coat can be three. Each sample includes lab analysis of its first layer. Extra layers are billed per layer analyzed. Once the lab finds asbestos in a material, it stops analyzing the rest of that material's samples, so you aren't billed extra layers the lab didn't analyze. Demolition surveys take more samples, because walls, floors and ceilings are opened up.</p>
+<p>A sample is what we take from a material. The lab analyzes every layer in it: a floor tile and its glue are two layers, a plaster wall with a skim coat can be three. Each sample is $100 ($150 on a demolition survey) and includes lab analysis of its first layer. Extra layers are $45 each, billed per layer analyzed. Demolition surveys take more samples, because walls, floors and ceilings are opened up.</p>
 <h2>Terms</h2>
-{ul(["Deposit at booking: 50% on projects of $5,000 or more before HST, 30% under $5,000, worked out on the top of your quoted range. The balance is due 30 days after the invoice.", "Minimum charge for a site visit: $450 before HST.", "Travel is free within 60 km of Windsor.", "Quotes are valid for 30 days."])}</div>
+{ul(["Deposit at booking: 50% on projects of estimated $5,000 or more before HST, 30% under estimated $5,000 before HST, worked out on the top of your quoted range. The balance is due 30 days after the invoice.", "Minimum charge for a site visit: $450 before HST.", "Travel is free within 60 km of Windsor.", "Quotes are valid for 30 days."])}</div>
 <div class="prose"><h2>After the report</h2>
 <p>If materials have to come out, we write the abatement specification contractors bid on, review the bids, inspect the work and test the air, including Type 3 clearance. These are quoted per project. We never do the removal ourselves.</p>
 <h2>Lab turnaround</h2>
@@ -686,7 +685,7 @@ a = f"""<section class="hero"><div class="wrap">{crumbs((None, "How we work"))}
 <section class="section white"><div class="wrap split">
 <div class="prose"><h2>Independence</h2><p>We never remove or abate anything and take no referral fees. We don't sell the Cleared-to-Start Pass to abatement contractors, and we don't do clearance on work a Pass holder abates. It's written into every agreement.</p>
 <h2>One named consultant</h2><p>You deal with the same person who walks your building, writes your report and answers your pre-work questions.</p></div>
-<div class="prose"><h2>How pricing works</h2><p>Reports are priced as a report fee plus the samples taken. Your quote gives an estimated range of samples, you pay for the samples actually taken, and we ask on site before going over the top of the range. Each sample includes lab analysis of its first layer; extra layers are billed per layer. Lab results take 5 business days; we don't offer rush analysis.</p>
+<div class="prose"><h2>How pricing works</h2><p>Reports are priced as a report fee plus the samples taken. Your quote gives an estimated range of samples, you pay for the samples actually taken, and we ask on site before going over the top of the range. Samples are $100 each ($150 on a demolition survey), including lab analysis of the first layer; extra layers are $45 each. Lab results take 5 business days; we don't offer rush analysis.</p>
 <p>Programs run on 12-month agreements at a monthly fee per building. They keep your record current and give you a member rate on reports; they never include a report themselves.</p>
 <h2>Where we work</h2><p>{", ".join(f'<a href="{h}">{t}</a>' for h, t in CITIES)}, and the towns around them.</p></div>
 </div></section>""" + cta()
