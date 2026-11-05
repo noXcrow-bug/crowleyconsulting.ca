@@ -14,7 +14,7 @@ SITE = {
     "phone": "519-890-9654",
     "email": "info@crowleyconsulting.ca",
     "city": "Windsor",    # base city for search listings
-    "founding": True,     # show the 10% founding-client offer (first 5 clients per program, 12 months)
+    "founding": False,    # show the 10% founding-client offer (first 5 clients per program, 12 months)
 }
 REGIONS = "Windsor-Essex, Chatham-Kent, Sarnia-Lambton and London"
 YEAR = date.today().year
