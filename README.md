@@ -10,7 +10,7 @@ Plain HTML, CSS and JavaScript, hosted free on GitHub Pages. No build step is ne
 | `index.html` | Home: building owners, landlords, contractors, reports |
 | `building-owners.html`, `landlords.html` | Building programs (Compliance Essentials, Project Ready, Facility Partner) |
 | `contractors.html` | Cleared-to-Start Pass, the contractor compliance desk |
-| `employers.html` | O. Reg. 490/09 duties; exposure monitoring quoted per job (workplace program parked) |
+| `employers.html` | O. Reg. 490/09 duties; exposure monitoring not available yet (waits on a hygienist arrangement) |
 | `obligation-check.html` | The Obligation Check quiz (routing rules from the business plan) |
 | `services.html` | Report menu with public "from" prices |
 | `asbestos-testing-*.html` | Local search pages: Windsor, Leamington, Chatham, Sarnia, London |

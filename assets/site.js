@@ -279,7 +279,7 @@
         '<div class="btn-row"><a class="btn amber" href="contact.html#book" data-book>Book a free 30-minute call</a><a class="btn ghost" href="#quote">Request a quote</a></div>' +
         '<p class="small"><a href="guide-demolition-renovation-dss.html">Read the demolition and renovation DSS checklist</a></p>';
     } else if (r.special === "employer") {
-      html = '<div class="rec"><span class="t">Exposure monitoring, quoted per job</span><p>O. Reg. 490/09 asks for a written exposure assessment made with your JHSC, and air monitoring where workers may be exposed. We offer exposure monitoring as a one-off service and quote each job in writing.</p><p><a href="guide-designated-substance-self-check.html">Take the one-page self-check</a></p></div>';
+      html = '<div class="rec"><span class="t">Exposure monitoring: not available yet</span><p>O. Reg. 490/09 asks for a written exposure assessment made with your JHSC, and air monitoring where workers may be exposed. Exposure monitoring is not available yet. Contact us to be notified when it launches.</p><p><a href="guide-designated-substance-self-check.html">Take the one-page self-check</a></p></div>';
     } else if (r.special === "abatement") {
       html = '<div class="rec"><span class="t">One-off services</span><p>We offer surveys, specifications, air monitoring and clearance to abatement contractors job by job. To keep clearance work independent, we don’t sell the Cleared-to-Start Pass to abatement firms, and we don’t clear work our Pass holders abate.</p></div>';
     } else if (r.special === "homeowner") {
@@ -298,7 +298,7 @@
       var labels = q.options.filter(function (x) { return Array.isArray(v) ? v.indexOf(x[0]) > -1 : x[0] === v; }).map(function (x) { return x[1]; });
       return labels.length ? q.title + " " + labels.join(", ") : "";
     }).filter(Boolean).join(" | ");
-    var recText = proj ? proj.text : r.special ? ({ abatement: "One-off services (abatement contractor)", homeowner: "Limited sampling visit (homeowner)", project: "One-off report", employer: "Exposure monitoring quote" }[r.special] || r.special) : TIERS[r.tier].program + " " + TIERS[r.tier].name + " → " + r.entry;
+    var recText = proj ? proj.text : r.special ? ({ abatement: "One-off services (abatement contractor)", homeowner: "Limited sampling visit (homeowner)", project: "One-off report", employer: "Exposure monitoring (not available yet; notify at launch)" }[r.special] || r.special) : TIERS[r.tier].program + " " + TIERS[r.tier].name + " → " + r.entry;
 
     root.innerHTML = '<div class="result" id="result" tabindex="-1">' +
       '<h2 class="q-title" style="margin:0">Your Obligation Check result</h2>' + flagHtml + html + DISCLAIMER +
