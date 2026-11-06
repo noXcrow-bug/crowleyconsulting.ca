@@ -524,7 +524,7 @@ def local_page(fname, city, region, intro, local_points, towns, extra_faq=()):
 <div class="link-list">{"".join(f'<a href="{h}"><strong>{t}</strong><span>What it involves, what it costs and how long it takes</span></a>' for h, t in TRIGGERS)}</div></div></section>
 """ + FAQ_HTML + cta()
     page(fname, f"Asbestos Testing {city}, ON | Designated Substance Surveys | Noah Crowley",
-         f"Independent asbestos testing and designated substance surveys in {city} and {region}. Reports from $650 plus samples, lab results in 5 business days.", body,
+         f"Independent asbestos testing and designated substance surveys in {region if region.startswith(city + ' and ') else city + ' and ' + region}. Reports from $650 plus samples, lab results in 5 business days.", body,
          schema=[FAQ_SCHEMA, {"@context": "https://schema.org", "@type": "Service", "name": f"Asbestos testing and designated substance surveys in {city}", "serviceType": "Asbestos testing", "provider": {"@id": BIZ_ID}, "areaServed": {"@type": "City", "name": f"{city}, Ontario"}}])
 
 local_page("asbestos-testing-windsor.html", "Windsor", "Windsor-Essex",
