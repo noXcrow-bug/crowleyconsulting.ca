@@ -283,7 +283,7 @@
     } else if (r.special === "abatement") {
       html = '<div class="rec"><span class="t">One-off services</span><p>We offer surveys, specifications, air monitoring and clearance to abatement contractors job by job. To keep clearance work independent, we don’t sell the Cleared-to-Start Pass to abatement firms, and we don’t clear work our Pass holders abate.</p></div>';
     } else if (r.special === "homeowner") {
-      html = '<div class="rec"><span class="t">Limited sampling visit</span><span class="p">From $650</span><p>Homes need testing once per renovation, not a subscription. We sample the materials your work will disturb, lab analysis included, and lab results take 5 business days.</p></div>';
+      html = '<div class="rec"><span class="t">Limited sampling visit</span><span class="p">From $650</span><p>Homes need testing once per renovation, not a subscription. We sample the materials your work will disturb, priced per sample, and lab results take 5 business days.</p></div>';
     } else {
       var T = TIERS[r.tier];
       var perB = T.program === "Building programs" ? ", per building, priced by size" : "";

@@ -294,7 +294,7 @@ home = f"""
 <div class="programs">
 <a class="program" href="building-owners.html"><h3>Building programs</h3><span class="price">from $69/mo</span><p>Compliance Essentials, Project Ready and Facility Partner, priced per building by size. For commercial, institutional and multi-unit residential buildings.</p></a>
 <a class="program" href="contractors.html"><h3>Cleared-to-Start Pass</h3><span class="price">from $199/mo</span><p>The contractor compliance desk: pre-bid reviews of the owner's report, faster site visits and member rates on every pre-work check.</p></a>
-<a class="program" href="services.html"><h3>Reports and surveys</h3><span class="price">from $650</span><p>Six report products from a limited sampling visit to a pre-demolition survey, priced by building size, lab analysis included.</p></a>
+<a class="program" href="services.html"><h3>Reports and surveys</h3><span class="price">from $650</span><p>Six report products from a limited sampling visit to a pre-demolition survey, priced by building size, plus samples as needed.</p></a>
 </div>
 </div></section>
 
@@ -381,7 +381,7 @@ r = segment_hero("Landlords", "Building programs for landlords and condos",
  "List every designated substance in the work area before a renovation or repair project begins.",
  "Older suites also hide lead paint and mercury thermostats; the same check picks them up."])}</div>
 <div class="prose"><h2>Before a suite is renovated</h2>
-<p>A limited sampling visit checks the one to three materials your crew will disturb, from $650 with lab analysis included. You get a written result about 7 business days after the visit, so book it before the tenant leaves.</p>
+<p>A limited sampling visit checks the one to three materials your crew will disturb, from $650 plus samples as needed. You get a written result about 7 business days after the visit, so book it before the tenant leaves.</p>
 <p>Program members pay 10% to 20% less on the report fee and our time on each sample for every suite check.</p>
 <p><a href="guide-suite-turnover-checklist.html">Get the suite turnover checklist</a></p></div>
 </div></section>
@@ -528,7 +528,7 @@ def local_page(fname, city, region, intro, local_points, towns, extra_faq=()):
          schema=[FAQ_SCHEMA, {"@context": "https://schema.org", "@type": "Service", "name": f"Asbestos testing and designated substance surveys in {city}", "serviceType": "Asbestos testing", "provider": {"@id": BIZ_ID}, "areaServed": {"@type": "City", "name": f"{city}, Ontario"}}])
 
 local_page("asbestos-testing-windsor.html", "Windsor", "Windsor-Essex",
-    "Independent asbestos and designated substance work for Windsor building owners, landlords and contractors, with lab analysis included and lab results in 5 business days.",
+    "Independent asbestos and designated substance work for Windsor building owners, landlords and contractors, with sample pricing explained up front and lab results in 5 business days.",
     ["More than one in three Windsor dwellings was built before 1960, and most of the city's industrial and institutional floor space dates from the same era. Nearly everything built before 1980 is a candidate for asbestos-containing materials.",
      "The City of Windsor's demolition permit checklist asks for a designated substance list, so every demolition starts with a survey. We write them ready to attach to the permit and the tender."],
     "LaSalle, Tecumseh, Amherstburg and Lakeshore",
@@ -568,7 +568,7 @@ def rel(*items): return "".join(f'<a href="{h}"><strong>{t}</strong><span>{s}</s
 
 trigger_page("asbestos-testing-before-renovation.html", "Asbestos testing before renovation",
   "Asbestos testing before renovation in Windsor and southwestern Ontario | Noah Crowley",
-  "Before walls or floors open in an older building, a designated substance survey lists what the work will disturb. From $650, lab analysis included, lab results in 5 business days.",
+  "Before walls or floors open in an older building, a designated substance survey lists what the work will disturb. From $650 plus samples, lab results in 5 business days. Independent asbestos and designated substances consulting.",
   "Before walls, floors or ceilings open in an older building, Ontario law requires a list of every designated substance in the work area. We survey it, test it and hand you a report ready for the contractor.",
   [("What the law requires", "<p>The project owner must list all designated substances before a renovation, repair or demolition project begins and include the list in the tender (OHSA section 30). An owner who leaves one off is liable to the contractors when it turns up mid-job.</p><p>Most buildings built after 1980 are largely free of asbestos; nearly everything older is a candidate.</p>"),
    ("What we test for", ul(["Floor tile and mastic, drywall joint compound, plaster and stipple ceilings", "Pipe and boiler insulation, cement board and vermiculite", "Lead in paint, solder, pipes and glazing", "Mercury in thermostats, switches and lamps", "Silica released when concrete, masonry or tile is cut", "All 11 designated substances, as the project list requires"])),
