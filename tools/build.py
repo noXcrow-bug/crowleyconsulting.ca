@@ -242,7 +242,7 @@ REGISTER = """<figure class="register" aria-label="Example of a live designated 
 home_schema = {"@context": "https://schema.org", "@type": "ProfessionalService", "@id": BIZ_ID, "name": SITE["online"], "alternateName": SITE["legal"], "legalName": SITE["legal"],
     "knowsAbout": ["Asbestos testing", "Designated substance survey", "O. Reg. 278/05 asbestos management", "O. Reg. 490/09 exposure assessment", "Type 3 asbestos clearance", "Silica exposure monitoring", "Isocyanate air monitoring", "Lead paint testing"],
     "url": SITE["domain"] + "/", "logo": SITE["domain"] + "/assets/ncc-logo-primary.svg", "image": SITE["domain"] + "/assets/og-image.png",
-    "description": "Independent asbestos and designated substances surveys, registers, abatement oversight and exposure monitoring in southwestern Ontario.",
+    "description": "Independent asbestos and designated substances surveys, registers, abatement oversight with air monitoring, and Type 3 clearance in southwestern Ontario.",
     "areaServed": [{"@type": "AdministrativeArea", "name": n} for n in ["Windsor-Essex", "Chatham-Kent", "Sarnia-Lambton", "London, Ontario"]],
     "address": {"@type": "PostalAddress", "addressLocality": SITE["city"], "addressRegion": "ON", "addressCountry": "CA"},
     "priceRange": "$$"}
@@ -710,7 +710,7 @@ ct = f"""<section class="hero"><div class="wrap">{crumbs((None, "Contact"))}
 <label class="field">What do you need?<select name="need">
 <option>A designated substance survey or report for a project</option><option>Updating the asbestos record for my building</option>
 <option>A building program for one or more buildings</option><option>A suite check before a rental unit is renovated</option>
-<option>The Cleared-to-Start Pass for my contracting business</option><option>Abatement specification, oversight or Type 3 clearance</option><option>Exposure monitoring for my workplace</option><option>Something else</option></select></label>
+<option>The Cleared-to-Start Pass for my contracting business</option><option>Abatement specification, oversight or Type 3 clearance</option><option>Workplace exposure monitoring (not available yet: notify me at launch)</option><option>Something else</option></select></label>
 <label class="field">Site address (optional)<input name="site_address" autocomplete="street-address"></label>
 <label class="field">Details<textarea name="message" placeholder="Building age, size, what work is planned and when"></textarea></label>
 <label class="check"><input type="checkbox" name="consent_updates" value="yes"> Also send me occasional compliance reminders and updates by email. You can unsubscribe at any time.</label>
