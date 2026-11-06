@@ -402,8 +402,8 @@ page("landlords.html", "Asbestos programs for landlords and condos | Noah Crowle
 # ---------------------------------------------------------------- employers
 w = f"""<section class="hero"><div class="wrap">{crumbs((None, "Employers"))}
 <div class="hero-copy" style="max-width:860px"><h1>Designated substances at work</h1>
-<p class="lede">For employers whose workers use, handle or store a designated substance under O. Reg. 490/09. We're not taking on ongoing workplace programs right now. Exposure monitoring is available as a one-off service, quoted per job.</p>
-<div class="btn-row"><a class="btn amber" href="contact.html">Ask for a quote</a><a class="btn ghost" href="guide-designated-substance-self-check.html">Take the self-check</a></div></div></div></section>
+<p class="lede">For employers whose workers use, handle or store a designated substance under O. Reg. 490/09. We're not taking on ongoing workplace programs right now. Workplace exposure monitoring is not available yet. Leave your details and we will contact you when it launches.</p>
+<div class="btn-row"><a class="btn amber" href="contact.html">Leave your details</a><a class="btn ghost" href="guide-designated-substance-self-check.html">Take the self-check</a></div></div></div></section>
 <section class="section white"><div class="wrap split">
 <div class="duty"><h3>What O. Reg. 490/09 asks of employers</h3>{ul([
  "A written exposure assessment, made with your joint health and safety committee. Redo it after any change that could significantly affect exposure.",
@@ -411,10 +411,10 @@ w = f"""<section class="hero"><div class="wrap">{crumbs((None, "Employers"))}
  "Keep exposure under the occupational exposure limit, with air monitoring results posted, shared with the JHSC and kept for 5 years.",
  "Medical surveillance for asbestos, benzene, coke oven emissions, isocyanates, lead, mercury and silica."])}<p class="small">The regulation doesn't apply on construction projects, where Regulation 833 and the building duties govern.</p></div>
 <div class="prose"><h2>What we can do</h2>
-<p>A day of personal air monitoring on your process during a normal shift, with a short written report you can give your JHSC or a customer who asks. We quote each job in writing before it's booked.</p>
+<p>Workplace exposure monitoring is not available yet. Leave your details and we will contact you when it launches.</p>
 <p>If your building is older than 1990, it also carries the asbestos duties every owner has. See <a href="building-owners.html">building programs</a>.</p></div>
-</div></section>""" + cta("Not sure which duties apply?", "The one-page self-check tells you whether O. Reg. 490/09 applies, or send us the details and we'll quote the job.", "guide-designated-substance-self-check.html")
-page("employers.html", "Designated substances at work | O. Reg. 490/09 | Noah Crowley", "What O. Reg. 490/09 asks of Ontario employers, and one-off exposure monitoring quoted per job in southwestern Ontario.", w, "employers.html")
+</div></section>""" + cta("Not sure which duties apply?", "The one-page self-check tells you whether O. Reg. 490/09 applies, or leave your details and we'll contact you when exposure monitoring launches.", "guide-designated-substance-self-check.html")
+page("employers.html", "Designated substances at work | O. Reg. 490/09 | Noah Crowley", "What O. Reg. 490/09 asks of Ontario employers in southwestern Ontario. Workplace exposure monitoring is not available yet.", w, "employers.html")
 
 # ---------------------------------------------------------------- contractors
 c = segment_hero("Contractors", "Cleared-to-Start Pass",
@@ -594,20 +594,20 @@ trigger_page("silica-exposure-assessment.html", "Silica on renovation and demoli
   "Cutting, grinding or coring concrete, masonry and tile releases respirable crystalline silica, one of Ontario's 11 designated substances. If the work will disturb it, it belongs on the project's designated substance list.",
   [("Where it shows up", "<p>Concrete, mortar, brick, block, ceramic tile, drywall and plaster all contain silica. Every project-specific report we write records where silica-containing materials are and what the planned work will do to them.</p>"),
    ("What the contractor needs", ul(["The designated substance list, with silica-generating work identified", "Work classified by type, with controls such as wet cutting and local exhaust", "Training and respiratory protection where the work calls for it"]) + "<p>We write work-classification letters for silica and lead as a project service.</p>"),
-   ("Price", "<p>Silica is covered in every project-specific report, from $1,500. Exposure monitoring for employers is quoted per job; see <a href=\"employers.html\">designated substances at work</a>.</p>"),
+   ("Price", "<p>Silica is covered in every project-specific report, from $1,500. Exposure monitoring is not available yet. <a href=\"contact.html\">Contact us</a> to be notified when it launches.</p>"),
    ("For contractors", "<p>Pass holders get 25% off work-classification letters. See the <a href=\"contractors.html\">Cleared-to-Start Pass</a>.</p>")],
   rel(("services.html", "Reports and prices", "Every report, from a limited sampling visit to a pre-demolition survey"),
       ("contractors.html", "Cleared-to-Start Pass", "The compliance desk for contractors")))
 
 trigger_page("isocyanate-air-monitoring.html", "Isocyanate air monitoring",
   "Isocyanate air monitoring in southwestern Ontario | Noah Crowley",
-  "What O. Reg. 490/09 asks of employers who spray or mix isocyanates, and one-off air monitoring quoted per job.",
+  "What O. Reg. 490/09 asks of employers who spray or mix isocyanates. Exposure monitoring is not available yet.",
   "Collision and auto body paint booths, paint lines, spray foam installers and polyurethane manufacturers work with isocyanates, one of Ontario's designated substances.",
   [("What the regulation asks", ul(["A written exposure assessment made with your JHSC, redone after any change that could significantly affect exposure", "A control program where health may be affected", "Air monitoring, with results posted for 14 days, copied to the JHSC and kept 5 years", "Medical surveillance, which applies to isocyanates"])),
-   ("What we offer", "<p>We're not taking on ongoing workplace programs right now. A day of air monitoring during normal spraying, with a short written report, is available as a one-off service, quoted in writing per job.</p>"),
+   ("What we offer", "<p>Exposure monitoring is not available yet. <a href=\"contact.html\">Contact us</a> to be notified when it launches.</p>"),
    ("Your building", "<p>Older shops also carry the asbestos duties every building owner has. See <a href=\"building-owners.html\">building programs</a>.</p>")],
   rel(("guide-designated-substance-self-check.html", "Designated substance self-check", "A one-page test of whether O. Reg. 490/09 applies to you"),
-      ("employers.html", "Designated substances at work", "What employers need on file, and how to get a quote")))
+      ("employers.html", "Designated substances at work", "What employers need on file under O. Reg. 490/09")))
 
 # ---------------------------------------------------------------- guides (lead magnets)
 def guide_page(fname, h1, title, desc, lede, items, after, cta_href):
@@ -661,7 +661,7 @@ guide_page("guide-designated-substance-self-check.html", "Designated substance s
    ("Is medical surveillance in place where required?", "Required for asbestos, benzene, coke oven emissions, isocyanates, lead, mercury and silica."),
    ("If respirators are used, is there a respiratory protection program?", "The most common gap in the Ministry's 2024–25 chemical exposure campaign."),
    ("Are other employers' workers protected at your site?", "Contractors are told about the substance and follow joint procedures.")],
-  "<p>Exposure monitoring is available as a one-off service, quoted per job. <a href=\"contact.html\">Ask for a quote</a>.</p>", "obligation-check.html")
+  "<p>Exposure monitoring is not available yet. <a href=\"contact.html\">Contact us</a> to be notified when it launches.</p>", "obligation-check.html")
 
 guide_page("guide-demolition-renovation-dss.html", "Demolition and renovation DSS guide",
   "Demolition and renovation designated substance survey guide for Windsor-Essex | Noah Crowley",
