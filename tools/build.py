@@ -218,7 +218,7 @@ def value_table(rows, total, program, saving=""):
 def start_steps(entry, entry_text):
     return f"""<div class="steps">
 <div class="step"><h3>{entry}</h3><p>{entry_text}</p></div>
-<div class="step"><h3>Record and register</h3><p>Your report becomes the on-site record and a live online register you can show an inspector or a contractor on a phone.</p></div>
+<div class="step"><h3>Record and register</h3><p>Your report becomes the on-site record and a live online register you can show an inspector or a contractor on a phone. <a href="register-example.html">See an example</a></p></div>
 <div class="step"><h3>Monthly coverage</h3><p>The yearly update, notices and reviews happen on schedule, and every report after that costs you the member rate.</p></div></div>"""
 
 def segment_hero(crumb, h1, lede, seg):
@@ -227,17 +227,63 @@ def segment_hero(crumb, h1, lede, seg):
 <div class="btn-row"><a class="btn amber" href="obligation-check.html#{seg}">Check what applies to you</a><a class="btn ghost" href="contact.html#book" data-book>Book a call</a></div></div></div></section>"""
 
 # ---------------------------------------------------------------- home
-REGISTER = """<figure class="register" aria-label="Example of a live designated substance register">
-<div class="reg-head"><b>Designated substance register</b><span>Example</span></div>
-<div class="reg-meta"><span><strong>Last reassessed</strong> Sep 14, 2026</span><span><strong>Next due</strong> Sep 2027</span><span><strong>Pre-work reviews left</strong> 3</span></div>
-<table class="reg-table"><thead><tr><th>Location</th><th>Material</th><th>Status</th></tr></thead><tbody>
-<tr><td class="loc" data-mat="Pipe elbow insulation">Boiler room</td><td class="mat">Pipe elbow insulation</td><td><span class="status act">Act now</span></td></tr>
-<tr><td class="loc" data-mat="23 cm [9-inch] floor tile and mastic">Corridor, 2nd floor</td><td class="mat">23 cm [9-inch] floor tile and mastic</td><td><span class="status monitor">Monitor</span></td></tr>
-<tr><td class="loc" data-mat="Textured ceiling finish">Stairwell B</td><td class="mat">Textured ceiling finish</td><td><span class="status monitor">Monitor</span></td></tr>
-<tr><td class="loc" data-mat="Drywall joint compound">Suite 204</td><td class="mat">Drywall joint compound</td><td><span class="status good">Good</span></td></tr>
-<tr><td class="loc" data-mat="Window glazing (lead)">Front entrance</td><td class="mat">Window glazing (lead)</td><td><span class="status good">Good</span></td></tr>
-</tbody></table>
-<figcaption class="reg-foot">Every program includes a register like this, with photos, results and condition history.</figcaption></figure>"""
+# ---------------------------------------------------------------- the register (homepage card and the example page)
+# Example data only: invented buildings, shown to explain what a program client sees. Dates are ISO; quantities metric with imperial in brackets.
+ST_LABEL = {"act": "Act now", "monitor": "Monitor", "good": "Good"}
+MARK = ('<svg class="reg-mark" viewBox="0 0 512 512" aria-hidden="true"><polygon pathLength="1" points="256,75.78 412.08,165.89 412.08,346.11 256,436.22 99.92,346.11 99.92,165.89"/>'
+        '<line pathLength="1" x1="180.97" y1="264.68" x2="235.95" y2="183.18"/><line pathLength="1" class="am" x1="210.19" y1="323.91" x2="301.81" y2="188.09"/><line pathLength="1" x1="276.05" y1="328.82" x2="331.03" y2="247.32"/></svg>')
+def fdate(iso):
+    y, m, d = map(int, iso.split("-")); return date(y, m, d).strftime("%b %-d, %Y")
+EX_BUILDINGS = [
+ {"slug": "brockmere-centre", "name": "Brockmere Centre", "where": "Windsor · 4-storey office and retail", "built": 1968,
+  "last": "2026-09-14", "next": "2027-09-14", "reviews": "3 of 6 left", "surveys": [("2024-03-22", "Asbestos survey, whole building", "NCC-EX001"), ("2026-09-14", "Yearly reassessment", "NCC-EX001-R2")],
+  "rows": [
+   {"loc": "Boiler room", "mat": "Pipe elbow insulation", "st": "act", "res": "Chrysotile 40–50%", "type": "Friable", "id": "NCC-EX001-ASB-04A", "qty": "14 elbows",
+    "do": "Keep the room locked to trades and schedule repair or removal before maintenance work in the room. The repair quote is attached to the record.",
+    "hist": [("2026-09-14", "Poor: jacket torn on 3 elbows, debris on the floor"), ("2025-09-10", "Fair: jacket scuffed"), ("2024-03-22", "Good: found in baseline survey")]},
+   {"loc": "Corridor, 2nd floor", "mat": "23 cm [9-inch] floor tile and mastic", "st": "monitor", "res": "Tile: chrysotile 2–5% · Mastic: none detected", "type": "Non-friable", "id": "NCC-EX001-ASB-07A", "qty": "85 m² [915 ft²]",
+    "do": "Leave in place. No grinding, scraping or tile removal. Three cracked tiles near the elevator are re-checked every visit.",
+    "hist": [("2026-09-14", "Fair: 3 cracked tiles near the elevator"), ("2024-03-22", "Good")]},
+   {"loc": "Stairwell B", "mat": "Textured ceiling finish", "st": "monitor", "res": "Chrysotile 2–5%", "type": "Friable", "id": "NCC-EX001-ASB-11A", "qty": "40 m² [430 ft²]",
+    "do": "Fix the roof leak above the top landing, then call: a water-damaged patch is checked before anyone touches it.",
+    "hist": [("2026-09-14", "Good, with a water stain at the top landing"), ("2024-03-22", "Good")]},
+   {"loc": "Suite 204", "mat": "Drywall joint compound", "st": "good", "res": "Chrysotile 1–2%", "type": "Non-friable", "id": "NCC-EX001-ASB-15A", "qty": "Walls throughout",
+    "do": "Leave in place. Call before anyone drills, cuts or opens a wall: a desk review comes back within 1 business day.",
+    "hist": [("2026-09-14", "Good: painted, intact"), ("2024-03-22", "Good")]},
+   {"loc": "Front entrance", "mat": "Window glazing (lead)", "st": "good", "res": "Lead detected, 1.2% by weight", "type": "Painted / glazing", "id": "NCC-EX001-PB-02", "qty": "6 window units",
+    "do": "Leave in place. No sanding or heat gun. Window replacement needs lead precautions in the tender.",
+    "hist": [("2026-09-14", "Good: intact"), ("2024-03-22", "Good")]}]},
+ {"slug": "ferrier-court", "name": "Ferrier Court", "where": "Windsor · 24-unit apartment building", "built": 1979,
+  "last": "2026-08-27", "next": "2027-08-27", "reviews": "5 of 6 left", "surveys": [("2025-08-19", "DSS update of 2014 report", "NCC-EX002")],
+  "rows": [
+   {"loc": "Basement laundry", "mat": "Vinyl sheet flooring", "st": "monitor", "res": "Chrysotile 15–25% (backing)", "type": "Non-friable", "id": "NCC-EX002-ASB-02A", "qty": "30 m² [320 ft²]",
+    "do": "Leave in place. A lifted seam by the dryers is re-checked every visit; don't cut or pull the flooring.",
+    "hist": [("2026-08-27", "Fair: lifted seam by the dryers"), ("2025-08-19", "Good")]},
+   {"loc": "Suites, all floors", "mat": "Stipple ceiling", "st": "good", "res": "Chrysotile 1–3%", "type": "Friable", "id": "NCC-EX002-ASB-05A", "qty": "Throughout",
+    "do": "Leave in place. Suite renovations get a pre-work check before any ceiling work, fixtures included.",
+    "hist": [("2026-08-27", "Good"), ("2025-08-19", "Good")]},
+   {"loc": "Mechanical room", "mat": "Tank insulation", "st": "good", "res": "None detected", "type": "Tested: not asbestos", "id": "NCC-EX002-ASB-08A", "qty": "1 tank",
+    "do": "No asbestos precautions needed for this material.",
+    "hist": [("2025-08-19", "Sampled: no asbestos")]}]},
+]
+def reg_rows(rows, pre):
+    out = []
+    for i, r in enumerate(rows):
+        rid = f"{pre}-{i+1}"
+        hist = "".join(f'<li><span class="mono">{fdate(d)}</span><span>{e(t)}</span></li>' for d, t in r["hist"])
+        out.append(f'<tr class="r" style="--i:{i}"><td class="loc" data-mat="{e(r["mat"])}"><button class="r-btn" type="button" aria-expanded="false" aria-controls="{rid}">{e(r["loc"])}<svg class="i r-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg></button></td>'
+                   f'<td class="mat">{e(r["mat"])}</td><td><span class="status {r["st"]}">{ST_LABEL[r["st"]]}</span></td></tr>'
+                   f'<tr class="rd" id="{rid}" hidden><td colspan="3"><div class="rd-in">'
+                   f'<dl class="rd-grid"><div><dt>Result</dt><dd class="mono">{e(r["res"])}</dd></div><div><dt>Type</dt><dd>{e(r["type"])}</dd></div><div><dt>Sample</dt><dd class="mono">{e(r["id"])}</dd></div><div><dt>Quantity</dt><dd>{e(r["qty"])}</dd></div></dl>'
+                   f'<p class="rd-do"><b>What to do</b>{e(r["do"])}</p><div class="rd-hist"><b>Condition history</b><ol>{hist}</ol></div></div></td></tr>')
+    return "".join(out)
+def register(b, pre, title="Designated substance register", tag="Example", foot=""):
+    return f"""<figure class="register" data-register aria-label="Example of a live designated substance register">
+<div class="reg-head">{MARK}<b>{e(title)}</b><span>{e(tag)}</span></div>
+<div class="reg-meta"><span><strong>Last reassessed</strong> <span class="mono">{fdate(b["last"])}</span></span><span><strong>Next due</strong> <span class="mono">{fdate(b["next"])}</span></span><span><strong>Pre-work reviews</strong> {e(b["reviews"])}</span></div>
+<table class="reg-table"><thead><tr><th>Location</th><th>Material</th><th>Status</th></tr></thead><tbody>{reg_rows(b["rows"], pre)}</tbody></table>
+{f'<figcaption class="reg-foot">{foot}</figcaption>' if foot else ""}</figure>"""
+REGISTER = register(EX_BUILDINGS[0], "hr", foot='Tap a row to see the result and its history. <a href="register-example.html">See a full example register</a>')
 
 home_schema = {"@context": "https://schema.org", "@type": "ProfessionalService", "@id": BIZ_ID, "name": SITE["online"], "alternateName": SITE["legal"], "legalName": SITE["legal"],
     "knowsAbout": ["Asbestos testing", "Designated substance survey", "O. Reg. 278/05 asbestos management", "O. Reg. 490/09 exposure assessment", "Type 3 asbestos clearance", "Silica exposure monitoring", "Isocyanate air monitoring", "Lead paint testing"],
@@ -487,6 +533,31 @@ s = f"""<section class="hero"><div class="wrap">{crumbs((None, "Reports and pric
 <section class="section white"><div class="wrap"><div class="section-head"><h2>Common jobs</h2></div>
 <div class="link-list">{"".join(f'<a href="{h}"><strong>{t}</strong><span>What it involves, what it costs and how long it takes</span></a>' for h, t in TRIGGERS)}</div></div></section>""" + cta("Not sure which report you need?", "The Obligation Check points you to the right one, or send us the job details and we'll quote it.")
 page("services.html", "Asbestos and designated substance reports and prices | Noah Crowley", "Designated substance reports and asbestos surveys in southwestern Ontario, priced as a report fee plus samples: from $650 for a limited sampling visit and $1,500 for a project-specific DSS.", s, "services.html")
+
+# ---------------------------------------------------------------- example register (public demo of the hosted register)
+def ex_building(b, n):
+    attn = [r for r in b["rows"] if r["st"] in ("act", "monitor")]
+    attn.sort(key=lambda r: r["st"] != "act")
+    at = "".join(f'<li class="{r["st"]}"><span class="status {r["st"]}">{ST_LABEL[r["st"]]}</span><b>{e(r["loc"])} · {e(r["mat"])}</b><span>{e(r["do"])}</span></li>' for r in attn)
+    sv = "".join(f'<li><span class="mono">{fdate(d)}</span><span>{e(t)} · <span class="mono">{e(no)}</span></span></li>' for d, t, no in b["surveys"])
+    return f"""<section class="bld" id="{b['slug']}" aria-labelledby="h-{b['slug']}">
+<div class="bld-head"><div><p class="eyebrow">{e(b['where'])} · built <span class="mono">{b['built']}</span></p><h2 id="h-{b['slug']}">{e(b['name'])}</h2></div></div>
+<div class="bld-grid"><div class="bld-main">{register(b, "b" + str(n))}</div>
+<aside class="bld-side"><h3>Needs attention</h3>{f'<ul class="attn">{at}</ul>' if at else '<p class="small">Nothing needs action right now.</p>'}
+<h3>Surveys on file</h3><ul class="svlog">{sv}</ul></aside></div></section>"""
+ex = f"""<section class="hero"><div class="wrap">{crumbs(("building-owners.html", "Building programs"), (None, "Example register"))}
+<div class="hero-copy" style="max-width:62ch"><p class="ex-flag"><b>Example</b> Invented client and buildings, shown to explain how a program client's register works.</p>
+<h1>Your asbestos record, on any phone</h1>
+<p class="lede">Every building program includes a hosted register like this one. Show it to an inspector, send it to a contractor before they bid, and check a material before anyone drills. It's updated within 5 business days of every survey, reassessment or lab result.</p></div>
+</div></section>
+<section class="section tight"><div class="wrap ex-wrap">
+<nav class="bld-switch" aria-label="Buildings"><a href="#all" data-go="all">All buildings</a>{"".join(f'<a href="#{b["slug"]}" data-go="{b["slug"]}">{e(b["name"])}</a>' for b in EX_BUILDINGS)}</nav>
+<div class="drill"><div><h2>Before anyone drills, cuts or lifts a tile</h2><p>Check the material here first. If it says Act now or Monitor, or it isn't listed, call before work starts. A written desk review comes back within 1 business day.</p></div>
+{f'<a class="btn amber" href="{tel()}">{ICON["phone"]}Call {e(SITE["phone"])}</a>' if SITE["phone"] else ''}</div>
+{"".join(ex_building(b, i) for i, b in enumerate(EX_BUILDINGS))}
+<p class="small" style="max-width:80ch">A register summarises the surveys and condition checks listed for each building and is kept under O. Reg. 278/05 and section 30 of the Occupational Health and Safety Act. It doesn't replace the full survey reports. Materials hidden in walls, ceilings or equipment may not have been seen: if a suspect material turns up during work, stop and call.</p>
+</div></section>""" + cta("Want a register like this for your building?", "Take the Obligation Check to see which program fits, or book a free 30-minute call.", "obligation-check.html")
+page("register-example.html", "Example asbestos register | What program clients see | Noah Crowley", "An example of the hosted designated substance register every building program includes: statuses, lab results, condition history and what to do, on any phone.", ex, "building-owners.html")
 
 # ---------------------------------------------------------------- quiz
 q = f"""<section class="hero"><div class="wrap">{crumbs((None, "Obligation Check"))}
