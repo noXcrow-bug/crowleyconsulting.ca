@@ -25,7 +25,7 @@ ASSET_V = hashlib.sha1(b"".join(open(os.path.join(ROOT, "assets", f), "rb").read
 PRICE_BOOK = "PB-2026.11b"
 TIERS = {
  "bp_ess": dict(program="Building programs", name="Compliance Essentials", price=69, fits="Owners who need the yearly record kept current", page="building-owners.html",
-   inc=["Yearly asbestos record update and visual condition inspection", "Hosted online register and an on-site inspector binder", "Occupier and contractor notice templates", "Annual compliance letter for insurers, lenders and tenants", "10% off reports, site visits and project work", "Phone advice if suspect material turns up"]),
+   inc=["Yearly asbestos record update and visual condition inspection", "Client register snapshot after each change, and an on-site inspector binder", "Occupier and contractor notice templates", "Annual compliance letter for insurers, lenders and tenants", "10% off reports, site visits and project work", "Phone advice if suspect material turns up"]),
  "bp_pr": dict(program="Building programs", name="Project Ready", price=149, fits="Buildings where contractors are working several times a year", page="building-owners.html",
    inc=["Yearly asbestos record update and visual condition inspection", "Notices prepared and issued to occupiers and contractors for you", "6 written “can we drill here?” desk reviews a year, answered within 1 business day", "1 maintenance staff awareness session a year", "15% off reports, site visits and project work", "Fieldwork booked within 5 business days; site visit the next business day if something turns up"]),
  "bp_fp": dict(program="Building programs", name="Facility Partner", price=529, fits="Three or more buildings, or a board or JHSC asking questions", page="building-owners.html",
@@ -215,10 +215,15 @@ def value_table(rows, total, program, saving=""):
 <tbody>{body}</tbody><tfoot><tr><th scope="row">The same year à la carte</th><td class="num">{money(total)}</td></tr>
 <tr><th scope="row">The same year in the program</th><td class="num">{money(program)}</td></tr></tfoot></table></div>{f'<p class="small" style="margin-top:10px">{saving}</p>' if saving else ''}"""
 
-def start_steps(entry, entry_text):
+def start_steps(entry, entry_text, contractor=False):
+    if contractor:
+        return f"""<div class="steps">
+<div class="step"><h3>{entry}</h3><p>{entry_text}</p></div>
+<div class="step"><h3>Your due-diligence file</h3><p>Each report goes to the building owner, because it's the owner's list, with a copy for you to keep with the job.</p></div>
+<div class="step"><h3>Monthly coverage</h3><p>Pre-bid reviews, the compliance desk and faster site visits run every month, and every check after that costs you the member rate.</p></div></div>"""
     return f"""<div class="steps">
 <div class="step"><h3>{entry}</h3><p>{entry_text}</p></div>
-<div class="step"><h3>Record and register</h3><p>Your report becomes the on-site record and a live online register you can show an inspector or a contractor on a phone. <a href="register-example.html">See an example</a></p></div>
+<div class="step"><h3>Record and register</h3><p>Your report becomes the on-site record and a register snapshot, refreshed after each change, that you can show an inspector or a contractor on a phone. <a href="register-example.html">See an example</a></p></div>
 <div class="step"><h3>Monthly coverage</h3><p>The yearly update, notices and reviews happen on schedule, and every report after that costs you the member rate.</p></div></div>"""
 
 def segment_hero(crumb, h1, lede, seg):
@@ -234,37 +239,40 @@ MARK = ('<svg class="reg-mark" viewBox="0 0 512 512" aria-hidden="true"><polygon
         '<line pathLength="1" x1="180.97" y1="264.68" x2="235.95" y2="183.18"/><line pathLength="1" class="am" x1="210.19" y1="323.91" x2="301.81" y2="188.09"/><line pathLength="1" x1="276.05" y1="328.82" x2="331.03" y2="247.32"/></svg>')
 def fdate(iso):
     y, m, d = map(int, iso.split("-")); return date(y, m, d).strftime("%b %-d, %Y")
-EX_BUILDINGS = [
- {"slug": "brockmere-centre", "name": "Brockmere Centre", "where": "Windsor · 4-storey office and retail", "built": 1968,
-  "last": "2026-09-14", "next": "2027-09-14", "reviews": "3 of 6 left", "surveys": [("2024-03-22", "Asbestos survey, whole building", "NCC-EX001"), ("2026-09-14", "Yearly reassessment", "NCC-EX001-R2")],
+EX_BUILDINGS = [  # mirrors the Survey Workbench examples bexbrock01 / sexbrock01 and bexferr01 / sexferr01 (example: true); change them there first
+ {"slug": "brockmere-professional-centre", "name": "Brockmere Professional Centre", "where": "Windsor · office building", "built": 1971,
+  "last": "2026-09-15", "next": "2027-09-15", "reviews": "Unlimited (Facility Partner)", "surveys": [("2026-09-15", "Asbestos building survey (s. 8 baseline)", "NCC-EX001")],
   "rows": [
-   {"loc": "Boiler room", "mat": "Pipe elbow insulation", "st": "act", "res": "Chrysotile 40–50%", "type": "Friable", "id": "NCC-EX001-ASB-04A", "qty": "14 elbows",
-    "do": "Keep the room locked to trades and schedule repair or removal before maintenance work in the room. The repair quote is attached to the record.",
-    "hist": [("2026-09-14", "Poor: jacket torn on 3 elbows, debris on the floor"), ("2025-09-10", "Fair: jacket scuffed"), ("2024-03-22", "Good: found in baseline survey")]},
-   {"loc": "Corridor, 2nd floor", "mat": "23 cm [9-inch] floor tile and mastic", "st": "monitor", "res": "Tile: chrysotile 2–5% · Mastic: none detected", "type": "Non-friable", "id": "NCC-EX001-ASB-07A", "qty": "85 m² [915 ft²]",
-    "do": "Leave in place. No grinding, scraping or tile removal. Three cracked tiles near the elevator are re-checked every visit.",
-    "hist": [("2026-09-14", "Fair: 3 cracked tiles near the elevator"), ("2024-03-22", "Good")]},
-   {"loc": "Stairwell B", "mat": "Textured ceiling finish", "st": "monitor", "res": "Chrysotile 2–5%", "type": "Friable", "id": "NCC-EX001-ASB-11A", "qty": "40 m² [430 ft²]",
-    "do": "Fix the roof leak above the top landing, then call: a water-damaged patch is checked before anyone touches it.",
-    "hist": [("2026-09-14", "Good, with a water stain at the top landing"), ("2024-03-22", "Good")]},
-   {"loc": "Suite 204", "mat": "Drywall joint compound", "st": "good", "res": "Chrysotile 1–2%", "type": "Non-friable", "id": "NCC-EX001-ASB-15A", "qty": "Walls throughout",
-    "do": "Leave in place. Call before anyone drills, cuts or opens a wall: a desk review comes back within 1 business day.",
-    "hist": [("2026-09-14", "Good: painted, intact"), ("2024-03-22", "Good")]},
-   {"loc": "Front entrance", "mat": "Window glazing (lead)", "st": "good", "res": "Lead detected, 1.2% by weight", "type": "Painted / glazing", "id": "NCC-EX001-PB-02", "qty": "6 window units",
-    "do": "Leave in place. No sanding or heat gun. Window replacement needs lead precautions in the tender.",
-    "hist": [("2026-09-14", "Good: intact"), ("2024-03-22", "Good")]}]},
- {"slug": "ferrier-court", "name": "Ferrier Court", "where": "Windsor · 24-unit apartment building", "built": 1979,
-  "last": "2026-08-27", "next": "2027-08-27", "reviews": "5 of 6 left", "surveys": [("2025-08-19", "DSS update of 2014 report", "NCC-EX002")],
+   {"loc": "Mechanical room", "mat": "Pipe fitting insulation (elbows and tees)", "st": "act", "res": "Chrysotile 45%", "type": "Friable", "id": "NCC-EX001-ASB-04A", "qty": "38 fittings",
+    "do": "One elbow at hot-water riser 2 was struck during a valve replacement. The area is roped off and repair under Type 2 procedures is booked. Call before any valve or pipe work in the room.",
+    "hist": [("2026-11-03", "Poor: one elbow torn and crumbling at riser 2; rest of the fittings unchanged"), ("2026-09-15", "Fair: found in the baseline survey")]},
+   {"loc": "Corridors and tenant suites", "mat": "23 cm [9-inch] floor tile and mastic", "st": "monitor", "res": "Tile: none detected · Mastic: chrysotile 4%", "type": "Non-friable", "id": "NCC-EX001-ASB-03A", "qty": "620 m² [6,674 ft²]",
+    "do": "Leave in place. No grinding, scraping or tile removal. New flooring can go over it; removal is quoted first.",
+    "hist": [("2026-10-08", "Good: checked under the carpet at Suite 204 during a fit-out review"), ("2026-09-15", "Good: found in the baseline survey")]},
+   {"loc": "Main entrance and lobby", "mat": "Textured ceiling finish (stipple)", "st": "good", "res": "Chrysotile 2%", "type": "Friable", "id": "NCC-EX001-ASB-06A", "qty": "140 m² [1,507 ft²]",
+    "do": "Leave in place. Nobody scrapes, sands or drills the lobby ceiling without a desk review first.",
+    "hist": [("2026-09-15", "Good: found in the baseline survey")]},
+   {"loc": "Roof", "mat": "Built-up roofing felt", "st": "good", "res": "Presumed asbestos (not sampled)", "type": "Non-friable", "id": "Not sampled", "qty": "950 m² [10,226 ft²]",
+    "do": "Treated as asbestos until it's tested. Roof work is quoted with sampling first, or with asbestos procedures.",
+    "hist": [("2026-09-15", "Good: presumed in the baseline survey")]},
+   {"loc": "Stairwells", "mat": "Cream enamel on steel handrails (lead)", "st": "good", "res": "Lead 0.9% by weight (lead-based)", "type": "Paint", "id": "NCC-EX001-PB-01", "qty": "Stair handrails",
+    "do": "Leave in place. No sanding, grinding or heat gun. Refinishing needs lead precautions in the tender.",
+    "hist": [("2026-09-15", "Good: intact")]}]},
+ {"slug": "ferrand-row-plaza", "name": "Ferrand Row Plaza", "where": "Windsor · retail plaza", "built": 1964,
+  "last": "2026-09-29", "next": "2027-09-29", "reviews": "Unlimited (Facility Partner)", "surveys": [("2026-09-29", "DSS update or re-assessment", "NCC-EX002")],
   "rows": [
-   {"loc": "Basement laundry", "mat": "Vinyl sheet flooring", "st": "monitor", "res": "Chrysotile 15–25% (backing)", "type": "Non-friable", "id": "NCC-EX002-ASB-02A", "qty": "30 m² [320 ft²]",
-    "do": "Leave in place. A lifted seam by the dryers is re-checked every visit; don't cut or pull the flooring.",
-    "hist": [("2026-08-27", "Fair: lifted seam by the dryers"), ("2025-08-19", "Good")]},
-   {"loc": "Suites, all floors", "mat": "Stipple ceiling", "st": "good", "res": "Chrysotile 1–3%", "type": "Friable", "id": "NCC-EX002-ASB-05A", "qty": "Throughout",
-    "do": "Leave in place. Suite renovations get a pre-work check before any ceiling work, fixtures included.",
-    "hist": [("2026-08-27", "Good"), ("2025-08-19", "Good")]},
-   {"loc": "Mechanical room", "mat": "Tank insulation", "st": "good", "res": "None detected", "type": "Tested: not asbestos", "id": "NCC-EX002-ASB-08A", "qty": "1 tank",
-    "do": "No asbestos precautions needed for this material.",
-    "hist": [("2025-08-19", "Sampled: no asbestos")]}]},
+   {"loc": "Storefront canopy", "mat": "Asbestos cement soffit panels", "st": "monitor", "res": "Visually identified asbestos cement", "type": "Non-friable", "id": "Visual ID", "qty": "210 m² [2,260 ft²]",
+    "do": "Don't drill or cut the soffit. Use the existing bracket holes for signs, or have a panel removed under Type 1 procedures first. Two cracked panels above Unit 6 are sealed or replaced before the new sign goes up.",
+    "hist": [("2026-10-30", "Fair: two cracked panels above the Unit 6 entrance, no debris"), ("2026-09-29", "Good")]},
+   {"loc": "Rear service corridor", "mat": "30 cm [12-inch] floor tile and mastic", "st": "good", "res": "Tile: none detected · Mastic: chrysotile 3%", "type": "Non-friable", "id": "NCC-EX002-ASB-02A", "qty": "160 m² [1,722 ft²]",
+    "do": "Leave in place. No grinding or scraping; call before any flooring work in the corridor.",
+    "hist": [("2026-09-29", "Good")]},
+   {"loc": "Roof", "mat": "Roofing mastic at drains and unit curbs", "st": "good", "res": "Presumed asbestos (not sampled)", "type": "Non-friable", "id": "Not sampled", "qty": "12 m² [129 ft²]",
+    "do": "Treated as asbestos until it's tested. Rooftop unit or drain work is quoted with sampling first.",
+    "hist": [("2026-09-29", "Good: presumed")]},
+   {"loc": "Rear lane", "mat": "Yellow paint on steel bollards (lead)", "st": "good", "res": "Lead 1.8% by weight (lead-based)", "type": "Paint", "id": "NCC-EX002-PB-01", "qty": "Bollards",
+    "do": "Leave in place. No sanding, grinding or torch cutting without lead precautions.",
+    "hist": [("2026-09-29", "Good")]}]},
 ]
 def reg_rows(rows, pre):
     out = []
@@ -278,7 +286,7 @@ def reg_rows(rows, pre):
                    f'<p class="rd-do"><b>What to do</b>{e(r["do"])}</p><div class="rd-hist"><b>Condition history</b><ol>{hist}</ol></div></div></td></tr>')
     return "".join(out)
 def register(b, pre, title="Designated substance register", tag="Example", foot=""):
-    return f"""<figure class="register" data-register aria-label="Example of a live designated substance register">
+    return f"""<figure class="register" data-register aria-label="Example of a designated substance register snapshot">
 <div class="reg-head">{MARK}<b>{e(title)}</b><span>{e(tag)}</span></div>
 <div class="reg-meta"><span><strong>Last reassessed</strong> <span class="mono">{fdate(b["last"])}</span></span><span><strong>Next due</strong> <span class="mono">{fdate(b["next"])}</span></span><span><strong>Pre-work reviews</strong> {e(b["reviews"])}</span></div>
 <table class="reg-table"><thead><tr><th>Location</th><th>Material</th><th>Status</th></tr></thead><tbody>{reg_rows(b["rows"], pre)}</tbody></table>
@@ -286,7 +294,7 @@ def register(b, pre, title="Designated substance register", tag="Example", foot=
 REGISTER = register(EX_BUILDINGS[0], "hr", foot='Tap a row to see the result and its history. <a href="register-example.html">See a full example register</a>')
 
 home_schema = {"@context": "https://schema.org", "@type": "ProfessionalService", "@id": BIZ_ID, "name": SITE["online"], "alternateName": SITE["legal"], "legalName": SITE["legal"],
-    "knowsAbout": ["Asbestos testing", "Designated substance survey", "O. Reg. 278/05 asbestos management", "O. Reg. 490/09 exposure assessment", "Type 3 asbestos clearance", "Silica exposure monitoring", "Isocyanate air monitoring", "Lead paint testing"],
+    "knowsAbout": ["Asbestos testing", "Designated substance survey", "O. Reg. 278/05 asbestos management", "Type 3 asbestos clearance", "Lead paint testing"],
     "url": SITE["domain"] + "/", "logo": SITE["domain"] + "/assets/ncc-logo-primary.svg", "image": SITE["domain"] + "/assets/og-image.png",
     "description": "Independent asbestos and designated substances surveys, registers, abatement oversight with air monitoring, and Type 3 clearance in southwestern Ontario.",
     "areaServed": [{"@type": "AdministrativeArea", "name": n} for n in ["Windsor-Essex", "Chatham-Kent", "Sarnia-Lambton", "London, Ontario"]],
@@ -369,7 +377,7 @@ page("index.html", "Asbestos & Designated Substance Consulting in Windsor, ON | 
 BP_ROWS = [
  ("Fits", ["Owners who need the yearly record kept current", "Contractors working in the building several times a year", "3 or more buildings, or a board or JHSC asking questions"]),
  ("Yearly record update and condition inspection", ["Once a year", "Once a year", "Twice a year"]),
- ("Hosted register and inspector binder", ["Yes", "Yes", "Yes, with a portfolio view"]),
+ ("Register snapshot and inspector binder", ["Yes", "Yes", "Yes, one per building"]),
  ("Occupier and contractor notices", ["Templates supplied", "Prepared and issued for you", "Prepared, issued and tracked"]),
  ("“Can we drill here?” desk reviews, within 1 business day", ["Not included", "6 a year", "Unlimited"]),
  ("Maintenance staff awareness training", ["Not included", "1 session a year", "2 sessions a year"]),
@@ -448,7 +456,7 @@ page("landlords.html", "Asbestos programs for landlords and condos | Noah Crowle
 # ---------------------------------------------------------------- employers
 w = f"""<section class="hero"><div class="wrap">{crumbs((None, "Employers"))}
 <div class="hero-copy" style="max-width:860px"><h1>Designated substances at work</h1>
-<p class="lede">For employers whose workers use, handle or store a designated substance under O. Reg. 490/09. We're not taking on ongoing workplace programs right now. Workplace exposure monitoring is not available yet. Leave your details and we will contact you when it launches.</p>
+<p class="lede">For employers whose workers use, handle or store a designated substance under O. Reg. 490/09. We're not taking on ongoing workplace programs right now. Workplace exposure monitoring is not available yet. Call 519-890-9654 and tell us what you need, and we'll contact you when it launches.</p>
 <div class="btn-row"><a class="btn amber" href="contact.html">Leave your details</a><a class="btn ghost" href="guide-designated-substance-self-check.html">Take the self-check</a></div></div></div></section>
 <section class="section white"><div class="wrap split">
 <div class="duty"><h3>What O. Reg. 490/09 asks of employers</h3>{ul([
@@ -457,7 +465,7 @@ w = f"""<section class="hero"><div class="wrap">{crumbs((None, "Employers"))}
  "Keep exposure under the occupational exposure limit, with air monitoring results posted, shared with the JHSC and kept for 5 years.",
  "Medical surveillance for asbestos, benzene, coke oven emissions, isocyanates, lead, mercury and silica."])}<p class="small">The regulation doesn't apply on construction projects, where Regulation 833 and the building duties govern.</p></div>
 <div class="prose"><h2>What we can do</h2>
-<p>Workplace exposure monitoring is not available yet. Leave your details and we will contact you when it launches.</p>
+<p>Workplace exposure monitoring is not available yet. Call 519-890-9654 and tell us what you need, and we'll contact you when it launches.</p>
 <p>If your building is older than 1990, it also carries the asbestos duties every owner has. See <a href="building-owners.html">building programs</a>.</p></div>
 </div></section>""" + cta("Not sure which duties apply?", "The one-page self-check tells you whether O. Reg. 490/09 applies, or leave your details and we'll contact you when exposure monitoring launches.", "guide-designated-substance-self-check.html")
 page("employers.html", "Designated substances at work | O. Reg. 490/09 | Noah Crowley", "What O. Reg. 490/09 asks of Ontario employers in southwestern Ontario. Workplace exposure monitoring is not available yet.", w, "employers.html")
@@ -502,7 +510,7 @@ c = segment_hero("Contractors", "Cleared-to-Start Pass",
 <tr><th scope="row">Suspect material</th><td data-label="Without the Pass">Found mid-job: stop work, notify, wait</td><td data-label="With the Pass">Found before mobilizing and priced into the quote</td></tr>
 </tbody></table></div>
 <p class="small">Prefer not to bill the line? Absorb it and market “checked before we cut” to clients and insurers instead.</p></div>
-<div class="prose"><h2>How it starts</h2>{start_steps("First pre-work check", "One check on your next job in an older building at the list price, from $650, so you see a report before you commit.")}
+<div class="prose"><h2>How it starts</h2>{start_steps("First pre-work check", "One check on your next job in an older building at the list price, from $650, so you see a report before you commit.", contractor=True)}
 <h3>Independence</h3><p>Each report is addressed to the building owner, because it's the owner's list. We do no removal, pay no referral fees, don't sell the Pass to abatement contractors, and never do clearance on work a Pass holder abates.</p>
 <p><a href="guide-demolition-renovation-dss.html">Read the demolition and renovation DSS guide</a></p></div>
 </div></section>
@@ -534,7 +542,7 @@ s = f"""<section class="hero"><div class="wrap">{crumbs((None, "Reports and pric
 <div class="link-list">{"".join(f'<a href="{h}"><strong>{t}</strong><span>What it involves, what it costs and how long it takes</span></a>' for h, t in TRIGGERS)}</div></div></section>""" + cta("Not sure which report you need?", "The Obligation Check points you to the right one, or send us the job details and we'll quote it.")
 page("services.html", "Asbestos and designated substance reports and prices | Noah Crowley", "Designated substance reports and asbestos surveys in southwestern Ontario, priced as a report fee plus samples: from $650 for a limited sampling visit and $1,500 for a project-specific DSS.", s, "services.html")
 
-# ---------------------------------------------------------------- example register (public demo of the hosted register)
+# ---------------------------------------------------------------- example register (public demo of the client register snapshot)
 def ex_building(b, n):
     attn = [r for r in b["rows"] if r["st"] in ("act", "monitor")]
     attn.sort(key=lambda r: r["st"] != "act")
@@ -548,7 +556,7 @@ def ex_building(b, n):
 ex = f"""<section class="hero"><div class="wrap">{crumbs(("building-owners.html", "Building programs"), (None, "Example register"))}
 <div class="hero-copy" style="max-width:62ch"><p class="ex-flag"><b>Example</b> Invented client and buildings, shown to explain how a program client's register works.</p>
 <h1>Your asbestos record, on any phone</h1>
-<p class="lede">Every building program includes a hosted register like this one. Show it to an inspector, send it to a contractor before they bid, and check a material before anyone drills. It's updated within 5 business days of every survey, reassessment or lab result.</p></div>
+<p class="lede">Every building program client gets a register snapshot like this one. Show it to an inspector, send it to a contractor before they bid, and check a material before anyone drills. A fresh snapshot is shared within 5 business days of every survey, reassessment, lab result or condition change.</p></div>
 </div></section>
 <section class="section tight"><div class="wrap ex-wrap">
 <nav class="bld-switch" aria-label="Buildings"><a href="#all" data-go="all">All buildings</a>{"".join(f'<a href="#{b["slug"]}" data-go="{b["slug"]}">{e(b["name"])}</a>' for b in EX_BUILDINGS)}</nav>
@@ -557,7 +565,7 @@ ex = f"""<section class="hero"><div class="wrap">{crumbs(("building-owners.html"
 {"".join(ex_building(b, i) for i, b in enumerate(EX_BUILDINGS))}
 <p class="small" style="max-width:80ch">A register summarises the surveys and condition checks listed for each building and is kept under O. Reg. 278/05 and section 30 of the Occupational Health and Safety Act. It doesn't replace the full survey reports. Materials hidden in walls, ceilings or equipment may not have been seen: if a suspect material turns up during work, stop and call.</p>
 </div></section>""" + cta("Want a register like this for your building?", "Take the Obligation Check to see which program fits, or book a free 30-minute call.", "obligation-check.html")
-page("register-example.html", "Example asbestos register | What program clients see | Noah Crowley", "An example of the hosted designated substance register every building program includes: statuses, lab results, condition history and what to do, on any phone.", ex, "building-owners.html")
+page("register-example.html", "Example asbestos register | What program clients see | Noah Crowley", "An example of the designated substance register snapshot every building program client gets: statuses, lab results, condition history and what to do, on any phone.", ex, "building-owners.html")
 
 # ---------------------------------------------------------------- quiz
 q = f"""<section class="hero"><div class="wrap">{crumbs((None, "Obligation Check"))}
@@ -665,7 +673,7 @@ trigger_page("silica-exposure-assessment.html", "Silica on renovation and demoli
   "Cutting, grinding or coring concrete, masonry and tile releases respirable crystalline silica, one of Ontario's 11 designated substances. If the work will disturb it, it belongs on the project's designated substance list.",
   [("Where it shows up", "<p>Concrete, mortar, brick, block, ceramic tile, drywall and plaster all contain silica. Every project-specific report we write records where silica-containing materials are and what the planned work will do to them.</p>"),
    ("What the contractor needs", ul(["The designated substance list, with silica-generating work identified", "Work classified by type, with controls such as wet cutting and local exhaust", "Training and respiratory protection where the work calls for it"]) + "<p>We write work-classification letters for silica and lead as a project service.</p>"),
-   ("Price", "<p>Silica is covered in every project-specific report, from $1,500. Exposure monitoring is not available yet. <a href=\"contact.html\">Contact us</a> to be notified when it launches.</p>"),
+   ("Price", "<p>Silica is covered in every project-specific report, from $1,500. Exposure monitoring is not available yet. Call <a href=\"tel:+15198909654\">519-890-9654</a> or <a href=\"contact.html\">contact us</a> to be notified when it launches.</p>"),
    ("For contractors", "<p>Pass holders get 25% off work-classification letters. See the <a href=\"contractors.html\">Cleared-to-Start Pass</a>.</p>")],
   rel(("services.html", "Reports and prices", "Every report, from a limited sampling visit to a pre-demolition survey"),
       ("contractors.html", "Cleared-to-Start Pass", "The compliance desk for contractors")))
@@ -675,7 +683,7 @@ trigger_page("isocyanate-air-monitoring.html", "Isocyanate air monitoring",
   "What O. Reg. 490/09 asks of employers who spray or mix isocyanates. Exposure monitoring is not available yet.",
   "Collision and auto body paint booths, paint lines, spray foam installers and polyurethane manufacturers work with isocyanates, one of Ontario's designated substances.",
   [("What the regulation asks", ul(["A written exposure assessment made with your JHSC, redone after any change that could significantly affect exposure", "A control program where health may be affected", "Air monitoring, with results posted for 14 days, copied to the JHSC and kept 5 years", "Medical surveillance, which applies to isocyanates"])),
-   ("What we offer", "<p>Exposure monitoring is not available yet. <a href=\"contact.html\">Contact us</a> to be notified when it launches.</p>"),
+   ("What we offer", "<p>Exposure monitoring is not available yet. Call <a href=\"tel:+15198909654\">519-890-9654</a> or <a href=\"contact.html\">contact us</a> to be notified when it launches.</p>"),
    ("Your building", "<p>Older shops also carry the asbestos duties every building owner has. See <a href=\"building-owners.html\">building programs</a>.</p>")],
   rel(("guide-designated-substance-self-check.html", "Designated substance self-check", "A one-page test of whether O. Reg. 490/09 applies to you"),
       ("employers.html", "Designated substances at work", "What employers need on file under O. Reg. 490/09")))
@@ -732,7 +740,7 @@ guide_page("guide-designated-substance-self-check.html", "Designated substance s
    ("Is medical surveillance in place where required?", "Required for asbestos, benzene, coke oven emissions, isocyanates, lead, mercury and silica."),
    ("If respirators are used, is there a respiratory protection program?", "The most common gap in the Ministry's 2024–25 chemical exposure campaign."),
    ("Are other employers' workers protected at your site?", "Contractors are told about the substance and follow joint procedures.")],
-  "<p>Exposure monitoring is not available yet. <a href=\"contact.html\">Contact us</a> to be notified when it launches.</p>", "obligation-check.html")
+  "<p>Exposure monitoring is not available yet. Call <a href=\"tel:+15198909654\">519-890-9654</a> or <a href=\"contact.html\">contact us</a> to be notified when it launches.</p>", "obligation-check.html")
 
 guide_page("guide-demolition-renovation-dss.html", "Demolition and renovation DSS guide",
   "Demolition and renovation designated substance survey guide for Windsor-Essex | Noah Crowley",
