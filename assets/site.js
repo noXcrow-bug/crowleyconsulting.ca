@@ -5,6 +5,48 @@
   var REDUCE = window.matchMedia("(prefers-reduced-motion: reduce)");
   var EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)";
 
+  // Register rows: tap a row (or its button) to open the result, what to do and the condition history
+  document.querySelectorAll("[data-register]").forEach(function (reg) {
+    reg.addEventListener("click", function (ev) {
+      var row = ev.target.closest("tr.r"); if (!row || ev.target.closest("a")) return;
+      var b = row.querySelector(".r-btn"), det = document.getElementById(b.getAttribute("aria-controls"));
+      var open = b.getAttribute("aria-expanded") !== "true";
+      b.setAttribute("aria-expanded", String(open)); row.classList.toggle("open", open); det.hidden = !open;
+      var inner = det.querySelector(".rd-in");
+      if (open && inner.animate && !REDUCE.matches) inner.animate([{ opacity: 0, transform: "translateY(-4px)" }, { opacity: 1, transform: "none" }], { duration: 220, easing: EASE_OUT });
+    });
+  });
+
+  // Example register page: show all buildings or one, from the link's #name
+  var sw = document.querySelector(".bld-switch");
+  if (sw) {
+    var blds = Array.prototype.slice.call(document.querySelectorAll(".bld"));
+    var showBld = function () {
+      var h = (location.hash || "").slice(1), one = blds.some(function (x) { return x.id === h; }) ? h : "all";
+      blds.forEach(function (x) { x.hidden = one !== "all" && x.id !== one; });
+      sw.querySelectorAll("a").forEach(function (a) { a.setAttribute("aria-current", String(a.dataset.go === one)); });
+    };
+    window.addEventListener("hashchange", showBld); showBld();
+  }
+
+  // Sections below the fold rise in once; anything already on screen at load is left alone
+  if ("IntersectionObserver" in window && !REDUCE.matches) {
+    var seen = new Map(), vh = window.innerHeight;
+    var io = new IntersectionObserver(function (en) {
+      en.forEach(function (x) {
+        if (!x.isIntersecting) return;
+        var el = x.target; io.unobserve(el);
+        el.classList.add("rv-in"); requestAnimationFrame(function () { el.classList.remove("rv-wait"); });
+        el.addEventListener("transitionend", function done() { el.classList.remove("rv-in"); el.style.removeProperty("--rd"); el.removeEventListener("transitionend", done); });
+      });
+    }, { rootMargin: "0px 0px -8% 0px" });
+    document.querySelectorAll("main .section-head, main .door, main .step, main .program, main .fact, main .faq, main .bld, main .link-list > a, .cta-band .wrap > *").forEach(function (el) {
+      if (el.getBoundingClientRect().top < vh) return;
+      var n = seen.get(el.parentElement) || 0; seen.set(el.parentElement, n + 1);
+      el.style.setProperty("--rd", Math.min(n, 4) * 70 + "ms"); el.classList.add("rv-wait"); io.observe(el);
+    });
+  }
+
   // Mobile menu: a panel under the header with a scrim; closes on scrim, Escape, link tap or resize
   var btn = document.querySelector(".menu-btn"), nav = document.getElementById("site-nav"), scrim = document.querySelector(".scrim");
   var mq = window.matchMedia("(max-width: 1060px)");
@@ -301,7 +343,9 @@
     var recText = proj ? proj.text : r.special ? ({ abatement: "One-off services (abatement contractor)", homeowner: "Limited sampling visit (homeowner)", project: "One-off report", employer: "Exposure monitoring (not available yet; notify at launch)" }[r.special] || r.special) : TIERS[r.tier].program + " " + TIERS[r.tier].name + " → " + r.entry;
 
     root.innerHTML = '<div class="result" id="result" tabindex="-1">' +
+      '<div class="print-only print-head"><img src="assets/ncc-logo-online-compact.svg" alt="Noah Crowley Consulting" width="606" height="128"><span>Obligation Check result · ' + new Date().toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" }) + ' · crowleyconsulting.ca/obligation-check</span></div>' +
       '<h2 class="q-title" style="margin:0">Your Obligation Check result</h2>' + flagHtml + html + DISCLAIMER +
+      '<div class="result-actions"><button type="button" class="btn ghost sm" data-save>Save as PDF</button><button type="button" class="btn ghost sm" data-share>Share this result</button></div>' +
       '<form class="form" id="quote" data-form data-name="obligation-check" data-success="Sent. We’ll be in touch within one business day to book your next step.">' +
       '<h3>' + (proj ? 'Request a quote' : 'Send me this result and book the next step') + '</h3>' +
       '<input type="hidden" name="_subject" value="Obligation Check: ' + esc(recText) + '">' +
@@ -319,6 +363,8 @@
       '<div class="btn-row"><button class="btn" type="submit">' + (proj ? 'Send my request' : 'Send my result') + '</button>' + (proj ? '' : '<a class="btn ghost" href="contact.html#book" data-book>Book a call instead</a>') + '</div>' +
       '<p class="small">We use your details to reply about this request. See our <a href="privacy.html">privacy notice</a>.</p></form>' +
       '<button type="button" class="linkish" data-restart>Start over</button></div>';
+    root.dataset.rec = recText;
+    var shareBtn = root.querySelector("[data-share]"); if (shareBtn && !navigator.share) shareBtn.textContent = "Copy a link to share";
     wireForm(root.querySelector("form"));
     wireBooking(root);
     enter(lastIdx < 0 ? 0 : 1); lastIdx = -1;
@@ -356,6 +402,21 @@
     }
     if (e.target.closest("[data-next]")) { if (!root.dataset.busy) next(); return; }
     if (e.target.closest("[data-back]")) { idx = Math.max(0, idx - 1); renderQ(); return; }
+    if (e.target.closest("[data-save]")) {
+      document.documentElement.classList.add("print-result");
+      window.addEventListener("afterprint", function off() { document.documentElement.classList.remove("print-result"); window.removeEventListener("afterprint", off); });
+      window.print(); return;
+    }
+    var sh = e.target.closest("[data-share]");
+    if (sh) {
+      var url = location.origin + location.pathname + (answers.who ? "#" + answers.who : "");
+      var text = "My Obligation Check result: " + (root.dataset.rec || "") + ". Take the check yourself:";
+      if (navigator.share) { navigator.share({ title: "Obligation Check result", text: text, url: url }).catch(function () {}); return; }
+      var done = function () { sh.textContent = "Link copied"; setTimeout(function () { sh.textContent = "Copy a link to share"; }, 1800); };
+      if (navigator.clipboard) navigator.clipboard.writeText(text + " " + url).then(done, function () { window.prompt("Copy this link:", url); });
+      else window.prompt("Copy this link:", url);
+      return;
+    }
     if (e.target.closest("[data-restart]")) { answers = {}; path = ["who"]; idx = 0; lastIdx = 1; renderQ(); }
   });
 

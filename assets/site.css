@@ -7,6 +7,8 @@
 @font-face { font-family: "IBM Plex Sans"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/ibm-plex-sans-latin-400-normal.woff2") format("woff2"); }
 @font-face { font-family: "IBM Plex Sans"; font-style: normal; font-weight: 500; font-display: swap; src: url("fonts/ibm-plex-sans-latin-500-normal.woff2") format("woff2"); }
 @font-face { font-family: "IBM Plex Sans"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/ibm-plex-sans-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 500; font-display: swap; src: url("fonts/ibm-plex-mono-latin-500-normal.woff2") format("woff2"); }
 @font-face { font-family: "IBM Plex Sans Condensed"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/ibm-plex-sans-condensed-latin-600-normal.woff2") format("woff2"); }
 
 :root {
@@ -31,6 +33,7 @@
 
   --f-sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
   --f-cond: "IBM Plex Sans Condensed", "IBM Plex Sans", "Arial Narrow", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; /* lab data: results, sample IDs, dates */
   --measure: 66ch;
   --wrap: 1160px;
   --gutter: 20px;
@@ -78,6 +81,8 @@ p { margin: 0; text-wrap: pretty; }
 .prose ul, .prose ol { margin: 0; padding-left: 1.25em; display: flex; flex-direction: column; gap: .45em; }
 .prose li::marker { color: var(--amber); }
 .small { font-size: .9rem; line-height: 1.5; color: var(--slate); }
+.mono { font-family: var(--f-mono); font-size: .92em; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.eyebrow { font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: var(--slate); margin: 0 0 6px; }
 
 /* Header: a translucent layer content scrolls under */
 .site-head { position: sticky; top: 0; z-index: 40; background: rgba(255, 255, 255, .86); -webkit-backdrop-filter: blur(18px) saturate(180%); backdrop-filter: blur(18px) saturate(180%); box-shadow: 0 1px 0 rgba(20, 35, 58, .08); padding-top: env(safe-area-inset-top, 0px); }
@@ -189,16 +194,73 @@ p { margin: 0; text-wrap: pretty; }
   .reg-table td.mat { display: none; }
   .reg-table td.loc::after { content: attr(data-mat); display: block; font-weight: 400; font-size: .82rem; color: var(--slate); margin-top: 2px; }
 }
-/* The page's one orchestrated moment: the register's statuses settle in once, in order */
+/* The page's one orchestrated moment: the mark draws, then the statuses settle in once, in order */
 @media (prefers-reduced-motion: no-preference) {
-  .register .status { animation: settle 420ms var(--ease-out) both; }
-  .register tr:nth-child(1) .status { animation-delay: 380ms; }
-  .register tr:nth-child(2) .status { animation-delay: 440ms; }
-  .register tr:nth-child(3) .status { animation-delay: 500ms; }
-  .register tr:nth-child(4) .status { animation-delay: 560ms; }
-  .register tr:nth-child(5) .status { animation-delay: 620ms; }
+  .register .status { animation: settle 420ms var(--ease-out) both; animation-delay: calc(420ms + var(--i, 0) * 60ms); }
+  .reg-mark * { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 700ms var(--ease-in-out) forwards; }
+  .reg-mark line { animation-duration: 260ms; animation-timing-function: var(--ease-out); }
+  .reg-mark line:nth-of-type(1) { animation-delay: 380ms; }
+  .reg-mark line:nth-of-type(2) { animation-delay: 460ms; }
+  .reg-mark line:nth-of-type(3) { animation-delay: 540ms; }
 }
+@keyframes draw { to { stroke-dashoffset: 0; } }
 @keyframes settle { from { opacity: 0; transform: translateX(6px) scale(.94); } to { opacity: 1; transform: none; } }
+
+/* Register rows open to show the lab result, what to do and the condition history */
+.reg-head { justify-content: flex-start; }
+.reg-head span { margin-left: auto; }
+.reg-mark { width: 26px; height: 26px; flex: none; fill: none; stroke: var(--mineral); stroke-width: 30; stroke-linecap: round; stroke-linejoin: round; }
+.reg-mark .am { stroke: var(--amber); }
+.reg-table tr.r { cursor: pointer; }
+.reg-table tr.r.open td { border-bottom-color: transparent; }
+.reg-table tbody tr.r:nth-last-child(2):not(.open) td { border-bottom: 0; }
+.r-btn { display: inline;  padding: 0; margin: 0; border: 0; background: none; font: inherit; font-weight: 500; color: inherit; text-align: left; cursor: pointer; }
+.r-chev { width: 16px; height: 16px; vertical-align: -3px; margin-left: 4px; color: var(--slate); transition: transform 200ms var(--ease-out); }
+.r-btn[aria-expanded="true"] .r-chev { transform: rotate(180deg); }
+.reg-table tr.rd td { padding-top: 0; background: #FAFBFA; }
+.reg-table tr.r.open td { background: #FAFBFA; }
+.rd-in { display: flex; flex-direction: column; gap: 12px; padding: 4px 0 6px; font-size: .88rem; line-height: 1.45; text-align: left; }
+.rd-grid { display: grid; grid-template-columns: repeat(4, minmax(0, auto)); justify-content: start; gap: 8px 26px; margin: 0; }
+.rd-grid dt { font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: var(--slate); font-weight: 600; }
+.rd-grid dd { margin: 2px 0 0; overflow-wrap: anywhere; }
+.rd-do { box-shadow: inset 3px 0 0 var(--amber); padding-left: 12px; max-width: 64ch; }
+.rd-do b, .rd-hist b { display: block; font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: var(--slate); font-weight: 600; margin-bottom: 2px; }
+.rd-hist ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+.rd-hist li { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 10px; }
+.rd-hist li .mono { color: var(--slate); }
+.reg-foot a { color: var(--navy); font-weight: 600; white-space: nowrap; }
+@media (max-width: 560px) {
+  .rd-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .reg-table tr.rd td { padding-left: 14px; }
+}
+@media (hover: hover) and (pointer: fine) { .reg-table tr.r:hover td { background: #FAFBFA; } }
+
+/* Example register page */
+.ex-flag { display: inline-flex; flex-wrap: wrap; gap: 8px; align-items: baseline; border: 1px dashed var(--slate-2); border-radius: var(--r-sm); padding: 8px 12px; font-size: .9rem; color: var(--slate); }
+.ex-flag b { color: var(--navy); font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; }
+.ex-wrap { display: flex; flex-direction: column; gap: 34px; }
+.bld-switch { position: sticky; top: calc(var(--head-h) + env(safe-area-inset-top, 0px)); z-index: 5; display: flex; gap: 6px; overflow-x: auto; padding: 10px 0; margin: -10px 0; background: var(--mineral); scrollbar-width: none; }
+.bld-switch a { white-space: nowrap; text-decoration: none; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); font-size: .92rem; font-weight: 600; transition: background-color 150ms ease, color 150ms ease; }
+.bld-switch a[aria-current="true"] { background: var(--navy); color: var(--paper); border-color: var(--navy); }
+.drill { background: var(--navy); color: var(--mineral); border-radius: var(--r); padding: 20px 22px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 28px; align-items: center; }
+.drill h2 { font-size: clamp(1.25rem, 1.1rem + .6vw, 1.5rem); color: var(--paper); }
+.drill p { margin-top: 6px; color: var(--slate-2); max-width: 62ch; }
+@media (max-width: 700px) { .drill { grid-template-columns: minmax(0, 1fr); } }
+.bld { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: calc(var(--head-h) + 70px); }
+.bld[hidden] { display: none; }
+.bld-head h2 { font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.2rem); }
+.bld-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .bld-grid { grid-template-columns: minmax(0, 1fr); } }
+.bld-side { display: flex; flex-direction: column; gap: 12px; }
+.bld-side h3 { font-family: var(--f-sans); font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--slate); }
+.bld-side h3 + * { margin-bottom: 10px; }
+.attn, .svlog { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.attn li { background: var(--paper); border-radius: var(--r-sm); padding: 12px 14px; box-shadow: inset 4px 0 0 var(--amber), var(--sh-1); display: flex; flex-direction: column; gap: 4px; font-size: .92rem; line-height: 1.45; }
+.attn li.act { box-shadow: inset 4px 0 0 var(--red), var(--sh-1); }
+.attn li .status { align-self: flex-start; }
+.attn li > span:last-child { color: var(--slate); }
+.svlog li { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 10px; font-size: .9rem; line-height: 1.45; }
+.svlog li > .mono { color: var(--slate); }
 
 /* Doors */
 .doors { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
@@ -449,6 +511,15 @@ table.tiers tbody tr:nth-child(even) > * { background: #FAFBFA; }
 }
 @media (max-width: 360px) { .action-bar .btn.amber { font-size: .88rem; } }
 
+/* Sections below the fold rise in once as they arrive; nothing above the fold waits */
+.rv-wait { opacity: 0; transform: translateY(14px); }
+.rv-in { transition: opacity 560ms var(--ease-out) var(--rd, 0ms), transform 560ms var(--ease-out) var(--rd, 0ms); }
+
+/* Obligation Check result: save or share */
+.result-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn.sm { min-height: 44px; padding: 9px 16px; font-size: .95rem; }
+.print-only { display: none; }
+
 /* Accessibility preferences */
 @media (prefers-reduced-transparency: reduce) {
   .site-head, .action-bar { background: var(--paper); -webkit-backdrop-filter: none; backdrop-filter: none; }
@@ -471,6 +542,14 @@ table.tiers tbody tr:nth-child(even) > * { background: #FAFBFA; }
   .section { padding-block: 12px; }
   a { text-decoration: none; }
   .register, .panel, .quiz, .table-wrap { box-shadow: none; }
+  .rv-wait { opacity: 1 !important; transform: none !important; }
+  .print-only { display: flex !important; }
+  .print-head { align-items: center; justify-content: space-between; gap: 16px; border-bottom: 2px solid var(--navy); padding-bottom: 10px; margin-bottom: 14px; font-size: 9.5pt; color: var(--slate); }
+  .print-head img { height: 40px; width: auto; }
+  html.print-result main > *:not(:has(#quiz)), html.print-result .crumbs, html.print-result .hero-copy, html.print-result .result .form, html.print-result [data-restart], html.print-result .result-actions { display: none !important; }
+  html.print-result .split { display: block !important; }
+  html.print-result .quiz { outline: 0; padding: 0; max-width: none; }
+  .reg-table tr.rd[hidden] { display: none; }
 }
 
 /* "Do I need a DSS?" entry link on the home and services pages */
