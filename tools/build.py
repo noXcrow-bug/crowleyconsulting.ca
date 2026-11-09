@@ -1,6 +1,6 @@
 """Builds the Noah Crowley Asbestos and Designated Substances Consulting website.
 Run:  python3 tools/build.py   (from the repo root). Writes the .html files, sitemap.xml and robots.txt.
-All copy is drawn from the NCC business plan; every price comes from the public list in price book PB-2026.11b. Edit SITE below for contact details, then rebuild."""
+All copy is drawn from the NCC business plan; every price comes from the public list in price book PB-2026.11c. Edit SITE below for contact details, then rebuild."""
 import json, os, hashlib, html as H
 from datetime import date
 
@@ -20,9 +20,9 @@ YEAR = date.today().year
 e = H.escape
 ASSET_V = hashlib.sha1(b"".join(open(os.path.join(ROOT, "assets", f), "rb").read() for f in ("site.css", "site.js", "config.js"))).hexdigest()[:8]
 
-# ---------------------------------------------------------------- tiers (price book PB-2026.11b)
+# ---------------------------------------------------------------- tiers (price book PB-2026.11c)
 # The website may quote only the public "from" prices in the price book. Anything more specific is quoted per building.
-PRICE_BOOK = "PB-2026.11b"
+PRICE_BOOK = "PB-2026.11c"
 TIERS = {
  "bp_ess": dict(program="Building programs", name="Compliance Essentials", price=69, fits="Owners who need the yearly record kept current", page="building-owners.html",
    inc=["Yearly asbestos record update and visual condition inspection", "Client register snapshot after each change, and an on-site inspector binder", "Occupier and contractor notice templates", "Annual compliance letter for insurers, lenders and tenants", "10% off reports, site visits and project work", "Phone advice if suspect material turns up"]),
@@ -390,7 +390,7 @@ def program_rules(member=True):
     return ul([
     "12-month agreement, billed monthly, or 12 months for the price of 10 paid up front. Prices are per building and depend on its size; we confirm yours in writing.",
     "No program includes a designated substance report or survey. Reports are bought when a project needs one, at your member rate. Lab costs are never marked up for members.",
-    "Every program starts from a current asbestos record: a baseline survey, or a DSS update of a recent report. Sign within 30 days of receiving a DSS update and it's repriced at your member rate. Commit to the 12 months before a baseline survey and the survey is 15% off.",
+    "Every program starts from a current asbestos record: a baseline survey, or a DSS update of a recent report. Your first report, whether a new asbestos survey or a DSS update of the report you have, is priced at your program's member rate if you sign before the work. Sign within 30 days of receiving it and the difference is credited on your first program invoice.",
     "Lab results take 5 business days from when the lab receives the samples. No rush analysis. If work can't wait, we leave written interim instructions on site.",
     "We never remove or abate anything and take no referral fees, so no result is shaped by someone with a stake in the job."])
 # ---------------------------------------------------------------- building owners
