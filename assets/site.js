@@ -230,7 +230,7 @@
   }
   var ENTRY_DESC = {
     "DSS update": "We review your existing report, walk the building and fill any sampling gaps, from $550 plus samples. Sign a program within 30 days and the update is repriced at your member rate.",
-    "Baseline survey": "An asbestos building survey becomes your on-site record, from $1,800 plus samples. Commit to a 12-month program before the work starts and the survey is 15% off.",
+    "Baseline survey": "An asbestos building survey becomes your on-site record, from $1,800 plus samples. Sign a program before the work starts and it's priced at your member rate, or sign within 30 days of receiving it and the difference is credited on your first program invoice.",
     "First pre-work check": "One limited sampling visit or project report on your next job in an older building, at the list price (from $650), so you see a report before you commit.",
     "Discovery call": "A 30-minute call to scope your buildings or jobs, followed by a written proposal."
   };
