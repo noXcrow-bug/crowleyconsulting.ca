@@ -14,7 +14,12 @@ SITE = {
     "phone": "519-890-9654",
     "email": "info@crowleyconsulting.ca",
     "city": "Windsor",    # base city for search listings
+    "founder": "Noah Crowley",
+    # Profiles that confirm this is one business across the web. Add the Google Business Profile, Bing Places
+    # and LinkedIn links here once they exist, then rebuild.
+    "sameAs": ["https://x.com/CrowleyConsult"],
 }
+GUIDES_REVIEWED = "2026-11-09"   # change when the guides are actually re-checked, then rebuild
 REGIONS = "Windsor-Essex, Chatham-Kent, Sarnia-Lambton and London"
 YEAR = date.today().year
 e = H.escape
@@ -300,6 +305,8 @@ home_schema = {"@context": "https://schema.org", "@type": "ProfessionalService",
     "areaServed": [{"@type": "AdministrativeArea", "name": n} for n in ["Windsor-Essex", "Chatham-Kent", "Sarnia-Lambton", "London, Ontario"]],
     "address": {"@type": "PostalAddress", "addressLocality": SITE["city"], "addressRegion": "ON", "addressCountry": "CA"},
     "priceRange": "$$"}
+home_schema["founder"] = {"@type": "Person", "@id": SITE["domain"] + "/#founder", "name": SITE["founder"], "jobTitle": "Asbestos and designated substances consultant", "worksFor": {"@id": BIZ_ID}}
+if SITE["sameAs"]: home_schema["sameAs"] = SITE["sameAs"]
 if SITE["phone"]: home_schema["telephone"] = SITE["phone"]
 if SITE["email"]: home_schema["email"] = SITE["email"]
 
@@ -518,6 +525,18 @@ c = segment_hero("Contractors", "Cleared-to-Start Pass",
 page("contractors.html", "Cleared-to-Start Pass | The contractor compliance desk | Noah Crowley", "A compliance desk for contractors, renovators and restoration firms in southwestern Ontario: pre-bid reviews, faster site visits and member rates on pre-work checks. From $199 a month.", c, "contractors.html", schema=service_schema("Cleared-to-Start Pass", "Monthly compliance desk for contractors in southwestern Ontario", 199))
 
 # ---------------------------------------------------------------- services
+SVC_FAQ_HTML, SVC_FAQ_SCHEMA = faq([
+ ("How much does a designated substance report cost?", "Reports start at $650 for a limited sampling visit and $1,500 for a project-specific designated substance report. Each report is a report fee plus the samples taken: $100 a sample ($150 on a demolition survey), including lab analysis of the first layer, and $45 for each extra layer. All prices are CAD before HST."),
+ ("Why is it priced per sample?", "The lab analyzes every layer in a sample, and buildings differ: a floor tile and its glue are two layers, a plastered wall can be three. Pricing per sample means you pay for what your building actually needs, and we ask before going over the top of your quoted range."),
+ ("How long does a report take?", "From about 5 business days for a DSS update without sampling to 15–25 business days for a pre-demolition survey. Lab results take 5 business days from when the lab receives the samples, and we don't offer rush analysis."),
+ ("Is there a minimum charge or travel fee?", "The minimum charge for a site visit is $450 before HST. Travel is free within 60 km [37 mi] of Windsor."),
+ ("Do you do the asbestos removal?", "No. We write the abatement specification, review bids, inspect the work and test the air, including Type 3 clearance, but we never remove anything and take no referral fees."),
+])
+SVC_SCHEMA = {"@context": "https://schema.org", "@type": "Service", "name": "Asbestos and designated substance reports", "serviceType": "Designated substance survey",
+  "provider": {"@id": BIZ_ID}, "areaServed": ["Windsor, ON", "Essex County, ON", "Chatham-Kent, ON", "Sarnia-Lambton, ON", "London, ON"],
+  "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Report menu", "itemListElement": [
+    {"@type": "Offer", "itemOffered": {"@type": "Service", "name": n, "description": g},
+     "priceSpecification": {"@type": "PriceSpecification", "minPrice": p, "priceCurrency": "CAD", "valueAddedTaxIncluded": False}} for n, p, w_, g, t in REPORTS]}}
 s = f"""<section class="hero"><div class="wrap">{crumbs((None, "Reports and prices"))}
 <div class="hero-copy" style="max-width:860px"><h1>Reports and prices</h1>
 <p class="lede">Every report covers Ontario's 11 designated substances and is priced as a report fee plus the samples taken. Your quote sets the report fee and an estimated range of samples for your building, and you pay for the samples actually taken. Samples are $100 each ($150 on a demolition survey), and extra layers are $45 each. These are the starting prices. Program members pay 10% to 20% less on the report fee and our time on each sample; lab costs and extra layers are not discounted.</p>{DSS_CHECK}</div></div></section>
@@ -539,8 +558,8 @@ s = f"""<section class="hero"><div class="wrap">{crumbs((None, "Reports and pric
 <p>Lab results take 5 business days from when the lab receives the samples. We don't offer rush analysis. If work can't wait, we leave written interim instructions on site so it can continue lawfully.</p></div>
 </div></section>
 <section class="section white"><div class="wrap"><div class="section-head"><h2>Common jobs</h2></div>
-<div class="link-list">{"".join(f'<a href="{h}"><strong>{t}</strong><span>What it involves, what it costs and how long it takes</span></a>' for h, t in TRIGGERS)}</div></div></section>""" + cta("Not sure which report you need?", "The Obligation Check points you to the right one, or send us the job details and we'll quote it.")
-page("services.html", "Asbestos and designated substance reports and prices | Noah Crowley", "Designated substance reports and asbestos surveys in southwestern Ontario, priced as a report fee plus samples: from $650 for a limited sampling visit and $1,500 for a project-specific DSS.", s, "services.html")
+<div class="link-list">{"".join(f'<a href="{h}"><strong>{t}</strong><span>What it involves, what it costs and how long it takes</span></a>' for h, t in TRIGGERS)}</div></div></section>""" + SVC_FAQ_HTML + cta("Not sure which report you need?", "The Obligation Check points you to the right one, or send us the job details and we'll quote it.")
+page("services.html", "Asbestos and designated substance reports and prices | Noah Crowley", "Designated substance reports and asbestos surveys in southwestern Ontario, priced as a report fee plus samples: from $650 for a limited sampling visit and $1,500 for a project-specific DSS.", s, "services.html", schema=[SVC_SCHEMA, SVC_FAQ_SCHEMA])
 
 # ---------------------------------------------------------------- example register (public demo of the client register snapshot)
 def ex_building(b, n):
@@ -582,7 +601,7 @@ page("obligation-check.html", "Obligation Check | Which asbestos and designated 
 def local_page(fname, city, region, intro, local_points, towns, extra_faq=()):
     items = [(f"How much does asbestos testing cost in {city}?", "A limited sampling visit for one to three materials starts at $650, and a project-specific designated substance report starts at $1,500. Each report is priced as a report fee plus the samples taken, with the first layer of every sample analyzed by the lab included, so the total depends on the building."),
              ("How long do results take?", "Lab results take 5 business days from when the lab receives the samples. If work can't wait, we leave written interim instructions on site."),
-             (f"Which buildings in {city} are likely to contain asbestos?", "Most buildings built after 1980 are largely free of asbestos; nearly anything older is a candidate. Floor tile and mastic, drywall compound, textured ceilings, pipe insulation and vermiculite are the usual suspects."),
+             (f"Which buildings in {city} are likely to contain asbestos?", "Any building built before 1990 is a candidate for asbestos-containing materials; newer buildings are much less likely to contain them. Floor tile and mastic, drywall compound, textured ceilings, pipe insulation and vermiculite are the usual suspects."),
              ("Are you independent of abatement contractors?", "Yes. We never remove or abate anything and take no referral fees, so our survey results aren't shaped by anyone who profits from removal.")] + list(extra_faq)
     FAQ_HTML, FAQ_SCHEMA = faq(items)
     body = f"""<section class="hero"><div class="wrap">{crumbs((None, f"Asbestos testing in {city}"))}
@@ -608,7 +627,7 @@ def local_page(fname, city, region, intro, local_points, towns, extra_faq=()):
 
 local_page("asbestos-testing-windsor.html", "Windsor", "Windsor-Essex",
     "Independent asbestos and designated substance work for Windsor building owners, landlords and contractors, with sample pricing explained up front and lab results in 5 business days.",
-    ["More than one in three Windsor dwellings was built before 1960, and most of the city's industrial and institutional floor space dates from the same era. Nearly everything built before 1980 is a candidate for asbestos-containing materials.",
+    ["More than one in three Windsor dwellings was built before 1960, and most of the city's industrial and institutional floor space dates from the same era. Nearly everything built before 1990 is a candidate for asbestos-containing materials.",
      "The City of Windsor's demolition permit checklist asks for a designated substance list, so every demolition starts with a survey. We write them ready to attach to the permit and the tender."],
     "LaSalle, Tecumseh, Amherstburg and Lakeshore",
     [("Do I need a designated substance survey for a demolition permit in Windsor?", "Yes. The City of Windsor's demolition permit checklist asks for a list of designated substances. We write the survey ready to attach to the permit application and the demolition tender.")])
@@ -649,7 +668,7 @@ trigger_page("asbestos-testing-before-renovation.html", "Asbestos testing before
   "Asbestos testing before renovation in Windsor and southwestern Ontario | Noah Crowley",
   "Before walls or floors open in an older building, a designated substance survey lists what the work will disturb. From $650 plus samples, lab results in 5 business days. Independent asbestos and designated substances consulting.",
   "Before walls, floors or ceilings open in an older building, Ontario law requires a list of every designated substance in the work area. We survey it, test it and hand you a report ready for the contractor.",
-  [("What the law requires", "<p>The project owner must list all designated substances before a renovation, repair or demolition project begins and include the list in the tender (OHSA section 30). An owner who leaves one off is liable to the contractors when it turns up mid-job.</p><p>Most buildings built after 1980 are largely free of asbestos; nearly everything older is a candidate.</p>"),
+  [("What the law requires", "<p>The project owner must list all designated substances before a renovation, repair or demolition project begins and include the list in the tender (OHSA section 30). An owner who leaves one off is liable to the contractors when it turns up mid-job.</p><p>Any building built before 1990 is a candidate for asbestos-containing materials; newer buildings are much less likely to contain them.</p>"),
    ("What we test for", ul(["Floor tile and mastic, drywall joint compound, plaster and stipple ceilings", "Pipe and boiler insulation, cement board and vermiculite", "Lead in paint, solder, pipes and glazing", "Mercury in thermostats, switches and lamps", "Silica released when concrete, masonry or tile is cut", "All 11 designated substances, as the project list requires"])),
    ("Price and timing", "<p>A limited sampling visit for one to three materials starts at $650. A project-specific report for a whole work area starts at $1,500. Each report is priced as a report fee plus the samples taken, with the first layer of every sample analyzed by the lab included, so the total depends on the building. Lab results take 5 business days.</p><p>If the job can't wait, we leave written interim instructions on site: which materials to treat as asbestos-containing and which procedures apply until results are in.</p>"),
    ("If you renovate often", "<p>Contractors can get the owner's report reviewed before they bid and pay member rates on every check with the <a href=\"contractors.html\">Cleared-to-Start Pass</a>, and owners pay less for every report with a <a href=\"building-owners.html\">building program</a>.</p>")],
@@ -695,8 +714,12 @@ def guide_page(fname, h1, title, desc, lede, items, after, cta_href):
 <div class="hero-copy" style="max-width:860px"><h1>{h1}</h1><p class="lede">{lede}</p>
 <div class="btn-row no-print"><button class="btn ghost" type="button" onclick="window.print()">Print this checklist</button><a class="btn amber" href="{cta_href}">Take the Obligation Check</a></div></div></div></section>
 <section class="section white"><div class="wrap"><div class="prose" style="max-width:820px"><ul class="checklist">{lis}</ul>{after}
-<p class="small">This checklist is general guidance, not legal advice. Ontario regulations referenced: O. Reg. 278/05, OHSA section 30 and O. Reg. 490/09.</p></div></div></section>""" + cta("Want someone to check it for you?", "A DSS update brings your existing report current, from $550 plus samples. Join a program within 30 days and it's repriced at your member rate.", cta_href)
-    page(fname, title, desc, body)
+<p class="small">Last reviewed {fdate(GUIDES_REVIEWED)} by {e(SITE['founder'])}. This checklist is general guidance, not legal advice. Ontario regulations referenced: O. Reg. 278/05, OHSA section 30 and O. Reg. 490/09.</p></div></div></section>""" + cta("Want someone to check it for you?", "A DSS update brings your existing report current, from $550 plus samples. Join a program within 30 days and it's repriced at your member rate.", cta_href)
+    art = {"@context": "https://schema.org", "@type": "Article", "headline": h1, "description": desc, "url": SITE["domain"] + "/" + fname,
+        "datePublished": GUIDES_REVIEWED, "dateModified": GUIDES_REVIEWED, "inLanguage": "en-CA",
+        "author": {"@type": "Person", "@id": SITE["domain"] + "/#founder", "name": SITE["founder"]}, "publisher": {"@id": BIZ_ID},
+        "about": ["O. Reg. 278/05", "OHSA section 30", "O. Reg. 490/09"]}
+    page(fname, title, desc, body, schema=art)
 
 guide_page("guide-inspector-ready-binder.html", "Inspector-ready binder checklist",
   "Inspector-ready asbestos binder checklist for Ontario building owners | Noah Crowley",
@@ -826,6 +849,27 @@ today = date.today().isoformat()
 urls = "".join(f"<url><loc>{SITE['domain']}/{'' if p == 'index.html' else p}</loc><lastmod>{today}</lastmod></url>" for p in PAGES if p != "404.html")
 open(os.path.join(ROOT, "sitemap.xml"), "w").write(f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>')
 open(os.path.join(ROOT, "robots.txt"), "w").write(f"User-agent: *\nAllow: /\nSitemap: {SITE['domain']}/sitemap.xml\n")
+LLMS = f"""# {SITE['online']}
+
+> {SITE['legal']} is an independent asbestos and designated substances consultancy based in {SITE['city']}, Ontario, serving {REGIONS}. It surveys buildings, keeps O. Reg. 278/05 asbestos records, writes abatement specifications, oversees abatement, tests the air and does Type 3 clearance. It never removes asbestos and takes no referral fees.
+
+- Clients: commercial and institutional building owners, landlords and condos, general and restoration contractors.
+- Reports cover all 11 Ontario designated substances and are priced as a report fee plus samples taken. Prices are CAD before HST.
+- Lab results take 5 business days from the lab's receipt. Rush analysis is not offered.
+- Contact: {SITE['phone']}, {SITE['email']}, {SITE['domain']}/contact.html
+
+## Reports (starting prices)
+""" + "".join(f"- {n}: from {money(p)}. {w_}. {t}.\n" for n, p, w_, g, t in REPORTS) + """
+## Programs (monthly, per building)
+""" + "".join(f"- {v['program']}, {v['name']}: from {money(v['price'])} a month. {v['fits']}.\n" for v in TIERS.values()) + f"""
+## Key pages
+- [Reports and prices]({SITE['domain']}/services.html)
+- [Building programs]({SITE['domain']}/building-owners.html)
+- [Cleared-to-Start Pass for contractors]({SITE['domain']}/contractors.html)
+- [Obligation Check: which duties apply to you]({SITE['domain']}/obligation-check.html)
+- [How we work]({SITE['domain']}/about.html)
+""" + "".join(f"- [Asbestos testing in {t}]({SITE['domain']}/{h})\n" for h, t in CITIES) + "".join(f"- [{t}]({SITE['domain']}/{h})\n" for h, t, _ in GUIDES)
+open(os.path.join(ROOT, "llms.txt"), "w").write(LLMS)
 open(os.path.join(ROOT, "CNAME"), "w").write(SITE["domain"].replace("https://", "") + "\n")
 open(os.path.join(ROOT, ".nojekyll"), "w").write("")
 print(len(PAGES), "pages built")
