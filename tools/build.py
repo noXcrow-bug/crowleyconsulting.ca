@@ -298,7 +298,7 @@ def register(b, pre, title="Designated substance register", tag="Example", foot=
 {f'<figcaption class="reg-foot">{foot}</figcaption>' if foot else ""}</figure>"""
 REGISTER = register(EX_BUILDINGS[0], "hr", foot='Tap a row to see the result and its history. <a href="register-example.html">See a full example register</a>')
 
-home_schema = {"@context": "https://schema.org", "@type": "ProfessionalService", "@id": BIZ_ID, "name": SITE["online"], "alternateName": SITE["legal"], "legalName": SITE["legal"],
+home_schema = {"@context": "https://schema.org", "@type": "ProfessionalService", "@id": BIZ_ID, "name": SITE["legal"], "alternateName": SITE["online"], "legalName": SITE["legal"],
     "knowsAbout": ["Asbestos testing", "Designated substance survey", "O. Reg. 278/05 asbestos management", "Type 3 asbestos clearance", "Lead paint testing"],
     "url": SITE["domain"] + "/", "logo": SITE["domain"] + "/assets/ncc-logo-primary.svg", "image": SITE["domain"] + "/assets/og-image.png",
     "description": "Independent asbestos and designated substances surveys, registers, abatement oversight with air monitoring, and Type 3 clearance in southwestern Ontario.",
