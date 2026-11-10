@@ -64,9 +64,12 @@ NAV = [("building-owners.html", "Building owners"), ("landlords.html", "Landlord
 CITIES = [("asbestos-testing-windsor.html", "Windsor"), ("asbestos-testing-leamington.html", "Leamington"), ("asbestos-testing-chatham.html", "Chatham"),
           ("asbestos-testing-sarnia.html", "Sarnia"), ("asbestos-testing-london.html", "London")]
 TRIGGERS = [("asbestos-testing-before-renovation.html", "Asbestos testing before renovation"),
-            ("designated-substance-survey-demolition-permit.html", "Designated substance survey for a demolition permit"),
-            ("silica-exposure-assessment.html", "Silica on renovation and demolition projects"),
-            ("isocyanate-air-monitoring.html", "Isocyanate air monitoring")]
+            ("designated-substance-survey-demolition-permit.html", "Designated substance survey for a demolition permit")]
+# Pages for services NCC can't sell yet (workplace exposure monitoring waits on a hygienist arrangement, Toolkit
+# backlog b04 / b-exposure-services). They still build so old links keep working, but carry noindex, stay out of
+# the sitemap, and nothing on the site links to them. To relaunch: add the two pages back to TRIGGERS, put the
+# employers link back in the footer, and empty HIDDEN.
+HIDDEN = {"employers.html", "silica-exposure-assessment.html", "isocyanate-air-monitoring.html"}
 GUIDES = [("guide-inspector-ready-binder.html", "Inspector-ready binder checklist", "For building owners"),
           ("guide-suite-turnover-checklist.html", "Suite turnover checklist", "For landlords and property managers"),
           ("guide-designated-substance-self-check.html", "Designated substance self-check", "For employers"),
@@ -102,7 +105,7 @@ def head(title, desc, fname, schema=None):
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
-<link rel="canonical" href="{url}">
+{'<meta name="robots" content="noindex, follow">' + chr(10) if fname in HIDDEN else ""}<link rel="canonical" href="{url}">
 <meta property="og:type" content="website">
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(desc)}">
@@ -157,7 +160,7 @@ def footer(fname=""):
 <div><h4>Programs</h4><ul>
 <li><a href="building-owners.html">Building programs</a></li><li><a href="landlords.html">Landlords and condos</a></li>
 <li><a href="contractors.html">Cleared-to-Start Pass</a></li><li><a href="services.html">Reports and prices</a></li>
-<li><a href="employers.html">Designated substances at work</a></li><li><a href="obligation-check.html">Obligation Check</a></li></ul></div>
+<li><a href="obligation-check.html">Obligation Check</a></li></ul></div>
 <div><h4>Where we work</h4><ul>{"".join(f'<li><a href="{h}">Asbestos testing in {t}</a></li>' for h, t in CITIES)}</ul></div>
 <div><h4>Guides and contact</h4><ul>{"".join(f'<li><a href="{h}">{t}</a></li>' for h, t, _ in GUIDES)}{contact}<li><a href="about.html">How we work</a></li></ul></div>
 </div>
@@ -919,7 +922,7 @@ nf = """<section class="hero"><div class="wrap"><div class="prose"><h1>That page
 page("404.html", "Page not found | Noah Crowley", "This page doesn't exist.", nf)
 
 # ---------------------------------------------------------------- sitemap, robots
-urls = "".join(f"<url><loc>{SITE['domain']}/{'' if p == 'index.html' else p}</loc><lastmod>{LASTMOD[p]['date']}</lastmod></url>" for p in PAGES if p != "404.html")
+urls = "".join(f"<url><loc>{SITE['domain']}/{'' if p == 'index.html' else p}</loc><lastmod>{LASTMOD[p]['date']}</lastmod></url>" for p in PAGES if p != "404.html" and p not in HIDDEN)
 json.dump({p: LASTMOD[p] for p in sorted(PAGES)}, open(LASTMOD_FILE, "w"), indent=1)
 open(os.path.join(ROOT, "sitemap.xml"), "w").write(f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>')
 open(os.path.join(ROOT, "robots.txt"), "w").write(f"User-agent: *\nAllow: /\nSitemap: {SITE['domain']}/sitemap.xml\n")
