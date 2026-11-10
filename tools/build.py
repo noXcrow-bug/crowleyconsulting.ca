@@ -389,7 +389,7 @@ BP_ROWS = [
  ("“Can we drill here?” desk reviews, within 1 business day", ["Not included", "6 a year", "Unlimited"]),
  ("Maintenance staff awareness training", ["Not included", "1 session a year", "2 sessions a year"]),
  ("Member rate on reports, site visits and project work", ["10% off", "15% off", "20% off"]),
- ("Fieldwork scheduling", ["Standard", "Within 5 business days", "Within 2 business days"]),
+ ("Fieldwork scheduling", ["Within 10 business days", "Within 5 business days", "Within 2 business days"]),
  ("If suspect material turns up", ["Phone advice", "Site visit next business day", "Site visit same business day"]),
  ("Board or JHSC presentation, abatement budget", ["No", "No", "Once a year"])]
 
