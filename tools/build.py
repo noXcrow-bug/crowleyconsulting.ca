@@ -598,59 +598,117 @@ page("obligation-check.html", "Obligation Check | Which asbestos and designated 
      extra_js=f"<script>window.NCC_TIERS={json.dumps({k: {kk: v[kk] for kk in ['program', 'name', 'price', 'fits', 'page', 'inc']} for k, v in TIERS.items()})};</script>\n")
 
 # ---------------------------------------------------------------- local pages
-def local_page(fname, city, region, intro, local_points, towns, extra_faq=()):
-    items = [(f"How much does asbestos testing cost in {city}?", "A limited sampling visit for one to three materials starts at $650, and a project-specific designated substance report starts at $1,500. Each report is priced as a report fee plus the samples taken, with the first layer of every sample analyzed by the lab included, so the total depends on the building."),
-             ("How long do results take?", "Lab results take 5 business days from when the lab receives the samples. If work can't wait, we leave written interim instructions on site."),
-             (f"Which buildings in {city} are likely to contain asbestos?", "Any building built before 1990 is a candidate for asbestos-containing materials; newer buildings are much less likely to contain them. Floor tile and mastic, drywall compound, textured ceilings, pipe insulation and vermiculite are the usual suspects."),
-             ("Are you independent of abatement contractors?", "Yes. We never remove or abate anything and take no referral fees, so our survey results aren't shaped by anyone who profits from removal.")] + list(extra_faq)
+# Each city page carries its own local facts: what that municipality's demolition paperwork actually asks,
+# the local building stock, and city-specific questions. Keep them genuinely different: near-identical
+# city pages read to Google as doorway pages. Facts were checked against the linked municipal forms (Nov 2026).
+def local_page(fname, city, region, intro, permit_h2, permit, stock_h2, stock, towns, local_faq, sources):
+    items = list(local_faq) + [
+        (f"How much does asbestos testing cost in {city}?", "A limited sampling visit for one to three materials starts at $650, and a project-specific designated substance report starts at $1,500. Each report is priced as a report fee plus the samples taken, with the first layer of every sample analyzed by the lab included, so the total depends on the building."),
+        ("How long do results take?", "Lab results take 5 business days from when the lab receives the samples. If work can't wait, we leave written interim instructions on site."),
+        ("Are you independent of abatement contractors?", "Yes. We never remove or abate anything and take no referral fees, so our survey results aren't shaped by anyone who profits from removal.")]
     FAQ_HTML, FAQ_SCHEMA = faq(items)
+    src = " · ".join(f'<a href="{u}" rel="noopener">{t}</a>' for t, u in sources)
     body = f"""<section class="hero"><div class="wrap">{crumbs((None, f"Asbestos testing in {city}"))}
 <div class="hero-copy" style="max-width:860px"><h1>Asbestos testing and designated substance surveys in {city}</h1>
 <p class="lede">{intro}</p>
 <div class="btn-row"><a class="btn amber" href="obligation-check.html">Take the Obligation Check</a><a class="btn ghost" href="contact.html#book" data-book>Book a call</a></div></div></div></section>
 <section class="section white"><div class="wrap split">
+<div class="prose"><h2>{permit_h2}</h2>{"".join(f"<p>{x}</p>" for x in permit)}
+<p class="small">Sources: {src}. Check the current form with the building department before you apply.</p></div>
+<div class="prose"><h2>{stock_h2}</h2>{"".join(f"<p>{x}</p>" for x in stock)}
+<p class="small">We also cover {towns}.</p></div>
+</div></section>
+<section class="section"><div class="wrap split">
 <div class="prose"><h2>What we do in {region}</h2>{ul([
  '<a href="services.html">Designated substance surveys and reports</a> before renovation, repair or demolition, from $650',
  '<a href="building-owners.html">Building programs</a> that keep your asbestos record current, from $69 a month per building',
  '<a href="landlords.html">Suite checks and records</a> for landlords, property managers and condo corporations',
  '<a href="services.html">Abatement specifications, oversight, air monitoring and Type 3 clearance</a>',
  '<a href="contractors.html">A compliance desk for contractors</a>, from $199 a month'])}</div>
-<div class="prose"><h2>Why it matters here</h2>{"".join(f"<p>{p}</p>" for p in local_points)}
-<p class="small">We also cover {towns}.</p></div>
+<div class="prose"><h2>Common reasons people call</h2><div class="link-list" style="grid-template-columns:1fr">{"".join(f'<a href="{h}"><strong>{t}</strong></a>' for h, t in TRIGGERS)}</div></div>
 </div></section>
-<section class="section"><div class="wrap"><div class="section-head"><h2>Common reasons people call</h2></div>
-<div class="link-list">{"".join(f'<a href="{h}"><strong>{t}</strong><span>What it involves, what it costs and how long it takes</span></a>' for h, t in TRIGGERS)}</div></div></section>
 """ + FAQ_HTML + cta()
     page(fname, f"Asbestos Testing {city}, ON | Designated Substance Surveys | Noah Crowley",
          f"Independent asbestos testing and designated substance surveys in {region if region.startswith(city + ' and ') else city + ' and ' + region}. Reports from $650 plus samples, lab results in 5 business days.", body,
          schema=[FAQ_SCHEMA, {"@context": "https://schema.org", "@type": "Service", "name": f"Asbestos testing and designated substance surveys in {city}", "serviceType": "Asbestos testing", "provider": {"@id": BIZ_ID}, "areaServed": {"@type": "City", "name": f"{city}, Ontario"}}])
 
+OHSA_DUTY = "Under Ontario's Occupational Health and Safety Act, the owner must find out which designated substances are present before a renovation or demolition is tendered, and give that list to every contractor who bids."
+
 local_page("asbestos-testing-windsor.html", "Windsor", "Windsor-Essex",
-    "Independent asbestos and designated substance work for Windsor building owners, landlords and contractors, with sample pricing explained up front and lab results in 5 business days.",
-    ["More than one in three Windsor dwellings was built before 1960, and most of the city's industrial and institutional floor space dates from the same era. Nearly everything built before 1990 is a candidate for asbestos-containing materials.",
-     "The City of Windsor's demolition permit checklist asks for a designated substance list, so every demolition starts with a survey. We write them ready to attach to the permit and the tender."],
+    "Independent asbestos and designated substance work for Windsor building owners, landlords and contractors, from a consultant based in the city. Sample pricing is explained up front and lab results take 5 business days.",
+    "What Windsor's demolition checklist asks",
+    ["The City of Windsor's demolition permit checklist (Form A.8.1) asks seven environmental questions: past industrial use of the site, whether there is a list of designated substances for the site and building, fluid storage tanks, outstanding Ministry of the Environment or Ministry of Labour orders, PCBs, ozone-depleting substances, and WHMIS hazardous products.",
+     "Answer yes to any of them and the checklist says an environmental consultant must complete an Environmental Building Audit, with a dust control plan, before you apply. In a building from before 1990, the designated substances question is almost always a yes.",
+     "Our pre-demolition survey answers the designated substance, PCB and refrigerant questions in one report you can attach to both the permit application and the demolition tender."],
+    "Windsor's buildings",
+    ["About two in five Windsor homes were built before 1961, and roughly three in four before 1991, by the 2021 Census. The oldest stock sits in and around the core: Walkerville, Sandwich and the neighbourhoods near downtown.",
+     "The city's auto-era plants, warehouses, schools and churches are where the checklist's industrial-use question matters. Pipe and boiler insulation, PCB light ballasts and old refrigeration equipment all need to be found and listed before anyone cuts.",
+     "More than a third of Windsor households rent, so suite turnovers never stop. A suite check before a unit is renovated tells the contractor what's in the walls, ceilings and floors."],
     "LaSalle, Tecumseh, Amherstburg and Lakeshore",
-    [("Do I need a designated substance survey for a demolition permit in Windsor?", "Yes. The City of Windsor's demolition permit checklist asks for a list of designated substances. We write the survey ready to attach to the permit application and the demolition tender.")])
+    [("Do I need a designated substance survey for a demolition permit in Windsor?", "In almost every older building, yes. The City of Windsor's demolition checklist asks whether there is a list of designated substances for the site and building, and any yes on its environmental questions means an Environmental Building Audit before you apply. We write the survey ready to attach to the permit application and the tender."),
+     ("What is the Environmental Building Audit on Windsor's checklist?", "It's the consultant's report the City asks for when any of the checklist's environmental questions is answered yes: industrial use, designated substances, tanks, outstanding orders, PCBs, ozone-depleting substances or hazardous products. It has to include a dust control plan and be finished before the demolition permit application goes in.")],
+    [("City of Windsor demolition permit checklist (Form A.8.1)", "https://www.citywindsor.ca/Documents/residents/building/building-permits/Demolition%20Permit%20Application%20Checklist%20-%20Form%20A.8.1.pdf")])
+
 local_page("asbestos-testing-leamington.html", "Leamington", "Essex County",
-    "Asbestos testing, designated substance surveys and suite checks for Leamington and the rest of Essex County, booked into regular route days.",
-    ["Older commercial buildings, rental stock and industrial sites across Essex County carry the same duties as the city: an asbestos record updated every 12 months, and a designated substance list before any renovation or demolition.",
+    "Asbestos testing, designated substance surveys and suite checks for Leamington, Kingsville and the rest of Essex County, booked into regular route days from our Windsor base.",
+    "Renovating or demolishing in Leamington",
+    ["The Municipality of Leamington takes building and demolition permit applications online through Cloudpermit. The permit doesn't replace the survey. " + OHSA_DUTY,
+     "Heritage adds steps. A property designated under the Ontario Heritage Act needs a heritage permit from Leamington before it can be demolished, and a property listed on Leamington's Register of Heritage Properties needs at least 60 days' written notice to council. Book the survey early so it isn't the last thing holding up the job."],
+    "Leamington's buildings",
+    ["Greenhouse growth keeps changing Leamington's farmland, and expanding operations often take in older farmhouses, barns, packing sheds and boiler buildings. Anything built before 1990 needs a designated substance list before it's renovated or taken down.",
+     "Uptown Leamington's older commercial blocks and the town's rental housing carry the same duties as Windsor's: an asbestos record kept up to date at least every 12 months where asbestos is present, and a list before any work starts.",
      "Visits in the county are grouped into route days, which keeps scheduling predictable."],
-    "Kingsville, Essex, Lakeshore and the rest of Essex County")
+    "Kingsville, Essex, Harrow and the rest of Essex County",
+    [("Does Leamington require a designated substance survey for a demolition permit?", "The duty comes from the Occupational Health and Safety Act rather than the permit: the owner must identify designated substances before demolition or renovation work is tendered. Ask Leamington Building Services what they want attached to your application. We write the report so it serves both."),
+     ("Do you survey farm and greenhouse buildings?", "Yes. A farm building on a farm doesn't need a demolition permit under the Building Code, but hiring contractors to take one down is still construction work, so the owner's designated substance duty still applies. We survey farmhouses, barns, packing sheds and boiler buildings before they're renovated or removed.")],
+    [("Leamington building permits", "https://www.leamington.ca/municipal-services/building-services/building-permits/"),
+     ("Leamington heritage permit guide", "https://www.leamington.ca/en/discover/resources/Heritage-Permit-Application-Guide.pdf")])
+
 local_page("asbestos-testing-chatham.html", "Chatham", "Chatham-Kent",
-    "Designated substance surveys, asbestos record updates and air monitoring for owners, landlords and contractors across Chatham-Kent.",
-    ["Older buildings changing hands or changing use, from former schools to commercial blocks, need a designated substance list before contractors are hired. We write it ready to attach to the tender.",
+    "Designated substance surveys, asbestos record updates and suite checks for owners, landlords and contractors across Chatham-Kent.",
+    "Demolishing in Chatham-Kent",
+    ["Chatham-Kent's Building Development Services has demolition applicants complete a Utility Notification Form. Its conditions remind owners that the Ministry of Labour requires an environmental survey where a designated substance such as asbestos is believed to be present, and that a Notice of Project will be required.",
+     "In practice that means a designated substance survey before the demolition contract is signed, so removal can be priced and scheduled with the rest of the job instead of stopping it halfway."],
+    "Chatham-Kent's buildings",
+    ["Chatham-Kent is one municipality spread across Chatham, Wallaceburg, Blenheim, Ridgetown, Tilbury and dozens of smaller communities, with older main-street commercial blocks, churches, halls and schools in nearly every one of them.",
+     "Surplus buildings are being turned into housing. The former St. Agnes Catholic School on Croydon Street in Chatham came down in 2025 to make way for affordable housing. Every project like that starts with a pre-demolition survey.",
      "Landlords and property managers can book a limited sampling visit before a suite is renovated, so units turn over without surprises."],
-    "Wallaceburg, Tilbury, Blenheim and Ridgetown")
+    "Wallaceburg, Tilbury, Blenheim and Ridgetown",
+    [("Who arranges the survey for a demolition in Chatham-Kent, the owner or the contractor?", "The owner. " + OHSA_DUTY + " A contractor can arrange the survey on the owner's behalf, but the duty stays with the owner."),
+     ("Do you cover Wallaceburg, Tilbury and the rest of Chatham-Kent?", "Yes: Wallaceburg, Tilbury, Blenheim, Ridgetown and the communities between them, as well as Chatham itself.")],
+    [("Chatham-Kent Utility Notification Form", "https://www.chatham-kent.ca/apply/permits/Documents/Utility%20Notification%20Form%202024.pdf")])
+
 local_page("asbestos-testing-sarnia.html", "Sarnia", "Sarnia-Lambton",
-    "Asbestos surveys, abatement oversight and designated substance reports for Sarnia-Lambton's buildings, plants and contractors.",
-    ["Sarnia's industrial sites add turnaround and shutdown work, which is when asbestos in older facilities gets disturbed. A current record and a project-specific report before the shutdown keep the work on schedule.",
-     "Facility Partner clients get fieldwork scheduled within 2 business days and a yearly abatement budget for capital planning."],
-    "Point Edward, Petrolia and the rest of Lambton County")
+    "Asbestos surveys, abatement oversight and designated substance reports for Sarnia-Lambton building owners and the contractors who work in their buildings.",
+    "What Sarnia's demolition application asks",
+    ["The City of Sarnia's demolition application checklist asks applicants to check for designated substances under the Occupational Health and Safety Act, and points owners to the Ministry of Labour's rules on what must happen before demolition, alteration or repair is tendered.",
+     "It also flags past uses that can leave other hazards behind, naming dentist offices and veterinary clinics, and sets a separate heritage step: a property on the municipal heritage register needs 60 days' written notice to council before it's demolished.",
+     "Our survey covers all 11 designated substances. We record the building's past uses in the report and flag anything outside those 11 for the right specialist."],
+    "Sarnia's buildings and trades",
+    ["Many Sarnia trades split the year between Chemical Valley turnarounds and building work. Imperial's 2023 Sarnia turnaround alone brought in a peak of about 1,200 contractors.",
+     "On the building side, the Cleared-to-Start Pass gives those contractors a compliance desk: a review of the owner's report before they bid, and a site visit when a job needs testing.",
+     "Downtown Sarnia, Point Edward and the older parts of Lambton County carry the same owner duties as anywhere in Ontario: an asbestos record for buildings that contain it, and a designated substance list before any project is tendered."],
+    "Point Edward, Petrolia, Corunna and the rest of Lambton County",
+    [("Does Sarnia need a designated substance report before demolition?", "Sarnia's demolition application checklist asks you to check for designated substances under the Occupational Health and Safety Act. " + OHSA_DUTY + " We write the report ready for both the application and the tender."),
+     ("My building used to be a dental office or a vet clinic. Does that matter?", "Sarnia's demolition checklist names those past uses as signs that radioactive materials may have been used on site. That's outside the 11 designated substances, so tell us about past uses when you book. We note them in the report and tell you who handles the follow-up.")],
+    [("City of Sarnia demolition application (Feb 2026)", "https://www.sarnia.ca/app/uploads/2026/04/Demolition-Application-Feb-2026.pdf"),
+     ("Imperial 2023 turnaround (Sarnia News Today)", "https://sarnianewstoday.ca/sarnia/news/2023/09/06/planned-maintenance-shutdown-at-imperial")])
+
 local_page("asbestos-testing-london.html", "London", "London and Middlesex",
-    "Independent designated substance surveys and asbestos records for London-area owners, landlords and contractors.",
-    ["Large national firms are strong on big portfolios and public tenders, but their minimum fees make small jobs unattractive. We work for owners who want one named consultant and a predictable price.",
+    "Independent designated substance surveys and asbestos records for London-area owners, landlords and contractors who want one named consultant and a predictable price.",
+    "What London's demolition form leaves out",
+    ["The City of London's demolition clearances form covers heritage review, utility sign-offs and a security deposit: $2,000 for a house, or $10 per square metre of ground floor for other buildings, up to $10,000. It doesn't ask about designated substances.",
+     "That doesn't remove the duty. " + OHSA_DUTY + " A contractor who bids without that list carries the risk when the walls come open.",
+     "Heritage adds time. For a property on London's Register of Cultural Heritage Resources, the owner must give council at least 60 days' written notice before demolishing, and council can move to designate it instead. Have the survey done during that window so it's ready when the permit is."],
+    "London's buildings",
+    ["Many of London's older neighbourhoods, from Old East Village to Wortley Village, sit inside heritage conservation districts or on the register, so demolition and major renovation there run on a longer clock.",
+     "Large national firms are strong on big portfolios and public tenders, but their minimum fees make small jobs unattractive. We work for owners who want one named consultant and a predictable price.",
      "Contractors working in older London buildings can have the owner's report reviewed before they bid, and book a pre-work check when it falls short."],
-    "Strathroy, St. Thomas and the rest of Middlesex County")
+    "Strathroy, St. Thomas and the rest of Middlesex County",
+    [("London's demolition form doesn't mention designated substances. Do I still need a survey?", "Yes. The duty comes from the Occupational Health and Safety Act, not the permit form. " + OHSA_DUTY),
+     ("How long does demolishing a heritage-listed property in London take?", "At least 60 days from the owner's written notice to council, and longer if council decides to designate the property. London's heritage planner reviews it as part of the demolition clearances.")],
+    [("City of London required clearances for demolition", "https://london.ca/sites/default/files/2024-11/Required%20clearances%20for%20demolition%20permit.pdf"),
+     ("City of London demolition control policy", "https://london.ca/council-policies/demolition-control")])
 
 # ---------------------------------------------------------------- trigger pages
 def trigger_page(fname, h1, title, desc, lede, sections, related):
