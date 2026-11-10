@@ -1,7 +1,7 @@
 """Builds the Noah Crowley Asbestos and Designated Substances Consulting website.
 Run:  python3 tools/build.py   (from the repo root). Writes the .html files, sitemap.xml and robots.txt.
 All copy is drawn from the NCC business plan; every price comes from the public list in price book PB-2026.11c. Edit SITE below for contact details, then rebuild."""
-import json, os, hashlib, html as H
+import json, os, re, hashlib, html as H
 from datetime import date
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -72,6 +72,19 @@ GUIDES = [("guide-inspector-ready-binder.html", "Inspector-ready binder checklis
           ("guide-designated-substance-self-check.html", "Designated substance self-check", "For employers"),
           ("guide-demolition-renovation-dss.html", "Demolition and renovation DSS guide", "For contractors")]
 PAGES = []
+
+# Each page's "last changed" date lives in tools/lastmod.json as {page: {hash, date}}. A page's date moves to
+# today only when its content actually changes, so sitemap.xml <lastmod> stays truthful (search engines stop
+# trusting lastmod if it moves on every rebuild). The asset ?v= stamps and the footer year are left out of the
+# hash. Write LASTMOD_TOKEN in a page body to show that page's own last-changed date (the privacy notice does).
+LASTMOD_FILE = os.path.join(ROOT, "tools", "lastmod.json")
+LASTMOD = json.load(open(LASTMOD_FILE)) if os.path.exists(LASTMOD_FILE) else {}
+TODAY = date.today().isoformat()
+LASTMOD_TOKEN = "__LASTMOD__"
+def fingerprint(doc):
+    doc = re.sub(r"\?v=[0-9a-f]{8}", "", doc).replace(f"© {YEAR} ", "© ")
+    return hashlib.sha1(doc.encode()).hexdigest()
+def nice_date(iso): return date.fromisoformat(iso).strftime("%B %-d, %Y")
 
 def contact_bits():
     out = []
@@ -167,7 +180,10 @@ def page(fname, title, desc, body, active=None, schema=None, extra_js=""):
             {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE["domain"] + "/"},
             {"@type": "ListItem", "position": 2, "name": H.unescape(name), "item": SITE["domain"] + "/" + fname}]})
     doc = head(title, desc, fname, schemas or None) + header(active) + body + footer(fname).replace("<script src=\"assets/config.js", extra_js + "<script src=\"assets/config.js", 1)
-    open(os.path.join(ROOT, fname), "w").write(doc)
+    fp = fingerprint(doc)
+    if LASTMOD.get(fname, {}).get("hash") != fp:
+        LASTMOD[fname] = {"hash": fp, "date": TODAY}
+    open(os.path.join(ROOT, fname), "w").write(doc.replace(LASTMOD_TOKEN, nice_date(LASTMOD[fname]["date"])))
 
 DSS_CHECK = '<p class="dss-check"><a href="obligation-check.html#project">Not sure if your project needs a DSS? <strong>Check in 60 seconds</strong></a></p>'
 
@@ -834,7 +850,7 @@ pv = f"""<section class="hero"><div class="wrap">{crumbs((None, "Privacy notice"
 <p>Form submissions are delivered to us by our form provider, and calls are booked through our scheduling provider. Fonts are served from this website, not a third party. We don't sell or rent personal information, and this site does not use advertising trackers.</p>
 <h2>Keeping and correcting it</h2>
 <p>We keep enquiry records for as long as needed to serve you and meet our legal and insurance obligations. You can ask to see, correct or delete your information by contacting us{(" at " + e(SITE['email'])) if SITE['email'] else ' through the <a href="contact.html">contact page</a>'}.</p>
-<p class="small">Last updated {date.today().strftime("%B %-d, %Y")}.</p>
+<p class="small">Last updated {LASTMOD_TOKEN}.</p>
 </div></div></section>"""
 page("privacy.html", "Privacy notice | Noah Crowley Consulting", "How Noah Crowley Consulting collects, uses and protects the information you send through this website.", pv)
 
@@ -845,8 +861,8 @@ nf = """<section class="hero"><div class="wrap"><div class="prose"><h1>That page
 page("404.html", "Page not found | Noah Crowley", "This page doesn't exist.", nf)
 
 # ---------------------------------------------------------------- sitemap, robots
-today = date.today().isoformat()
-urls = "".join(f"<url><loc>{SITE['domain']}/{'' if p == 'index.html' else p}</loc><lastmod>{today}</lastmod></url>" for p in PAGES if p != "404.html")
+urls = "".join(f"<url><loc>{SITE['domain']}/{'' if p == 'index.html' else p}</loc><lastmod>{LASTMOD[p]['date']}</lastmod></url>" for p in PAGES if p != "404.html")
+json.dump({p: LASTMOD[p] for p in sorted(PAGES)}, open(LASTMOD_FILE, "w"), indent=1)
 open(os.path.join(ROOT, "sitemap.xml"), "w").write(f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>')
 open(os.path.join(ROOT, "robots.txt"), "w").write(f"User-agent: *\nAllow: /\nSitemap: {SITE['domain']}/sitemap.xml\n")
 LLMS = f"""# {SITE['online']}
