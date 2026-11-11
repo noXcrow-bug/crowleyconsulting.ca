@@ -137,7 +137,7 @@ def header(active):
     links = "".join(f'<a href="{h}"{" aria-current=\"page\"" if h == active else ""}>{t}</a>' for h, t in NAV)
     call = f'<a class="icon-btn call-btn" href="{tel()}" aria-label="Call {e(SITE["phone"])}">{ICON["phone"]}</a>' if SITE["phone"] else ""
     return f"""<header class="site-head"><div class="wrap head-row">
-<a class="brand" href="index.html" aria-label="{e(SITE['online'])}, home"><img src="assets/ncc-logo-online-compact.svg" alt="{e(SITE['online'])}" width="606" height="128"></a>
+<a class="brand" href="index.html" aria-label="{e(SITE['online'])}, home"><img src="assets/ncc-logo-online-compact.svg" alt="{e(SITE['online'])}" width="551" height="128"></a>
 <div class="head-actions">{call}<button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><span class="burger" aria-hidden="true"><i></i><i></i></span><span class="menu-label">Menu</span></button></div>
 <nav class="nav" id="site-nav" aria-label="Main">{links}<a class="btn amber" href="obligation-check.html">Take the Obligation Check</a></nav>
 </div></header>
@@ -155,7 +155,7 @@ def footer(fname=""):
     return f"""</main>
 <footer class="site-foot"><div class="wrap">
 <div class="foot-grid">
-<div class="foot-brand"><img src="assets/ncc-logo-online-compact-reverse.svg" alt="{e(SITE['online'])}" width="420" height="96">
+<div class="foot-brand"><img src="assets/ncc-logo-online-compact-reverse.svg" alt="{e(SITE['online'])}" width="413" height="96">
 <p>Independent asbestos and designated substances consulting for {REGIONS}. We never remove or abate anything and take no referral fees.</p></div>
 <div><h4>Programs</h4><ul>
 <li><a href="building-owners.html">Building programs</a></li><li><a href="landlords.html">Landlords and condos</a></li>
