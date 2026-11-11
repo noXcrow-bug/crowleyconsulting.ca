@@ -397,7 +397,7 @@ HOME_FAQ, HOME_FAQ_SCHEMA = faq([
  ("How long do lab results take?", "5 business days from when the lab receives the samples. We don't offer rush analysis. If work can't wait, we leave written interim instructions on site."),
  ("Do you remove asbestos?", "No. We are independent consultants: we survey, write specifications, oversee abatement and test the air, but we never remove or abate anything and take no referral fees.")])
 home = home.replace('<section class="section white"><div class="wrap split">\n<div class="prose"><h2>Independent, on purpose</h2>', HOME_FAQ.replace('class="section white"', 'class="section"') + '<section class="section white"><div class="wrap split">\n<div class="prose"><h2>Independent, on purpose</h2>', 1)
-page("index.html", "Asbestos & Designated Substance Consulting in Windsor, ON | Noah Crowley", f"Independent asbestos and designated substance surveys and reports in {REGIONS}. Reports from $650, building programs from $69 a month.", home, schema=[home_schema, HOME_FAQ_SCHEMA])
+page("index.html", "Asbestos & Designated Substance Consulting in Windsor, ON | Noah Crowley Consulting", f"Independent asbestos and designated substance surveys and reports in {REGIONS}. Reports from $650, building programs from $69 a month.", home, schema=[home_schema, HOME_FAQ_SCHEMA])
 
 # ---------------------------------------------------------------- building programs table
 BP_ROWS = [
@@ -449,7 +449,7 @@ b = segment_hero("Building owners", "Building programs",
 <h3>Included in every program</h3>{program_rules()}</div>
 </div></section>
 """ + cta("Is your asbestos record within 12 months?", "The Obligation Check takes two minutes and tells you which program fits your buildings.", "obligation-check.html#building")
-page("building-owners.html", "Building programs | Asbestos records and registers | Noah Crowley", "Yearly asbestos record updates, notices, staff training and “can we drill here?” answers for building owners in southwestern Ontario. From $69 a month per building.", b, "building-owners.html", schema=service_schema("Building programs", "Monthly asbestos and designated substance compliance program in southwestern Ontario", 69))
+page("building-owners.html", "Building programs | Asbestos records and registers | Noah Crowley Consulting", "Yearly asbestos record updates, notices, staff training and “can we drill here?” answers for building owners in southwestern Ontario. From $69 a month per building.", b, "building-owners.html", schema=service_schema("Building programs", "Monthly asbestos and designated substance compliance program in southwestern Ontario", 69))
 
 # ---------------------------------------------------------------- landlords
 r = segment_hero("Landlords", "Building programs for landlords and condos",
@@ -477,7 +477,7 @@ r = segment_hero("Landlords", "Building programs for landlords and condos",
 <div class="prose"><h3>Included in every program</h3>{program_rules()}</div>
 </div></section>
 """ + cta("Got a suite turning over soon?", "Book a limited sampling visit, or take the Obligation Check to see which program fits your buildings.", "obligation-check.html#rental")
-page("landlords.html", "Asbestos programs for landlords and condos | Noah Crowley", "Asbestos records, tenant notices and suite checks for landlords, property managers and condo corporations in Windsor-Essex and southwestern Ontario. Programs from $69 a month per building.", r, "landlords.html", schema=service_schema("Building programs for landlords", "Monthly asbestos and designated substance compliance program in southwestern Ontario", 69))
+page("landlords.html", "Asbestos programs for landlords and condos | Noah Crowley Consulting", "Asbestos records, tenant notices and suite checks for landlords, property managers and condo corporations in Windsor-Essex and southwestern Ontario. Programs from $69 a month per building.", r, "landlords.html", schema=service_schema("Building programs for landlords", "Monthly asbestos and designated substance compliance program in southwestern Ontario", 69))
 
 # ---------------------------------------------------------------- employers
 w = f"""<section class="hero"><div class="wrap">{crumbs((None, "Employers"))}
@@ -494,7 +494,7 @@ w = f"""<section class="hero"><div class="wrap">{crumbs((None, "Employers"))}
 <p>Workplace exposure monitoring is not available yet. Call 519-890-9654 and tell us what you need, and we'll contact you when it launches.</p>
 <p>If your building is older than 1990, it also carries the asbestos duties every owner has. See <a href="building-owners.html">building programs</a>.</p></div>
 </div></section>""" + cta("Not sure which duties apply?", "The one-page self-check tells you whether O. Reg. 490/09 applies, or leave your details and we'll contact you when exposure monitoring launches.", "guide-designated-substance-self-check.html")
-page("employers.html", "Designated substances at work | O. Reg. 490/09 | Noah Crowley", "What O. Reg. 490/09 asks of Ontario employers in southwestern Ontario. Workplace exposure monitoring is not available yet.", w, "employers.html")
+page("employers.html", "Designated substances at work | O. Reg. 490/09 | Noah Crowley Consulting", "What O. Reg. 490/09 asks of Ontario employers in southwestern Ontario. Workplace exposure monitoring is not available yet.", w, "employers.html")
 
 # ---------------------------------------------------------------- contractors
 c = segment_hero("Contractors", "Cleared-to-Start Pass",
@@ -541,7 +541,7 @@ c = segment_hero("Contractors", "Cleared-to-Start Pass",
 <p><a href="guide-demolition-renovation-dss.html">Read the demolition and renovation DSS guide</a></p></div>
 </div></section>
 """ + cta("Know what's in the walls before your crew arrives.", "Book your first pre-work check, or take the Obligation Check to see which pass fits your volume.", "obligation-check.html#contractor")
-page("contractors.html", "Cleared-to-Start Pass | The contractor compliance desk | Noah Crowley", "A compliance desk for contractors, renovators and restoration firms in southwestern Ontario: pre-bid reviews, faster site visits and member rates on pre-work checks. From $199 a month.", c, "contractors.html", schema=service_schema("Cleared-to-Start Pass", "Monthly compliance desk for contractors in southwestern Ontario", 199))
+page("contractors.html", "Cleared-to-Start Pass | The contractor compliance desk | Noah Crowley Consulting", "A compliance desk for contractors, renovators and restoration firms in southwestern Ontario: pre-bid reviews, faster site visits and member rates on pre-work checks. From $199 a month.", c, "contractors.html", schema=service_schema("Cleared-to-Start Pass", "Monthly compliance desk for contractors in southwestern Ontario", 199))
 
 # ---------------------------------------------------------------- services
 SVC_FAQ_HTML, SVC_FAQ_SCHEMA = faq([
@@ -578,7 +578,7 @@ s = f"""<section class="hero"><div class="wrap">{crumbs((None, "Reports and pric
 </div></section>
 <section class="section white"><div class="wrap"><div class="section-head"><h2>Common jobs</h2></div>
 <div class="link-list">{"".join(f'<a href="{h}"><strong>{t}</strong><span>What it involves, what it costs and how long it takes</span></a>' for h, t in TRIGGERS)}</div></div></section>""" + SVC_FAQ_HTML + cta("Not sure which report you need?", "The Obligation Check points you to the right one, or send us the job details and we'll quote it.")
-page("services.html", "Asbestos and designated substance reports and prices | Noah Crowley", "Designated substance reports and asbestos surveys in southwestern Ontario, priced as a report fee plus samples: from $650 for a limited sampling visit and $1,500 for a project-specific DSS.", s, "services.html", schema=[SVC_SCHEMA, SVC_FAQ_SCHEMA])
+page("services.html", "Asbestos and designated substance reports and prices | Noah Crowley Consulting", "Designated substance reports and asbestos surveys in southwestern Ontario, priced as a report fee plus samples: from $650 for a limited sampling visit and $1,500 for a project-specific DSS.", s, "services.html", schema=[SVC_SCHEMA, SVC_FAQ_SCHEMA])
 
 # ---------------------------------------------------------------- example register (public demo of the client register snapshot)
 def ex_building(b, n):
@@ -603,7 +603,7 @@ ex = f"""<section class="hero"><div class="wrap">{crumbs(("building-owners.html"
 {"".join(ex_building(b, i) for i, b in enumerate(EX_BUILDINGS))}
 <p class="small" style="max-width:80ch">A register summarises the surveys and condition checks listed for each building and is kept under O. Reg. 278/05 and section 30 of the Occupational Health and Safety Act. It doesn't replace the full survey reports. Materials hidden in walls, ceilings or equipment may not have been seen: if a suspect material turns up during work, stop and call.</p>
 </div></section>""" + cta("Want a register like this for your building?", "Take the Obligation Check to see which program fits, or book a free 30-minute call.", "obligation-check.html")
-page("register-example.html", "Example asbestos register | What program clients see | Noah Crowley", "An example of the designated substance register snapshot every building program client gets: statuses, lab results, condition history and what to do, on any phone.", ex, "building-owners.html")
+page("register-example.html", "Example asbestos register | What program clients see | Noah Crowley Consulting", "An example of the designated substance register snapshot every building program client gets: statuses, lab results, condition history and what to do, on any phone.", ex, "building-owners.html")
 
 # ---------------------------------------------------------------- quiz
 q = f"""<section class="hero"><div class="wrap">{crumbs((None, "Obligation Check"))}
@@ -612,7 +612,7 @@ q = f"""<section class="hero"><div class="wrap">{crumbs((None, "Obligation Check
 <p class="small">Covers O. Reg. 278/05 (asbestos in buildings) and OHSA section 30 (designated substances on projects). General guidance only, not a site-specific assessment.</p></div>
 <div class="quiz" id="quiz" aria-live="polite"><noscript>The Obligation Check needs JavaScript. You can <a href="contact.html">send us a message</a> instead.</noscript></div>
 </div></div></section>"""
-page("obligation-check.html", "Obligation Check | Which asbestos and designated substance duties apply to you? | Noah Crowley",
+page("obligation-check.html", "Obligation Check | Which asbestos and designated substance duties apply to you? | Noah Crowley Consulting",
      "A two-minute quiz for building owners, landlords and contractors in Ontario: find out which asbestos and designated substance duties apply and what to do first.", q, None,
      extra_js=f"<script>window.NCC_TIERS={json.dumps({k: {kk: v[kk] for kk in ['program', 'name', 'price', 'fits', 'page', 'inc']} for k, v in TIERS.items()})};</script>\n")
 
@@ -647,7 +647,7 @@ def local_page(fname, city, region, intro, permit_h2, permit, stock_h2, stock, t
 <div class="prose"><h2>Common reasons people call</h2><div class="link-list" style="grid-template-columns:1fr">{"".join(f'<a href="{h}"><strong>{t}</strong></a>' for h, t in TRIGGERS)}</div></div>
 </div></section>
 """ + FAQ_HTML + cta()
-    page(fname, f"Asbestos Testing {city}, ON | Designated Substance Surveys | Noah Crowley",
+    page(fname, f"Asbestos Testing {city}, ON | Designated Substance Surveys | Noah Crowley Consulting",
          f"Independent asbestos testing and designated substance surveys in {region if region.startswith(city + ' and ') else city + ' and ' + region}. Reports from $650 plus samples, lab results in 5 business days.", body,
          schema=[FAQ_SCHEMA, {"@context": "https://schema.org", "@type": "Service", "name": f"Asbestos testing and designated substance surveys in {city}", "serviceType": "Asbestos testing", "provider": {"@id": BIZ_ID}, "areaServed": {"@type": "City", "name": f"{city}, Ontario"}}])
 
@@ -742,7 +742,7 @@ def trigger_page(fname, h1, title, desc, lede, sections, related):
 def rel(*items): return "".join(f'<a href="{h}"><strong>{t}</strong><span>{s}</span></a>' for h, t, s in items)
 
 trigger_page("asbestos-testing-before-renovation.html", "Asbestos testing before renovation",
-  "Asbestos testing before renovation in Windsor and southwestern Ontario | Noah Crowley",
+  "Asbestos testing before renovation in Windsor and southwestern Ontario | Noah Crowley Consulting",
   "Before walls or floors open in an older building, a designated substance survey lists what the work will disturb. From $650 plus samples, lab results in 5 business days. Independent asbestos and designated substances consulting.",
   "Before walls, floors or ceilings open in an older building, Ontario law requires a list of every designated substance in the work area. We survey it, test it and hand you a report ready for the contractor.",
   [("What the law requires", "<p>The project owner must list all designated substances before a renovation, repair or demolition project begins and include the list in the tender (OHSA section 30). An owner who leaves one off is liable to the contractors when it turns up mid-job.</p><p>Any building built before 1990 is a candidate for asbestos-containing materials; newer buildings are much less likely to contain them.</p>"),
@@ -753,7 +753,7 @@ trigger_page("asbestos-testing-before-renovation.html", "Asbestos testing before
       ("guide-suite-turnover-checklist.html", "Suite turnover checklist", "The materials to stop and test in older rental suites")))
 
 trigger_page("designated-substance-survey-demolition-permit.html", "Designated substance survey for a demolition permit",
-  "Designated substance survey for a demolition permit in Windsor | Noah Crowley",
+  "Designated substance survey for a demolition permit in Windsor | Noah Crowley Consulting",
   "The City of Windsor's demolition permit checklist asks for a designated substance list. We write the pre-demolition survey ready to attach to the permit application and the tender. From $3,900.",
   "The City of Windsor's demolition permit checklist asks for a list of designated substances. We survey the building and write a report you can attach to the permit application and the demolition tender.",
   [("What the survey covers", "<p>A destructive survey of every space, because the building is coming down: walls opened, flooring lifted and roofs cored, so concealed materials are found before demolition. It covers all 11 designated substances plus PCBs, mould and ozone-depleting refrigerants. The building has to be vacant.</p>"),
@@ -764,7 +764,7 @@ trigger_page("designated-substance-survey-demolition-permit.html", "Designated s
       ("services.html", "Reports and prices", "Every report, from a limited sampling visit to a pre-demolition survey")))
 
 trigger_page("silica-exposure-assessment.html", "Silica on renovation and demolition projects",
-  "Silica on renovation and demolition projects in Ontario | Noah Crowley",
+  "Silica on renovation and demolition projects in Ontario | Noah Crowley Consulting",
   "Silica is one of Ontario's 11 designated substances. When a project will cut concrete, masonry or tile, it belongs on the designated substance list and in the contractor's control plan.",
   "Cutting, grinding or coring concrete, masonry and tile releases respirable crystalline silica, one of Ontario's 11 designated substances. If the work will disturb it, it belongs on the project's designated substance list.",
   [("Where it shows up", "<p>Concrete, mortar, brick, block, ceramic tile, drywall and plaster all contain silica. Every project-specific report we write records where silica-containing materials are and what the planned work will do to them.</p>"),
@@ -775,7 +775,7 @@ trigger_page("silica-exposure-assessment.html", "Silica on renovation and demoli
       ("contractors.html", "Cleared-to-Start Pass", "The compliance desk for contractors")))
 
 trigger_page("isocyanate-air-monitoring.html", "Isocyanate air monitoring",
-  "Isocyanate air monitoring in southwestern Ontario | Noah Crowley",
+  "Isocyanate air monitoring in southwestern Ontario | Noah Crowley Consulting",
   "What O. Reg. 490/09 asks of employers who spray or mix isocyanates. Exposure monitoring is not available yet.",
   "Collision and auto body paint booths, paint lines, spray foam installers and polyurethane manufacturers work with isocyanates, one of Ontario's designated substances.",
   [("What the regulation asks", ul(["A written exposure assessment made with your JHSC, redone after any change that could significantly affect exposure", "A control program where health may be affected", "Air monitoring, with results posted for 14 days, copied to the JHSC and kept 5 years", "Medical surveillance, which applies to isocyanates"])),
@@ -799,7 +799,7 @@ def guide_page(fname, h1, title, desc, lede, items, after, cta_href):
     page(fname, title, desc, body, schema=art)
 
 guide_page("guide-inspector-ready-binder.html", "Inspector-ready binder checklist",
-  "Inspector-ready asbestos binder checklist for Ontario building owners | Noah Crowley",
+  "Inspector-ready asbestos binder checklist for Ontario building owners | Noah Crowley Consulting",
   "The items a Ministry of Labour inspector checks in an asbestos-in-buildings visit, as a printable checklist for Ontario building owners.",
   "Built on what inspectors checked in the Ministry's 2023–24 asbestos-in-buildings campaign. The most common orders were for not following the asbestos management program and not keeping the record on site.",
   [("Asbestos record, kept on the premises", "Every listed material with its location, condition, and whether it is friable."),
@@ -814,7 +814,7 @@ guide_page("guide-inspector-ready-binder.html", "Inspector-ready binder checklis
   "", "obligation-check.html#building")
 
 guide_page("guide-suite-turnover-checklist.html", "Suite turnover checklist",
-  "Suite turnover asbestos checklist for Ontario landlords | Noah Crowley",
+  "Suite turnover asbestos checklist for Ontario landlords | Noah Crowley Consulting",
   "Which materials to stop and test before renovating a rental suite in an older building, as a printable checklist for landlords and property managers.",
   "Before a turnover crew starts in a pre-1990 suite, check whether the work will disturb any of these. If it will and you don't know what's in them, stop and test first.",
   [("23 cm [9-inch] floor tile and its mastic", "Common in older suites and hallways; lifting or grinding it disturbs both layers."),
@@ -829,7 +829,7 @@ guide_page("guide-suite-turnover-checklist.html", "Suite turnover checklist",
   "<p>A limited sampling visit before a turnover starts at $650, with a written result about 7 business days after the visit. <a href=\"landlords.html\">Building program</a> members pay 10% to 20% less.</p>", "obligation-check.html#rental")
 
 guide_page("guide-designated-substance-self-check.html", "Designated substance self-check",
-  "Does O. Reg. 490/09 apply to you? A designated substance self-check | Noah Crowley",
+  "Does O. Reg. 490/09 apply to you? A designated substance self-check | Noah Crowley Consulting",
   "A one-page self-check for Ontario employers: whether O. Reg. 490/09 applies, and what an inspector will ask for.",
   "Work down the list. If you answer yes to the first two items and no to any after them, you have a gap an inspector would find.",
   [("Is a designated substance present, used, handled or stored at your workplace?", "Asbestos, acrylonitrile, arsenic, benzene, coke oven emissions, ethylene oxide, isocyanates, lead, mercury, silica or vinyl chloride."),
@@ -843,7 +843,7 @@ guide_page("guide-designated-substance-self-check.html", "Designated substance s
   "<p>Exposure monitoring is not available yet. Call <a href=\"tel:+15198909654\">519-890-9654</a> or <a href=\"contact.html\">contact us</a> to be notified when it launches.</p>", "obligation-check.html")
 
 guide_page("guide-demolition-renovation-dss.html", "Demolition and renovation DSS guide",
-  "Demolition and renovation designated substance survey guide for Windsor-Essex | Noah Crowley",
+  "Demolition and renovation designated substance survey guide for Windsor-Essex | Noah Crowley Consulting",
   "What a designated substance survey covers before demolition or renovation in Windsor-Essex, and what to do when you find suspect material mid-job.",
   "Built around the City of Windsor's demolition permit checklist, which asks for a designated substance list. The second half covers what to do when suspect material turns up mid-job.",
   [("The owner lists every designated substance before the project begins", "OHSA section 30 puts this on the project owner, and the list goes into the tender."),
@@ -867,7 +867,7 @@ a = f"""<section class="hero"><div class="wrap">{crumbs((None, "How we work"))}
 <p>Programs run on 12-month agreements at a monthly fee per building. They keep your record current and give you a member rate on reports; they never include a report themselves.</p>
 <h2>Where we work</h2><p>{", ".join(f'<a href="{h}">{t}</a>' for h, t in CITIES)}, and the towns around them.</p></div>
 </div></section>""" + cta()
-page("about.html", "How we work | Independent asbestos consulting | Noah Crowley", f"An independent asbestos and designated substances consultancy for {REGIONS}. No removal work, no referral fees, one named consultant.", a)
+page("about.html", "How we work | Independent asbestos consulting | Noah Crowley Consulting", f"An independent asbestos and designated substances consultancy for {REGIONS}. No removal work, no referral fees, one named consultant.", a)
 
 # ---------------------------------------------------------------- contact
 cb = contact_bits()
@@ -919,7 +919,7 @@ page("privacy.html", "Privacy notice | Noah Crowley Consulting", "How Noah Crowl
 nf = """<section class="hero"><div class="wrap"><div class="prose"><h1>That page isn't here</h1>
 <p class="lede">The link may be old or mistyped. Start from one of these instead.</p>
 <div class="btn-row"><a class="btn amber" href="obligation-check.html">Take the Obligation Check</a><a class="btn ghost" href="index.html">Go to the home page</a></div></div></div></section>"""
-page("404.html", "Page not found | Noah Crowley", "This page doesn't exist.", nf)
+page("404.html", "Page not found | Noah Crowley Consulting", "This page doesn't exist.", nf)
 
 # ---------------------------------------------------------------- sitemap, robots
 urls = "".join(f"<url><loc>{SITE['domain']}/{'' if p == 'index.html' else p}</loc><lastmod>{LASTMOD[p]['date']}</lastmod></url>" for p in PAGES if p != "404.html" and p not in HIDDEN)
