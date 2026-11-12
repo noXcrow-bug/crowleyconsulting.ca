@@ -23,7 +23,7 @@ GUIDES_REVIEWED = "2026-11-09"   # change when the guides are actually re-checke
 REGIONS = "Windsor-Essex, Chatham-Kent, Sarnia-Lambton and London"
 YEAR = date.today().year
 e = H.escape
-ASSET_V = hashlib.sha1(b"".join(open(os.path.join(ROOT, "assets", f), "rb").read() for f in ("site.css", "site.js", "config.js"))).hexdigest()[:8]
+ASSET_V = hashlib.sha1(b"".join(open(os.path.join(ROOT, "assets", f), "rb").read() for f in ("site.css", "site.js", "config.js", "ncc-rules.js"))).hexdigest()[:8]
 
 # ---------------------------------------------------------------- tiers (price book PB-2026.11d)
 # The website may quote only the public "from" prices in the price book. Anything more specific is quoted per building.
@@ -614,7 +614,7 @@ q = f"""<section class="hero"><div class="wrap">{crumbs((None, "Obligation Check
 </div></div></section>"""
 page("obligation-check.html", "Obligation Check | Which asbestos and designated substance duties apply to you? | Noah Crowley Consulting",
      "A two-minute quiz for building owners, landlords and contractors in Ontario: find out which asbestos and designated substance duties apply and what to do first.", q, None,
-     extra_js=f"<script>window.NCC_TIERS={json.dumps({k: {kk: v[kk] for kk in ['program', 'name', 'price', 'fits', 'page', 'inc']} for k, v in TIERS.items()})};</script>\n")
+     extra_js=f"<script src=\"assets/ncc-rules.js?v={ASSET_V}\"></script>\n<script>window.NCC_TIERS={json.dumps({k: {kk: v[kk] for kk in ['program', 'name', 'price', 'fits', 'page', 'inc']} for k, v in TIERS.items()})};</script>\n")
 
 # ---------------------------------------------------------------- local pages
 # Each city page carries its own local facts: what that municipality's demolition paperwork actually asks,
