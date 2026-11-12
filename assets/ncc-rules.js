@@ -11,7 +11,7 @@
    window.NCC_RULES = { version, TRIGGERS, ROLES, USES, REPORTS, AREAS, SCALES, SEGMENT, era, cls, bizDaysUntil, route, fromIntake, recommend, flags, summary } */
 (function (root) {
   "use strict";
-  const version = "R-2026.11c";
+  const version = "R-2026.11d";
 
   const TRIGGERS = [
     ["reno", "Renovation or repairs"], ["demo", "Demolition"], ["claim", "Insurance claim / restoration (fire, flood, mould)"],
@@ -77,7 +77,7 @@
     if (work === "demo") key = "predemo";
     else if (level === 3) key = null;
     else if (p.report === "old") key = "update";
-    else if (house || (level === 2 && work === "minor" && real.length <= 3)) key = "limited";
+    else if (house) key = "limited"; /* R-2026.11d (Noah): limited visit = houses only. Its letter (results + Type 1/2/3) is not the owner's s.30 designated substance list, so commercial projects get a Project-specific DSS. */
     else key = "project";
     return { level, key };
   }
@@ -98,23 +98,19 @@
     const names = (pb && pb.names) || { limited: "Limited sampling visit", update: "DSS update or re-assessment", project: "Project-specific DSS", survey: "Asbestos building survey", full: "Full-building DSS + hazmat", predemo: "Pre-demolition DSS" };
     const p = fromIntake(a), r = route(p), c = isHouse(a) ? "A" : cls(a.areaM2, pb), e = p.era;
     let key = r.key, why, say;
-    /* Class D (R-2026.11c, Noah): the price book has no limited visit over Class C, so a big building gets a Project-specific DSS. Website unaffected (it doesn't ask size). */
-    const classD = key === "limited" && !isHouse(a) && c === "D";
-    if (classD) key = "project";
     if (key === "predemo") { why = "Demolition needs a destructive pre-demolition survey, even if there's a recent report."; say = "For demolition we do a destructive survey: we open up walls, floors and ceilings so nothing is missed."; }
     else if (key === null && a.report === "current") { key = "review"; why = "They say they have a current report that covers this work. Read it before selling anything."; say = "Send me a copy of your report. If it covers this work, you may not need much from us."; }
     else if (key === null) { key = "simple"; why = "Newer building and work that won't open up materials: likely a short list. The owner still needs one before work starts."; say = "This one should be simple, but the owner still needs the list before the contract is signed."; }
-    else if (key === "limited") { why = isHouse(a) ? "A house renovation: test or presume each material the work touches. Homeowner pays; no program." : "A small job touching a few materials: a scoped sampling visit covers it."; say = isHouse(a) ? "For a house, we only test the materials your renovation will disturb." : "For a small job, we only sample the few materials the work touches."; }
+    else if (key === "limited") { why = "A house renovation: test or presume each material the work touches. Letter with results and the Type 1/2/3 classification; not a designated substance list. Homeowner pays; no program."; say = "For a house, we only test the materials your renovation will disturb."; }
     else if (key === "update") { why = a.report === "partial" ? "Their report doesn't cover this work: update it to take in the work area." : "There's a report, but it's old or out of date. Updating it costs less than starting over."; say = "We can update your existing report instead of starting from scratch."; }
     else if (key === "full" || key === "survey") { why = key === "full" ? "A sale or refinance: a full DSS covers every designated substance for the buyer or lender." : "They want to know what's in the building. An asbestos building survey answers it; a full DSS adds the other designated substances."; say = "A survey tells you what's in the building and becomes your list when work is planned."; }
     else { why = a.trigger === "tender" ? "Tender documents need the designated substance list for the work (OHSA s.30)." : r.level === 1 ? "Nothing on file covers work that opens up this building: the work area needs sampling (OHSA s.30)." : "The work area needs a designated substance list before work starts (OHSA s.30)."; say = "We survey just the areas your project touches, and you get the report the contractor needs."; }
-    if (classD) why = "Small job, but a Class D building: the price book has no limited visit at this size, so a Project-specific DSS.";
     if (e === "new" && !["review", "simple"].includes(key)) why += " Built 1990 or later: still needs it, but expect fewer suspect materials, so a smaller sample estimate.";
     const also = [], m = a.member || null;
-    /* Existing clients first (R-2026.11c, Noah): Pass members -> check the Pass; program clients -> member rate. */
-    if (m && m.kind === "pass") also.push(`Pass member (${m.name || "Cleared-to-Start Pass"}): check what their Pass includes before quoting a separate report.`);
+    /* Existing clients first (R-2026.11c/d, Noah): Pass members and program clients -> their member rate. */
+    if (m && m.kind === "pass") also.push(`Pass member (${m.name || "Cleared-to-Start Pass"}): bill it at their Pass member rate (pre-work checks aren't included in the Pass).`);
     if (m && m.kind === "program") also.push(`Program client (${m.name || "building program"}): quote it at their member rate.`);
-    if (key === "limited" && !isHouse(a)) also.push("Open question (Noah, Nov 12): confirm a limited visit report can serve as the owner's s.30 list for a commercial job before you sell it.");
+    if (key === "limited" && p.disturb.filter((x) => x !== "none" && x !== "unsure" && x !== "whole").length > 3) also.push("More than 3 materials: past the limited visit's fee scope (1-3 materials). Quote this house case by case.");
     if (!m && CONTRACTOR.has(a.role) && a.role !== "abatement" && key !== "predemo") also.push("If they do this kind of work often: the Cleared-to-Start Pass. Ask how many jobs a month.");
     if (!m && (a.role === "owner" || a.role === "pm") && !isHouse(a)) also.push("Later, once the report is delivered: a building program (mention it then, not on this call).");
     if (key === "review") also.push(`If the report is older or doesn't match the building: ${names.update}.`);
