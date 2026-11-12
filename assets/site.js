@@ -258,23 +258,13 @@
 
   // ---- Project path: how much work the owner's designated substance list will take ----
   var PRICES = { limited: ["Limited sampling visit", 650], update: ["DSS update or re-assessment", 550], project: ["Project-specific DSS", 1500], survey: ["Asbestos building survey", 1800], full: ["Full-building DSS and hazardous materials survey", 2400], demo: ["Pre-demolition DSS", 3900] };
+  // Routing lives in assets/ncc-rules.js (window.NCC_RULES.route), shared with NCC Office's intake so both give the same answer.
   function projectRoute(a) {
-    var d = a.p_disturb || [], work = a.p_work;
-    if (work === "due" || work === "know") return { level: "survey", report: work === "due" ? "full" : "survey" };
-    var unsure = a.p_age === "unsure" || a.p_report === "unsure" || d.indexOf("unsure") > -1;
-    var opens = work === "demo" || work === "major" || d.some(function (x) { return x !== "none" && x !== "unsure"; });
-    var old = a.p_age !== "no", house = a.p_type === "house";
-    var level, report;
-    if (work === "demo" && a.p_report !== "recent") level = 1;
-    else if (old && opens && (a.p_report === "none" || a.p_report === "unsure")) level = 1;
-    else if (!unsure && work !== "demo" && (a.p_report === "recent" || (a.p_age === "no" && d.indexOf("none") > -1))) level = 3;
-    else level = 2;
-    if (work === "demo") report = "demo";
-    else if (level === 3) report = null;
-    else if (a.p_report === "old") report = "update";
-    else if (house || (level === 2 && (work === "minor" || work === "mep" || work === "finish") && d.filter(function (x) { return x !== "none" && x !== "unsure"; }).length <= 3)) report = "limited";
-    else report = "project";
-    return { level: level, report: report };
+    var R = window.NCC_RULES;
+    if (!R || !R.route) return { level: 2, report: null };
+    var r = R.route({ use: a.p_type, era: { yes: "old", no: "new", unsure: "" }[a.p_age], work: { demo: "demo", major: "major", minor: "minor", mep: "minor", finish: "minor", due: "due", know: "know" }[a.p_work],
+      disturb: a.p_disturb || [], report: { recent: "current", old: "old", none: "none", unsure: "unsure" }[a.p_report] });
+    return { level: r.level, report: r.key === "predemo" ? "demo" : r.key };
   }
   var LEVEL = {
     1: ["A designated substance survey is needed before this project starts", "Nothing on file covers work that will open up this building. The list has to be made by sampling the materials the work will disturb."],
