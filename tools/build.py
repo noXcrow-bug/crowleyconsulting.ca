@@ -1,6 +1,6 @@
 """Builds the Noah Crowley Asbestos and Designated Substances Consulting website.
 Run:  python3 tools/build.py   (from the repo root). Writes the .html files, sitemap.xml and robots.txt.
-All copy is drawn from the NCC business plan; every price comes from the public list in price book PB-2026.11c. Edit SITE below for contact details, then rebuild."""
+All copy is drawn from the NCC business plan; every price comes from the public list in price book PB-2026.11d. Edit SITE below for contact details, then rebuild."""
 import json, os, re, hashlib, html as H
 from datetime import date
 
@@ -25,9 +25,9 @@ YEAR = date.today().year
 e = H.escape
 ASSET_V = hashlib.sha1(b"".join(open(os.path.join(ROOT, "assets", f), "rb").read() for f in ("site.css", "site.js", "config.js"))).hexdigest()[:8]
 
-# ---------------------------------------------------------------- tiers (price book PB-2026.11c)
+# ---------------------------------------------------------------- tiers (price book PB-2026.11d)
 # The website may quote only the public "from" prices in the price book. Anything more specific is quoted per building.
-PRICE_BOOK = "PB-2026.11c"
+PRICE_BOOK = "PB-2026.11d"
 TIERS = {
  "bp_ess": dict(program="Building programs", name="Compliance Essentials", price=69, fits="Owners who need the yearly record kept current", page="building-owners.html",
    inc=["Yearly asbestos record update and visual condition inspection", "Client register snapshot after each change, and an on-site inspector binder", "Occupier and contractor notice templates", "Annual compliance letter for insurers, lenders and tenants", "10% off reports, site visits and project work", "Phone advice if suspect material turns up"]),
@@ -570,7 +570,7 @@ s = f"""<section class="hero"><div class="wrap">{crumbs((None, "Reports and pric
 <div class="prose"><h2>Samples and layers</h2>
 <p>A sample is what we take from a material. The lab analyzes every layer in it: a floor tile and its glue are two layers, a plaster wall with a skim coat can be three. Each sample is $100 ($150 on a demolition survey) and includes lab analysis of its first layer. Extra layers are $45 each, billed per layer analyzed. Demolition surveys take more samples, because walls, floors and ceilings are opened up.</p>
 <h2>Terms</h2>
-{ul(["Deposit at booking: 50% on projects of estimated $5,000 or more before HST, 30% under estimated $5,000 before HST, worked out on the top of your quoted range. The balance is due 30 days after the invoice.", "Minimum charge for a site visit: $450 before HST.", "Travel is free within 60 km [37 mi] of Windsor.", "Quotes are valid for 30 days."])}</div>
+{ul(["No deposit. We invoice the report fee and samples when fieldwork ends, and the extra layers when the lab's results arrive. Lab results and the report are released once both invoices are paid; invoices are due in 30 days.", "Minimum charge for a site visit: $450 before HST.", "Travel is free within 60 km [37 mi] of Windsor.", "Quotes are valid for 30 days."])}</div>
 <div class="prose"><h2>After the report</h2>
 <p>If materials have to come out, we write the abatement specification contractors bid on, review the bids, inspect the work and test the air, including Type 3 clearance. These are quoted per project. We never do the removal ourselves.</p>
 <h2>Lab turnaround</h2>
@@ -758,7 +758,7 @@ trigger_page("designated-substance-survey-demolition-permit.html", "Designated s
   "The City of Windsor's demolition permit checklist asks for a list of designated substances. We survey the building and write a report you can attach to the permit application and the demolition tender.",
   [("What the survey covers", "<p>A destructive survey of every space, because the building is coming down: walls opened, flooring lifted and roofs cored, so concealed materials are found before demolition. It covers all 11 designated substances plus PCBs, mould and ozone-depleting refrigerants. The building has to be vacant.</p>"),
    ("What usually follows", ul(["<strong>Abatement specification:</strong> scope of work, procedure type, quantities and bid review", "<strong>Abatement oversight and air monitoring:</strong> inspections and reports during Type 2 or Type 3 work", "<strong>Type 3 clearance:</strong> visual inspection and air testing before the enclosure comes down"]) + "<p class=\"small\">Each is quoted per project.</p>"),
-   ("Price and timing", "<p>A pre-demolition survey starts at $3,900, priced as a report fee plus the samples taken. Demolition surveys take more samples than a renovation report because concealed spaces are opened up. The report takes 15 to 25 business days after fieldwork, including the lab's 5 business days. Projects of $5,000 or more take a 50% deposit at booking.</p>"),
+   ("Price and timing", "<p>A pre-demolition survey starts at $3,900, priced as a report fee plus the samples taken. Demolition surveys take more samples than a renovation report because concealed spaces are opened up. The report takes 15 to 25 business days after fieldwork, including the lab's 5 business days. No deposit: results are released once the fieldwork and lab invoices are paid.</p>"),
    ("Independent from the abatement", "<p>We never remove or abate anything and take no referral fees, so the survey, the specification and the clearance are all written by someone with no stake in how much removal there is.</p>")],
   rel(("guide-demolition-renovation-dss.html", "Demolition and renovation DSS guide", "Built around the City of Windsor's demolition permit checklist"),
       ("services.html", "Reports and prices", "Every report, from a limited sampling visit to a pre-demolition survey")))
