@@ -1,0 +1,313 @@
+<title>Brockmere Register</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: one client, one page. Sticky building switcher on top, portfolio summary first, then one register per building:
+   what needs attention, the full register (a table on wide screens, stacked rows on phones), other substances, logs.
+   Uses the NCC "Office" (light) / "Authority" (dark) brand tokens from the other NCC tools. */
+:root {
+  --bg: #EEF0EC; --surface: #FFFFFF; --surface-2: #FAFBFA; --ink: #14233A; --muted: #4A5869; --line: #D7DCD6;
+  --mark: #14233A; --amber: #E8A317; --amber-ink: #14233A;
+  --act: #8E2F21; --act-soft: #F6E1DC; --mon: #7A5405; --mon-soft: #FBEFD2; --good: #1F5E5A; --good-soft: #DDEDEB; --na: #4A5869; --na-soft: #E5E8E3;
+  --f-sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-cond: "IBM Plex Sans Condensed", "IBM Plex Sans", "Arial Narrow", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1A2B; --surface: #14233A; --surface-2: #192B45; --ink: #F4F1EA; --muted: #A7B1BF; --line: #2A3F5E;
+    --mark: #F4F1EA; --amber: #E8A317; --amber-ink: #14233A;
+    --act: #F08A78; --act-soft: #3D2220; --mon: #EDB55E; --mon-soft: #3A3018; --good: #6CC2B0; --good-soft: #17363A; --na: #A7B1BF; --na-soft: #1E3049;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1A2B; --surface: #14233A; --surface-2: #192B45; --ink: #F4F1EA; --muted: #A7B1BF; --line: #2A3F5E;
+  --mark: #F4F1EA; --amber: #E8A317; --amber-ink: #14233A;
+  --act: #F08A78; --act-soft: #3D2220; --mon: #EDB55E; --mon-soft: #3A3018; --good: #6CC2B0; --good-soft: #17363A; --na: #A7B1BF; --na-soft: #1E3049;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 18px 56px; display: flex; flex-direction: column; gap: 22px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; line-height: 1.2; }
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.mono { font-family: var(--f-mono); font-size: 12.5px; }
+.muted { color: var(--muted); }
+.eyebrow { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+a { color: inherit; text-decoration-color: var(--amber); text-underline-offset: 3px; }
+
+/* demo strip */
+.demo { border: 1px dashed var(--muted); border-radius: var(--r); padding: 8px 12px; font-size: 13px; color: var(--muted); display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.demo b { color: var(--ink); letter-spacing: .12em; font-size: 11px; text-transform: uppercase; }
+
+/* header */
+.top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 14px 24px; }
+.lockup { display: flex; align-items: center; gap: 12px; }
+.lockup svg { width: 42px; height: 42px; flex: none; }
+.lockup .nm { font-weight: 600; font-size: 17px; letter-spacing: .14em; line-height: 1; }
+.lockup .rule { width: 24px; height: 3px; background: var(--amber); margin: 6px 0 5px; border-radius: 2px; }
+.lockup .sb { font-size: 10.5px; letter-spacing: .26em; text-transform: uppercase; color: var(--muted); }
+.title { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.title h1 { font-family: var(--f-cond); font-weight: 700; font-size: clamp(26px, 5vw, 38px); letter-spacing: .01em; }
+.title .for { color: var(--muted); font-size: 14.5px; }
+.asof { text-align: right; font-size: 13px; color: var(--muted); }
+.asof b { display: block; color: var(--ink); font-family: var(--f-mono); font-weight: 500; font-size: 13px; }
+@media (max-width: 560px) { .asof { text-align: left; } }
+
+/* switcher */
+.switch { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 8px; margin-block: -8px; border-bottom: 1px solid var(--line); display: flex; gap: 6px; overflow-x: auto; }
+.switch a { white-space: nowrap; text-decoration: none; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: 13.5px; font-weight: 600; }
+.switch a[aria-current="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* portfolio */
+.portfolio { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.bcard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; text-decoration: none; min-width: 0; }
+.bcard:hover { border-color: var(--muted); }
+.bcard h2 { font-size: 17px; }
+.bcard .addr { color: var(--muted); font-size: 13.5px; }
+.tally { display: flex; flex-wrap: wrap; gap: 6px; }
+.dates { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px; }
+.dates b { display: block; font-family: var(--f-mono); font-weight: 500; font-size: 13px; color: var(--ink); }
+
+/* status tags */
+.tag { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; background: var(--na-soft); color: var(--na); }
+.tag::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.tag.act { background: var(--act-soft); color: var(--act); }
+.tag.monitor { background: var(--mon-soft); color: var(--mon); }
+.tag.good { background: var(--good-soft); color: var(--good); }
+
+/* before-work */
+.callout { background: var(--ink); color: var(--bg); border-radius: var(--r); padding: 16px 18px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 24px; align-items: center; }
+.callout h2 { font-family: var(--f-cond); font-size: 20px; font-weight: 700; }
+.callout p { margin: 4px 0 0; max-width: 62ch; font-size: 14.5px; opacity: .9; }
+.callout .contact { display: flex; flex-direction: column; gap: 6px; font-family: var(--f-mono); font-size: 14px; }
+.callout .contact span { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.callout button { font: 600 12px var(--f-sans); border: 1px solid currentColor; background: none; color: inherit; border-radius: 4px; padding: 2px 8px; cursor: pointer; opacity: .85; }
+@media (max-width: 640px) { .callout { grid-template-columns: minmax(0, 1fr); } }
+
+/* building section */
+.bld { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 64px; padding-top: 6px; border-top: 3px solid var(--ink); }
+.bhead { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; align-items: flex-end; }
+.bhead h2 { font-family: var(--f-cond); font-weight: 700; font-size: clamp(22px, 4vw, 28px); }
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.facts div { background: var(--surface); padding: 10px 12px; min-width: 0; }
+.facts b { display: block; font-size: 15px; font-weight: 600; overflow-wrap: anywhere; }
+.facts .num { font-family: var(--f-mono); font-weight: 500; }
+@media (max-width: 720px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.note { font-size: 14px; color: var(--muted); max-width: 75ch; margin: 0; }
+
+h3 { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.block { display: flex; flex-direction: column; gap: 10px; }
+
+/* attention list */
+.attn { display: flex; flex-direction: column; gap: 8px; }
+.attn .it { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--mon); border-radius: var(--r); padding: 10px 14px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 14px; }
+.attn .it.act { border-left-color: var(--act); }
+.attn .it .w { font-weight: 600; }
+.attn .it .d { font-size: 13.5px; color: var(--muted); grid-column: 1 / -1; }
+.attn .it .a { font-size: 13.5px; grid-column: 1 / -1; }
+
+/* register table */
+.reg { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; font-size: 14px; }
+.reg th { text-align: left; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 9px 12px; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.reg td { padding: 10px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+.reg tr:first-child td { border-top: 0; }
+.reg .mat { font-weight: 600; }
+.reg .sub { font-size: 12.5px; color: var(--muted); display: block; font-weight: 400; }
+.reg .res { font-family: var(--f-mono); font-size: 12.5px; }
+.reg details summary { cursor: pointer; font-size: 12.5px; color: var(--muted); list-style: none; }
+.reg details summary::-webkit-details-marker { display: none; }
+.reg details summary::before { content: "+ "; font-family: var(--f-mono); }
+.reg details[open] summary::before { content: "− "; }
+.hist { margin: 6px 0 0; padding: 0; list-style: none; font-size: 12.5px; display: flex; flex-direction: column; gap: 3px; }
+.hist li { display: grid; grid-template-columns: 86px minmax(0, 1fr); gap: 8px; }
+.hist .dt { font-family: var(--f-mono); color: var(--muted); }
+.tw { overflow-x: auto; }
+@media (max-width: 760px) {
+  .reg, .reg tbody, .reg tr, .reg td { display: block; width: 100%; }
+  .reg thead { display: none; }
+  .reg tr { border-top: 1px solid var(--line); padding: 10px 12px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; }
+  .reg tr:first-child { border-top: 0; }
+  .reg td { border: 0; padding: 0; }
+  .reg td.c-mat { grid-column: 1; }
+  .reg td.c-st { grid-column: 2; grid-row: 1; }
+  .reg td.c-loc, .reg td.c-res, .reg td.c-more { grid-column: 1 / -1; font-size: 13.5px; }
+  .reg td.c-loc::before { content: "Where: "; color: var(--muted); }
+  .reg td.c-cond, .reg td.c-qty { display: none; }
+  .reg td.c-res .rx { display: inline; }
+}
+.rx { display: none; color: var(--muted); }
+
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+@media (max-width: 760px) { .two { grid-template-columns: minmax(0, 1fr); } }
+.log { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); display: flex; flex-direction: column; }
+.log > div { padding: 10px 14px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 10px; font-size: 13.5px; }
+.log > div:first-child { border-top: 0; }
+.log .dt { font-family: var(--f-mono); color: var(--muted); font-size: 12.5px; padding-top: 1px; }
+.empty { font-size: 13.5px; color: var(--muted); }
+details.more > summary { cursor: pointer; font-weight: 600; font-size: 14px; padding: 6px 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--muted); align-items: center; }
+.legend span { display: inline-flex; gap: 6px; align-items: center; }
+/* material photos: one thumbnail per register line, tap to enlarge */
+.mcell { display: flex; gap: 10px; align-items: flex-start; min-width: 0; }
+.mcell > div { min-width: 0; }
+.thumb { flex: none; width: 56px; height: 56px; padding: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface-2); cursor: zoom-in; position: relative; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb:hover { border-color: var(--muted); }
+.attn .it .thumb { width: 48px; height: 48px; }
+.attn .it > .tag { align-self: center; }
+.attn .it .wrow { display: flex; gap: 10px; align-items: center; min-width: 0; }
+dialog.lb { border: 0; padding: 0; background: transparent; max-width: min(96vw, 1000px); max-height: 92vh; color: #fff; }
+dialog.lb::backdrop { background: rgba(10, 18, 30, .86); }
+dialog.lb figure { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+dialog.lb img { max-width: 100%; max-height: 78vh; object-fit: contain; border-radius: 10px; background: #000; display: block; margin: 0 auto; }
+dialog.lb figcaption { font-size: 14px; line-height: 1.4; }
+dialog.lb figcaption .muted { color: #C9D1DB; font-size: 13px; display: block; }
+dialog.lb .x { position: absolute; top: 6px; right: 6px; font: 600 14px var(--f-sans); background: rgba(0,0,0,.55); color: #fff; border: 1px solid rgba(255,255,255,.5); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+footer { font-size: 12.5px; color: var(--muted); max-width: 80ch; display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); padding-top: 14px; }
+@media (max-width: 480px) { .lockup .nm { font-size: 13px; letter-spacing: .06em; } .lockup .sb { font-size: 8.5px; letter-spacing: .14em; } }
+</style>
+
+<div class="wrap" id="app">
+  <div class="demo" id="demo" hidden><b>Example</b><span>Invented client and buildings, shown to explain how a program client's register works. Not a real company or a real survey.</span></div>
+  <header class="top">
+    <div class="title">
+      <div class="lockup">
+        <svg viewBox="0 0 512 512" aria-hidden="true"><polygon points="256,75.78 412.08,165.89 412.08,346.11 256,436.22 99.92,346.11 99.92,165.89" fill="none" stroke="var(--mark)" stroke-width="28.67" stroke-linejoin="round"/><line x1="180.97" y1="264.68" x2="235.95" y2="183.18" stroke="var(--mark)" stroke-width="26.62" stroke-linecap="round"/><line x1="210.19" y1="323.91" x2="301.81" y2="188.09" stroke="#E8A317" stroke-width="26.62" stroke-linecap="round"/><line x1="276.05" y1="328.82" x2="331.03" y2="247.32" stroke="var(--mark)" stroke-width="26.62" stroke-linecap="round"/></svg>
+        <div><div class="nm">NOAH CROWLEY CONSULTING</div><div class="rule"></div><div class="sb">Asbestos and Designated Substances</div></div>
+      </div>
+      <h1>Designated Substance Register</h1>
+      <div class="for" id="forLine"></div>
+    </div>
+    <div class="asof">Register current as of<b id="asof"></b><span id="prog"></span></div>
+  </header>
+  <nav class="switch" id="switch" aria-label="Buildings"></nav>
+  <section class="portfolio" id="portfolio" aria-label="All buildings"></section>
+  <section class="callout" aria-label="Before any work">
+    <div><h2>Before anyone drills, cuts or lifts a tile</h2>
+      <p>Check the material in this register. If it says Act now or Monitor, or the material isn't listed, call before work starts. A written desk review comes back within 1 business day.</p></div>
+    <div class="contact"><span id="ph"></span><span id="em"></span></div>
+  </section>
+  <div class="legend" id="legend"></div>
+  <main id="buildings" style="display:flex;flex-direction:column;gap:34px"></main>
+  <dialog class="lb" id="lb" aria-label="Material photo"><button type="button" class="x" data-close>Close</button><figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure></dialog>
+  <footer>
+    <span id="photoNote" hidden>Photos show each material where it was surveyed or sampled, to help you recognise it. A material that looks the same elsewhere is not confirmed by the photo alone: if it isn't listed for that location, call before disturbing it.</span>
+    <span>This register summarises the surveys and condition checks listed for each building and is kept under O. Reg. 278/05 and section 30 of the Occupational Health and Safety Act. It does not replace the full survey reports. Materials hidden in walls, ceilings or equipment may not have been seen: if a suspect material turns up during work, stop and call.</span>
+    <span>Quantities in metres with imperial in brackets. Lab analysis by an accredited laboratory (PLM, 0.5% asbestos threshold).</span>
+  </footer>
+</div>
+
+<script type="application/json" id="data">/*DATA*/</script>
+<script>
+(() => {
+  const D = JSON.parse(document.getElementById("data").textContent);
+  const $ = (s) => document.querySelector(s);
+  const esc = (v) => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const fmt = (s) => { if (!s) return "—"; const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d).toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" }); };
+  /* 2026-11-13 wording rule: never "no asbestos" / "not asbestos". Lab below 0.5% = None detected; judged by sight = Non-suspect. */
+  const ST = { act: "Act now", monitor: "Monitor", good: "Good", pending: "Awaiting lab", na: "None detected", removed: "Removed" };
+  const tag = (k) => `<span class="tag ${esc(k)}">${esc(ST[k] || k)}</span>`;
+  const isSus = (x) => x.basis === "visual-non" || /non-suspect|visual/i.test(x.result || "");
+  const tagX = (x) => x.status !== "na" ? tag(x.status) : isSus(x) ? `<span class="tag na">Non-suspect</span>` : /^Lead/.test(x.sub || "") ? `<span class="tag na">Below threshold</span>` : tag("na");
+  const PH = [];
+  const thumb = (p, label) => { if (!p || !p.src) return ""; PH.push({ src: p.src, cap: label, note: p.cap || "" }); return `<button type="button" class="thumb" data-ph="${PH.length - 1}" aria-label="Photo: ${esc(label)}"><img src="${esc(p.src)}" alt="" loading="lazy" decoding="async"></button>`; };
+  const MEANS = { act: "Repair, remove or isolate before the area is used or disturbed.", monitor: "Leave in place; check its condition at every visit.", good: "Leave in place; manage under the asbestos management program." };
+
+  $("#demo").hidden = !D.example;
+  $("#forLine").innerHTML = `Prepared for <b>${esc(D.client)}</b>${D.attention ? ` · Attention ${esc(D.attention)}` : ""}`;
+  $("#asof").textContent = fmt(D.asOf);
+  $("#prog").textContent = D.program ? `${D.program} · ${D.buildings.length} building${D.buildings.length === 1 ? "" : "s"}` : "";
+  const copyBtn = (v) => `<button type="button" data-copy="${esc(v)}">Copy</button>`;
+  $("#ph").innerHTML = `${esc(D.firm.phone)} ${copyBtn(D.firm.phone)}`;
+  $("#em").innerHTML = `${esc(D.firm.email)} ${copyBtn(D.firm.email)}`;
+  $("#legend").innerHTML = ["act", "monitor", "good"].map(k => `<span>${tag(k)} ${esc(MEANS[k])}</span>`).join("");
+
+  const counts = (b) => { const c = {}; b.lines.forEach(x => { c[x.status] = (c[x.status] || 0) + 1; }); return c; };
+  const spots = (b) => b.lines.reduce((a, x) => a + x.spots.length, 0);
+
+  $("#switch").innerHTML = (D.buildings.length > 1 ? `<a href="#all" data-go="all">All buildings</a>` : "") + D.buildings.map(b => `<a href="#${esc(b.slug)}" data-go="${esc(b.slug)}">${esc(b.name)}</a>`).join("");
+  $("#portfolio").innerHTML = D.buildings.map(b => {
+    const c = counts(b), n = spots(b);
+    return `<a class="bcard" href="#${esc(b.slug)}"><div><h2>${esc(b.name)}</h2><div class="addr">${esc(b.address)} · built ${esc(b.yearBuilt)}</div></div>
+      <div class="tally">${c.act ? `<span class="tag act">${c.act} act now</span>` : ""}${c.monitor ? `<span class="tag monitor">${c.monitor} monitor</span>` : ""}${c.good ? `<span class="tag good">${c.good} good</span>` : ""}${c.pending ? `<span class="tag">${c.pending} awaiting lab</span>` : ""}${n ? `<span class="tag monitor">${n} spot${n > 1 ? "s" : ""} to fix</span>` : ""}</div>
+      <div class="dates"><span class="muted">Last assessed<b>${esc(fmt(b.last))}</b></span><span class="muted">Next due<b>${esc(fmt(b.next))}</b></span></div></a>`;
+  }).join("");
+
+  const histHTML = (h) => `<ul class="hist">${h.filter(x => x.date).map(x => `<li><span class="dt">${esc(x.date)}</span><span>${esc(x.condition || "—")}${x.note ? " · " + esc(x.note) : ""}</span></li>`).join("")}</ul>`;
+
+  $("#buildings").innerHTML = D.buildings.map(b => {
+    const asb = b.lines.filter(x => x.status !== "na" && (x.sub === "Asbestos" || x.sub === "Lead (paint)"));
+    const other = b.lines.filter(x => x.status !== "na" && !asb.includes(x));
+    const non = b.lines.filter(x => x.status === "na");
+    const attn = [];
+    b.lines.forEach(x => {
+      x.spots.forEach(z => attn.push({ k: z.status, p: z.photo || x.photo, w: `${x.mat}: ${z.where}`, d: [z.size, z.cond + " condition", "found " + fmt(z.found)].filter(Boolean).join(" · "), a: `${z.action}. ${z.note || ""}` }));
+      if (x.base === "act") attn.push({ k: "act", p: x.photo, w: `${x.mat} · ${x.loc}`, d: `${x.result} · ${x.cond || "condition not recorded"}`, a: x.reason || MEANS.act });
+    });
+    attn.sort((a, c) => (a.k === "act" ? 0 : 1) - (c.k === "act" ? 0 : 1));
+    const row = (x) => `<tr>
+      <td class="c-mat"><div class="mcell">${thumb(x.photo, `${x.mat} · ${x.loc}`)}<div><span class="mat">${esc(x.mat)}</span>${x.desc && x.desc !== x.mat ? `<span class="sub">${esc(x.desc)}</span>` : ""}${x.samples && x.samples.length ? `<span class="sub mono">${esc(x.samples.join(", "))}</span>` : x.why ? `<span class="sub">${x.basis === "prior-nd" ? "From earlier report" : "Not sampled"}: ${esc(x.why)}</span>` : ""}${x.reason ? `<span class="sub">Note: ${esc(x.reason)}</span>` : ""}</div></div></td>
+      <td class="c-loc">${esc(x.loc)}</td>
+      <td class="c-res"><span class="res">${esc(x.result)}</span>${x.friable ? `<span class="sub">${x.friable === "Friable" ? "Friable" : "Non-friable"}</span>` : ""}<span class="rx"> · ${esc(x.cond || "")}${x.qty ? " · " + esc(x.qty) : ""}</span></td>
+      <td class="c-cond">${esc(x.cond || "—")}</td>
+      <td class="c-qty mono">${esc(x.qty || "")}</td>
+      <td class="c-st">${tagX(x)}</td>
+      <td class="c-more">${x.history.filter(h => h.date).length ? `<details><summary>Condition history</summary>${histHTML(x.history)}</details>` : ""}</td></tr>`;
+    const head = `<thead><tr><th>Material</th><th>Where</th><th>Result</th><th>Condition</th><th>Quantity</th><th>Status</th><th></th></tr></thead>`;
+    const reviewsLine = b.reviewsIncl < 0 ? `${b.reviewsUsed} used · unlimited` : `${b.reviewsUsed} used · ${Math.max(0, b.reviewsIncl - b.reviewsUsed)} left`;
+    const excl = b.surveys.map(s => s.exclusions).filter(Boolean);
+    const nonSus = non.filter(isSus).length, nonLab = non.length - nonSus;
+    const nonLead = non.some(x => !isSus(x) && /^Lead/.test(x.sub || ""));
+    const nonTitle = [nonLab ? `Sampled, none detected${nonLead ? " or below threshold" : ""} (${nonLab})` : "", nonSus ? `Non-suspect, visually assessed (${nonSus})` : ""].filter(Boolean).join(" · ");
+    return `<section class="bld" id="${esc(b.slug)}" aria-labelledby="h-${esc(b.slug)}">
+      <div class="bhead"><div><div class="eyebrow">${esc(b.address)}</div><h2 id="h-${esc(b.slug)}">${esc(b.name)}</h2></div></div>
+      <div class="facts">
+        <div><span class="eyebrow">Last assessed</span><b class="num">${esc(fmt(b.last))}</b></div>
+        <div><span class="eyebrow">Next reassessment</span><b class="num">${esc(fmt(b.next))}</b></div>
+        <div><span class="eyebrow">Desk reviews this term</span><b>${esc(reviewsLine)}</b></div>
+        <div><span class="eyebrow">Built</span><b class="num">${esc(b.yearBuilt)}</b></div>
+      </div>
+      ${b.notes ? `<p class="note">${esc(b.notes)}</p>` : ""}
+      <div class="block"><h3>Needs attention</h3>${attn.length ? `<div class="attn">${attn.map(a => `<div class="it ${a.k === "act" ? "act" : ""}"><span class="wrow">${thumb(a.p, a.w)}<span class="w">${esc(a.w)}</span></span>${tag(a.k)}<span class="d">${esc(a.d)}</span><span class="a">${esc(a.a)}</span></div>`).join("")}</div>` : `<span class="empty">Nothing needs action right now.</span>`}</div>
+      <div class="block"><h3>Asbestos and lead paint</h3><div class="tw"><table class="reg">${head}<tbody>${asb.map(row).join("")}</tbody></table></div></div>
+      ${other.length ? `<div class="block"><h3>Other designated substances present</h3><div class="log">${other.map(x => `<div><span class="dt"><span class="tag">${esc(x.result.replace(" present", ""))}</span></span><span><b>${esc(x.sub)}</b><br><span class="muted">${esc(x.desc)}</span></span></div>`).join("")}</div></div>` : ""}
+      ${non.length ? `<details class="more"><summary>${esc(nonTitle)}</summary>${nonSus ? `<p class="note">Non-suspect materials were assessed by sight and not sampled. If work turns up something not described here, such as another layer underneath or older material behind a finish, stop and call before disturbing it.</p>` : ""}<div class="tw"><table class="reg">${head}<tbody>${non.map(row).join("")}</tbody></table></div></details>` : ""}
+      <div class="two">
+        <div class="block"><h3>Desk reviews and call-outs</h3>${b.reviews.length ? `<div class="log">${b.reviews.map(r => `<div><span class="dt">${esc(r.date)}</span><span>${esc(r.what)}</span></div>`).join("")}</div>` : `<span class="empty">None yet this term.</span>`}</div>
+        <div class="block"><h3>Surveys</h3><div class="log">${b.surveys.map(s => `<div><span class="dt">${esc(s.date)}</span><span><b>${esc(s.type)}</b> · <span class="mono">${esc(s.projectNo)}</span><br><span class="muted">${esc(s.by)}</span></span></div>`).join("")}</div>
+          ${excl.length ? `<p class="note"><b>Areas not accessed:</b> ${esc(excl.join(" "))}</p>` : ""}</div>
+      </div>
+    </section>`;
+  }).join("");
+
+  $("#photoNote").hidden = !PH.length;
+  const lb = $("#lb");
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest("[data-ph]");
+    if (t) { const p = PH[+t.dataset.ph]; $("#lbImg").src = p.src; $("#lbImg").alt = p.cap; $("#lbCap").innerHTML = `${esc(p.cap)}${p.note ? `<span class="muted">${esc(p.note)}</span>` : ""}`; if (lb.showModal) lb.showModal(); else lb.setAttribute("open", ""); return; }
+    if (e.target.closest("[data-close]") || e.target === lb) { if (lb.close) lb.close(); else lb.removeAttribute("open"); }
+  });
+
+  // building switcher: show all, or one building, from the link's #name
+  function show() {
+    const h = (location.hash || "").slice(1), one = D.buildings.some(b => b.slug === h) ? h : "all";
+    document.querySelectorAll(".bld").forEach(s => { s.hidden = one !== "all" && s.id !== one; });
+    $("#portfolio").hidden = one !== "all" && D.buildings.length > 1 ? true : false;
+    document.querySelectorAll("#switch a").forEach(a => a.setAttribute("aria-current", String(a.dataset.go === one)));
+  }
+  window.addEventListener("hashchange", show); show();
+
+  document.addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-copy]"); if (!b) return;
+    try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = "Copied"; }
+    catch { const r = document.createRange(); r.selectNodeContents(b.parentElement); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Selected"; }
+    setTimeout(() => { b.textContent = "Copy"; }, 1600);
+  });
+})();
+</script>

@@ -556,3 +556,8 @@ table.tiers tbody tr:nth-child(even) > * { background: #FAFBFA; }
 .dss-check { margin-top: 14px; font-size: .97rem; }
 .dss-check a { color: var(--navy); text-decoration: underline; text-decoration-color: var(--amber); text-decoration-thickness: 2px; text-underline-offset: 4px; }
 .dss-check a::after { content: " \2192"; }
+
+/* example register: the real client register page, framed (2026-11-13) */
+.reg-frame { background: var(--paper); border-radius: var(--r-lg); box-shadow: var(--sh-3); overflow: hidden; outline: 1px solid rgba(20, 35, 58, .06); outline-offset: -1px; }
+.reg-frame iframe { display: block; width: 100%; height: min(86vh, 980px); min-height: 520px; border: 0; }
+@media (max-width: 700px) { .reg-frame { border-radius: var(--r); } .reg-frame iframe { height: 82vh; } }
