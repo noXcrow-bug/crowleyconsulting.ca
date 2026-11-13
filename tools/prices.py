@@ -34,7 +34,6 @@ V = {
  "termMonths": str(P["subscription"]["termMonths"]), "prepaidMonths": str(P["prepaidMonths"]),
  "deskReply": str(P["deskReplyDays"]), "snapshotDays": str(P["registerSnapshotDays"]), "classLetterOff": pct(P["classLetterOff"]),
  "classA.m2": f"{P['classes']['A']['m2']:,}", "classA.ft2": f"{P['classes']['A']['ft2']:,}",
- "portfolio.Word": WORD[P["portfolio"][0][0]],
  "d.min": pct(min(p["d"] for p in PG.values())), "d.max": pct(max(p["d"] for p in PG.values())),
  "ta.limited": str(T["limited"]), "ta.updateNo": str(T["updateNoSampling"]), "ta.updateS": rng(T["updateSampling"]),
  "ta.project": rng(T["project"]), "ta.project.to": rng(T["project"], " to "), "ta.survey": rng(T["survey"]),

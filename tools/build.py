@@ -442,7 +442,7 @@ b = segment_hero("Building owners", "Building programs",
 <section class="section"><div class="wrap">
 <div class="section-head"><h2>Compare the programs</h2></div>
 {tier_table(["bp_ess", "bp_pr", "bp_fp"], BP_ROWS)}
-<p class="small" style="margin-top:12px">Monthly, CAD before HST, per building. The price depends on the building's size; the figures above are the lowest. Facility Partner isn't offered for buildings under [[classA.m2]] m² [[[classA.ft2]] sq ft]. [[portfolio.Word]] or more buildings get a portfolio discount.</p>
+<p class="small" style="margin-top:12px">Monthly, CAD before HST, per building. The price depends on the building's size; the figures above are the lowest. Facility Partner isn't offered for buildings under [[classA.m2]] m² [[[classA.ft2]] sq ft].</p>
 </div></section>
 
 <section class="section white"><div class="wrap split">
