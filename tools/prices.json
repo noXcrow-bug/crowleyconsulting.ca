@@ -1,9 +1,9 @@
 {
  "schema": 1,
  "stamp": {
-  "pb": "PB-2026.11d",
-  "guideRev": 86,
-  "syncedAt": "2026-11-12",
+  "pb": "PB-2026.11e",
+  "guideRev": 276,
+  "syncedAt": "2026-11-13",
   "source": "NCC Service Menu & Price Guide (NCC-011), https://claude.ai/artifact/84N2JjXRZs2aPDF4kX7niV",
   "how": "Generated from the Price Guide by Claude when asked to 'update the NCC Office price list' (project note claude/ncc-price-list.md). Never edit by hand; change the Guide first."
  },
@@ -308,16 +308,6 @@
   "update",
   "survey",
   "full"
- ],
- "portfolio": [
-  [
-   3,
-   0.1
-  ],
-  [
-   6,
-   0.15
-  ]
  ],
  "memberRates": {
   "0.1": "Compliance Essentials or Pass Starter",
