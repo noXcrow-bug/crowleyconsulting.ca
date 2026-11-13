@@ -11,7 +11,7 @@
    window.NCC_RULES = { version, TRIGGERS, ROLES, USES, REPORTS, AREAS, SCALES, SEGMENT, era, cls, bizDaysUntil, route, fromIntake, recommend, flags, summary } */
 (function (root) {
   "use strict";
-  const version = "R-2026.11d";
+  const version = "R-2026.11e";
 
   const TRIGGERS = [
     ["reno", "Renovation or repairs"], ["demo", "Demolition"], ["claim", "Insurance claim / restoration (fire, flood, mould)"],
@@ -77,7 +77,7 @@
     if (work === "demo") key = "predemo";
     else if (level === 3) key = null;
     else if (p.report === "old") key = "update";
-    else if (house) key = "limited"; /* R-2026.11d (Noah): limited visit = houses only. Its letter (results + Type 1/2/3) is not the owner's s.30 designated substance list, so commercial projects get a Project-specific DSS. */
+    else if (house) key = "limited"; /* R-2026.11d/e (Noah): the limited visit is never SUGGESTED as a commercial project's list. Its letter (results + Type 1/2/3) is not the owner's s.30 designated substance list, so a commercial project gets a Project-specific DSS. The limited visit itself stays on sale for any building ("just test these materials"; see recommend()). */
     else key = "project";
     return { level, key };
   }
@@ -110,6 +110,7 @@
     /* Existing clients first (R-2026.11c/d, Noah): Pass members and program clients -> their member rate. */
     if (m && m.kind === "pass") also.push(`Pass member (${m.name || "Cleared-to-Start Pass"}): bill it at their Pass member rate (pre-work checks aren't included in the Pass).`);
     if (m && m.kind === "program") also.push(`Program client (${m.name || "building program"}): quote it at their member rate.`);
+    if (!isHouse(a) && ["project", "update", "simple"].includes(key)) also.push(`If they only want specific materials tested, not a project list: ${names.limited} (1-3 materials). Say plainly it isn't their designated substance list.`);
     if (key === "limited" && p.disturb.filter((x) => x !== "none" && x !== "unsure" && x !== "whole").length > 3) also.push("More than 3 materials: past the limited visit's fee scope (1-3 materials). Quote this house case by case.");
     if (!m && CONTRACTOR.has(a.role) && a.role !== "abatement" && key !== "predemo") also.push("If they do this kind of work often: the Cleared-to-Start Pass. Ask how many jobs a month.");
     if (!m && (a.role === "owner" || a.role === "pm") && !isHouse(a)) also.push("Later, once the report is delivered: a building program (mention it then, not on this call).");
