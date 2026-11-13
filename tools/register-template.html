@@ -217,7 +217,7 @@ footer { font-size: 12.5px; color: var(--muted); max-width: 80ch; display: flex;
   const tagX = (x) => x.status !== "na" ? tag(x.status) : isSus(x) ? `<span class="tag na">Non-suspect</span>` : /^Lead/.test(x.sub || "") ? `<span class="tag na">Below threshold</span>` : tag("na");
   const PH = [];
   const thumb = (p, label) => { if (!p || !p.src) return ""; PH.push({ src: p.src, cap: label, note: p.cap || "" }); return `<button type="button" class="thumb" data-ph="${PH.length - 1}" aria-label="Photo: ${esc(label)}"><img src="${esc(p.src)}" alt="" loading="lazy" decoding="async"></button>`; };
-  const MEANS = { act: "Repair, remove or isolate before the area is used or disturbed.", monitor: "Leave in place; check its condition at every visit.", good: "Leave in place; manage under the asbestos management program." };
+  const MEANS = { act: "Repair, remove or isolate before the area is used or disturbed.", monitor: "Leave in place; check its condition at every visit.", good: "Leave in place; manage under the asbestos management program.", lead: "Leave in place; no sanding, grinding, torch cutting or heat gun without lead precautions." };
 
   $("#demo").hidden = !D.example;
   $("#forLine").innerHTML = `Prepared for <b>${esc(D.client)}</b>${D.attention ? ` · Attention ${esc(D.attention)}` : ""}`;
@@ -226,7 +226,9 @@ footer { font-size: 12.5px; color: var(--muted); max-width: 80ch; display: flex;
   const copyBtn = (v) => `<button type="button" data-copy="${esc(v)}">Copy</button>`;
   $("#ph").innerHTML = `${esc(D.firm.phone)} ${copyBtn(D.firm.phone)}`;
   $("#em").innerHTML = `${esc(D.firm.email)} ${copyBtn(D.firm.email)}`;
-  $("#legend").innerHTML = ["act", "monitor", "good"].map(k => `<span>${tag(k)} ${esc(MEANS[k])}</span>`).join("");
+  $("#legend").innerHTML = ["act", "monitor", "good"].map(k => `<span>${tag(k)} ${esc(MEANS[k])}</span>`).join("")
+    /* 2026-11-13 (Noah): "Good" reads as asbestos-only; lead paint gets its own line when the register lists any */
+    + (D.buildings.some(b => b.lines.some(x => x.sub === "Lead (paint)" && x.status !== "na")) ? `<span><b>Lead paint</b> ${esc(MEANS.lead)}</span>` : "");
 
   const counts = (b) => { const c = {}; b.lines.forEach(x => { c[x.status] = (c[x.status] || 0) + 1; }); return c; };
   const spots = (b) => b.lines.reduce((a, x) => a + x.spots.length, 0);

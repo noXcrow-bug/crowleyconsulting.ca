@@ -276,12 +276,12 @@ def fdate(iso):
 # When either changes in the project, copy it here and rebuild. Never hand-edit rows on the website.
 REG_TPL = open(os.path.join(ROOT, "tools", "register-template.html")).read()
 REG_DATA = json.load(open(os.path.join(ROOT, "tools", "register-example.json")))
-REG_MEANS = {"act": "Repair, remove or isolate before the area is used or disturbed.", "monitor": "Leave in place; check its condition at every visit.", "good": "Leave in place; manage under the asbestos management program."}
+REG_MEANS = {"act": "Repair, remove or isolate before the area is used or disturbed.", "monitor": "Leave in place; check its condition at every visit.", "good": "Leave in place; manage under the asbestos management program.", "lead": "Leave in place; no sanding, grinding, torch cutting or heat gun without lead precautions."}
 def _ex_row(x):
     smp = x.get("samples") or []
     rid = smp[0] if smp else ("Visual ID" if x.get("basis") == "visual-acm" else "Not sampled")
     typ = x.get("friable") or ("Paint" if "lead" in (x.get("result") or "").lower() else "")
-    note = (x.get("reason") or "").strip()
+    note = (x.get("reason") or "").strip() or (REG_MEANS["lead"] if x.get("sub") == "Lead (paint)" and x["status"] == "good" else "")
     spots = [z for z in x.get("spots", []) if z.get("status") != "fixed"]
     do = " ".join(filter(None, [f'{z["where"]}: {z.get("note") or z.get("action", "")}' for z in spots] + [note or REG_MEANS[x["status"]]]))
     hist = sorted({(h["date"], (h.get("condition") + ": " if h.get("condition") else "") + (h.get("note") or "")) for h in x.get("history", []) if h.get("date")}, reverse=True)
