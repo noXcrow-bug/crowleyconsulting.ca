@@ -599,7 +599,7 @@ def ex_building(b, n):
 ex = f"""<section class="hero"><div class="wrap">{crumbs(("building-owners.html", "Building programs"), (None, "Example register"))}
 <div class="hero-copy" style="max-width:62ch"><p class="ex-flag"><b>Example</b> Invented client and buildings, shown to explain how a program client's register works.</p>
 <h1>Your asbestos record, on any phone</h1>
-<p class="lede">Every building program client gets a register snapshot like this one. Show it to an inspector, send it to a contractor before they bid, and check a material before anyone drills. A fresh snapshot is shared within 5 business days of every survey, reassessment, lab result or condition change.</p></div>
+<p class="lede">Every building program client gets a register snapshot like this one. Show it to an inspector, send it to a contractor before they bid, and check a material before anyone drills. A fresh snapshot is shared within [[snapshotDays]] business days of every survey, reassessment, lab result or condition change.</p></div>
 </div></section>
 <section class="section tight"><div class="wrap ex-wrap">
 <nav class="bld-switch" aria-label="Buildings"><a href="#all" data-go="all">All buildings</a>{"".join(f'<a href="#{b["slug"]}" data-go="{b["slug"]}">{e(b["name"])}</a>' for b in EX_BUILDINGS)}</nav>
