@@ -5,14 +5,15 @@
    - OHSA s.30 applies before EVERY project, whatever the building's age. Age never decides WHETHER a DSS is needed;
      it decides how big the job is (1990+ = fewer suspect materials = smaller sample estimate = lower quote).
    - The trigger decides the scope (whole building vs the work area), not the age.
-   - Never say "not required", and never confirm "no asbestos" without lab results.
+   - Never say "not required". Material wording (2026-11-13): lab results under the asbestos threshold are "none detected"; materials judged by sight
+     are "non-suspect". Never word any result, lab or visual, as the absence of asbestos.
    - Cleared-to-Start Pass is never offered to abatement contractors.
    - Lab: results come back in the lab's turnaround from receipt and a project report takes its Guide turnaround start to finish; no rush service.
      Since R-2026.11f both numbers come from the price list the page passes in (pb.labDays, pb.turnaround.project): none are typed here.
    window.NCC_RULES = { version, TRIGGERS, ROLES, USES, REPORTS, AREAS, SCALES, SEGMENT, era, cls, bizDaysUntil, route, fromIntake, recommend, flags, summary } */
 (function (root) {
   "use strict";
-  const version = "R-2026.11f";
+  const version = "R-2026.11g";
 
   const TRIGGERS = [
     ["reno", "Renovation or repairs"], ["demo", "Demolition"], ["claim", "Insurance claim / restoration (fire, flood, mould)"],
@@ -139,7 +140,7 @@
     if (a.payer && a.payer !== "caller") out.push({ lvl: "warn", t: "Someone else signs and pays. Get their name and email, and quote to them.", say: "Who should the quote go to?" });
     if (CONTRACTOR.has(a.role) && a.role !== "abatement") out.push({ lvl: "info", t: "The report is addressed to the building owner, with the contractor as requester. Get the owner's name.", say: "" });
     if (a.report === "unsure") out.push({ lvl: "info", t: "They're not sure about an existing report: ask the owner or property manager to check before you quote.", say: "" });
-    out.push({ lvl: "info", t: "Never say a material is clean or 'no asbestos' without lab results.", say: "" });
+    out.push({ lvl: "info", t: "Wording: lab results under the asbestos threshold are \"none detected\"; materials judged by sight are \"non-suspect\". Never call a material clean.", say: "" });
     return out;
   }
 
