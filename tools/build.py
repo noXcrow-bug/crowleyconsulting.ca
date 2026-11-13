@@ -52,7 +52,7 @@ REPORTS = [
  ("Limited sampling visit", NUM["from"]["limited"], "One to three suspect materials before a small repair: one floor, one pipe run, one wall", "A letter with lab results and the work classification for the planned job", "About [[ta.limited]] business days"),
  ("DSS update or re-assessment", NUM["from"]["update"], "An existing report that is out of date, or another firm's report that fell short", "A walk-through, gap sampling and a current, tender-ready report", "[[ta.updateNo]] business days; [[ta.updateS]] with sampling"),
  ("Project-specific DSS", NUM["from"]["project"], "Renovation, repair or a tender for one work area", "All 11 designated substances in the work area, ready to attach to the tender", "[[ta.project]] business days"),
- ("Asbestos building survey", NUM["from"]["survey"], "No asbestos record on site, or the start of a building program", "The whole-building inventory that becomes your O. Reg. 278/05 record", "[[ta.survey]] business days"),
+ ("Asbestos building survey", NUM["from"]["survey"], "No survey on file for the building, or the start of a building program", "The whole-building inventory that becomes your O. Reg. 278/05 record", "[[ta.survey]] business days"),
  ("Full-building DSS and hazardous materials survey", NUM["from"]["full"], "Acquisition, capital planning, several projects in one building", "All 11 substances plus PCBs, mould and refrigerants across the building", "[[ta.full]] business days"),
  ("Pre-demolition DSS", NUM["from"]["predemo"], "A vacant building coming down, or a demolition permit", "A destructive survey of every space so materials can come out before demolition", "[[ta.predemo]] business days"),
 ]

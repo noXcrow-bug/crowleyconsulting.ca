@@ -174,7 +174,7 @@
       ["employer", "My workers use, handle or store a designated substance", ""],
       ["abatement", "I'm an abatement contractor", ""],
       ["homeowner", "I'm a homeowner planning a renovation", ""] ] },
-    b_age: { title: "Was the building built before 1990?", help: "Most buildings built after 1980 are largely free of asbestos; nearly everything older is a candidate.", options: [["yes", "Yes, before 1990"], ["no", "No, 1990 or later"], ["unsure", "I'm not sure"]] },
+    b_age: { title: "Was the building built before 1990?", help: "Asbestos-containing materials were used widely before 1990 and can still turn up in newer buildings.", options: [["yes", "Yes, before 1990"], ["no", "No, 1990 or later"], ["unsure", "I'm not sure"]] },
     b_count: { title: "How many buildings do you look after?", options: [["one", "One"], ["two", "Two"], ["many", "Three or more"]] },
     b_board: { title: "Is a board or a joint health and safety committee asking about asbestos?", options: [["yes", "Yes"], ["no", "No"]] },
     b_contractors: { title: "How often are contractors or maintenance staff working in the building?", options: [["often", "Several times a year or more"], ["rarely", "Rarely"]] },
