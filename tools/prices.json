@@ -1,0 +1,575 @@
+{
+ "schema": 1,
+ "stamp": {
+  "pb": "PB-2026.11d",
+  "guideRev": 81,
+  "syncedAt": "2026-11-12",
+  "source": "NCC Service Menu & Price Guide (NCC-011), https://claude.ai/artifact/84N2JjXRZs2aPDF4kX7niV",
+  "how": "Generated from the Price Guide by Claude when asked to 'update the NCC Office price list' (project note claude/ncc-price-list.md). Never edit by hand; change the Guide first."
+ },
+ "sample": {
+  "comp": 100,
+  "demo": 150
+ },
+ "labPart": 35,
+ "layer": 45,
+ "layerMember": 45,
+ "layersPerSample": 2.5,
+ "minVisit": 450,
+ "hst": 0.13,
+ "afterHours": 0.25,
+ "travel": {
+  "freeKm": 60,
+  "freeMi": 37,
+  "perKm": 0.7,
+  "flat": [
+   150,
+   350
+  ]
+ },
+ "paymentDays": 30,
+ "quoteValidDays": 30,
+ "prepaidMonths": 10,
+ "labDays": 5,
+ "estimator": {
+  "compPlus": 0.2,
+  "demoPlus": 0.15,
+  "oldEraPlus": 0.25
+ },
+ "classes": {
+  "A": {
+   "m2": 465,
+   "ft2": 5000
+  },
+  "B": {
+   "m2": 2323,
+   "ft2": 25000
+  },
+  "C": {
+   "m2": 9290,
+   "ft2": 100000
+  }
+ },
+ "publicFrom": {
+  "limited": 650,
+  "update": 550,
+  "project": 1500,
+  "survey": 1800,
+  "full": 2400,
+  "predemo": 3900
+ },
+ "fees": {
+  "limited": {
+   "A": [
+    350,
+    450
+   ],
+   "B": [
+    400,
+    500
+   ],
+   "C": [
+    450,
+    600
+   ],
+   "D": null
+  },
+  "update": {
+   "A": [
+    550,
+    700
+   ],
+   "B": [
+    850,
+    1100
+   ],
+   "C": [
+    1350,
+    1750
+   ],
+   "D": [
+    2100,
+    2100
+   ]
+  },
+  "project": {
+   "A": [
+    600,
+    800
+   ],
+   "B": [
+    950,
+    1250
+   ],
+   "C": [
+    1500,
+    1950
+   ],
+   "D": [
+    2400,
+    2400
+   ]
+  },
+  "survey": {
+   "A": [
+    600,
+    800
+   ],
+   "B": [
+    1000,
+    1300
+   ],
+   "C": [
+    2000,
+    2600
+   ],
+   "D": [
+    3500,
+    3500
+   ]
+  },
+  "full": {
+   "A": [
+    900,
+    1150
+   ],
+   "B": [
+    1600,
+    2100
+   ],
+   "C": [
+    3000,
+    3900
+   ],
+   "D": [
+    5000,
+    5000
+   ]
+  },
+  "predemo": {
+   "A": [
+    900,
+    1150
+   ],
+   "B": [
+    2200,
+    2850
+   ],
+   "C": [
+    4000,
+    5200
+   ],
+   "D": [
+    6500,
+    6500
+   ]
+  }
+ },
+ "quick": {
+  "limited": {
+   "A": [
+    3,
+    9
+   ],
+   "B": [
+    3,
+    9
+   ],
+   "C": [
+    3,
+    9
+   ],
+   "D": null
+  },
+  "update": {
+   "A": [
+    0,
+    6
+   ],
+   "B": [
+    0,
+    12
+   ],
+   "C": [
+    0,
+    18
+   ],
+   "D": null
+  },
+  "project": {
+   "A": [
+    9,
+    15
+   ],
+   "B": [
+    15,
+    24
+   ],
+   "C": [
+    24,
+    36
+   ],
+   "D": [
+    40,
+    null
+   ]
+  },
+  "survey": {
+   "A": [
+    12,
+    21
+   ],
+   "B": [
+    24,
+    40
+   ],
+   "C": [
+    45,
+    80
+   ],
+   "D": [
+    100,
+    null
+   ]
+  },
+  "full": {
+   "A": [
+    15,
+    24
+   ],
+   "B": [
+    30,
+    45
+   ],
+   "C": [
+    55,
+    90
+   ],
+   "D": [
+    120,
+    null
+   ]
+  }
+ },
+ "quickDemo": {
+  "A": {
+   "new": [
+    15,
+    20
+   ],
+   "mid": [
+    20,
+    30
+   ],
+   "old": [
+    30,
+    45
+   ]
+  },
+  "B": {
+   "new": [
+    35,
+    50
+   ],
+   "mid": [
+    45,
+    70
+   ],
+   "old": [
+    70,
+    100
+   ]
+  },
+  "C": {
+   "new": [
+    70,
+    100
+   ],
+   "mid": [
+    90,
+    130
+   ],
+   "old": [
+    130,
+    190
+   ]
+  },
+  "D": null
+ },
+ "names": {
+  "limited": "Limited sampling visit",
+  "update": "DSS update or re-assessment",
+  "project": "Project-specific DSS",
+  "survey": "Asbestos building survey",
+  "full": "Full-building DSS + hazmat",
+  "predemo": "Pre-demolition DSS"
+ },
+ "firstReports": [
+  "update",
+  "survey",
+  "full"
+ ],
+ "portfolio": [
+  [
+   3,
+   0.1
+  ],
+  [
+   6,
+   0.15
+  ]
+ ],
+ "memberRates": {
+  "0.1": "Compliance Essentials or Pass Starter",
+  "0.15": "Project Ready, Pass Pro or Restoration Priority",
+  "0.2": "Facility Partner"
+ },
+ "classLetterOff": 0.25,
+ "programs": {
+  "ce": {
+   "name": "Compliance Essentials",
+   "d": 0.1,
+   "m": {
+    "A": 69,
+    "B": 149,
+    "C": 349,
+    "D": 650
+   },
+   "inc": [
+    "s. 8 record update and visual condition inspection once a year",
+    "Client register snapshots and on-site inspector binder",
+    "Occupier and contractor notice templates",
+    "Annual compliance letter, renewal and record-retention reminders",
+    "Fieldwork scheduled within 10 business days; phone advice when suspect material turns up"
+   ],
+   "pitch": {
+    "inc": [
+     "Yearly s. 8 record update and visual condition inspection",
+     "Client register snapshot after each change, plus an on-site inspector binder",
+     "Occupier and contractor notice templates",
+     "Annual compliance letter and renewal reminders",
+     "10% off reports, site visits and project services",
+     "Phone advice when suspect material turns up"
+    ],
+    "entry": "DSS update"
+   },
+   "deskReviews": 0,
+   "inspections": 1,
+   "training": 0,
+   "schedDays": 10
+  },
+  "pr": {
+   "name": "Project Ready",
+   "d": 0.15,
+   "m": {
+    "A": 149,
+    "B": 249,
+    "C": 459,
+    "D": 799
+   },
+   "inc": [
+    "s. 8 record update and visual condition inspection once a year",
+    "Client register snapshots and on-site inspector binder",
+    "Occupier and contractor notices prepared and issued for you",
+    "6 written desk reviews a year (\"can we drill here?\"), answered within 1 business day",
+    "Maintenance staff asbestos awareness training, 1 session a year",
+    "Annual compliance letter, renewal and record-retention reminders",
+    "Fieldwork within 5 business days; discovery site visit next business day, 2-hour minimum waived"
+   ],
+   "pitch": {
+    "inc": [
+     "Yearly s. 8 record update and visual condition inspection",
+     "Notices prepared and issued to occupiers and contractors",
+     "6 written desk reviews a year (“can we drill here?”, answered within 1 business day)",
+     "1 maintenance staff awareness session a year",
+     "15% off reports, site visits and project services",
+     "Fieldwork within 5 business days; discovery visit next business day"
+    ],
+    "entry": "DSS update"
+   },
+   "deskReviews": 6,
+   "inspections": 1,
+   "training": 1,
+   "schedDays": 5
+  },
+  "fp": {
+   "name": "Facility Partner",
+   "d": 0.2,
+   "m": {
+    "A": null,
+    "B": 529,
+    "C": 929,
+    "D": 1595
+   },
+   "inc": [
+    "s. 8 record update and visual condition inspection twice a year",
+    "Client register snapshot per building and on-site inspector binder",
+    "Occupier and contractor notices prepared, issued and tracked",
+    "Unlimited written desk reviews, answered within 1 business day",
+    "Maintenance staff asbestos awareness training, 2 sessions a year",
+    "Abatement budget estimates for capital planning, updated yearly; JHSC or board presentation once a year",
+    "Fieldwork within 2 business days; discovery site visit same business day, 2-hour minimum waived"
+   ],
+   "pitch": {
+    "inc": [
+     "Record update and condition inspection twice a year",
+     "Notices prepared, issued and tracked",
+     "Unlimited written desk reviews (within 1 business day)",
+     "2 staff awareness sessions a year and a yearly JHSC or board presentation",
+     "20% off reports, site visits and project services",
+     "Fieldwork within 2 business days; discovery visit same business day; yearly abatement budget"
+    ],
+    "entry": "Discovery call"
+   },
+   "deskReviews": -1,
+   "inspections": 2,
+   "training": 2,
+   "schedDays": 2
+  }
+ },
+ "passes": {
+  "starter": {
+   "name": "Cleared-to-Start Pass Starter",
+   "d": 0.1,
+   "m": 199,
+   "inc": [
+    "Compliance desk: phone and email advice, business hours",
+    "1 pre-bid review of the owner's DSS a month (extra reviews $150)",
+    "25% off work-classification letters",
+    "Written interim instructions on site when a job can't wait for results",
+    "Due-diligence file per job and toolbox talk templates",
+    "Site visits scheduled within 5 business days"
+   ],
+   "short": "Starter",
+   "fits": "1–3 jobs a month in older buildings",
+   "extraReview": 150,
+   "pitch": {
+    "inc": [
+     "Compliance desk: phone and email advice, business hours",
+     "1 pre-bid review of the owner's DSS a month (extras $150)",
+     "Site visit within 5 business days",
+     "10% off pre-work checks and project services",
+     "Written interim instructions on site when a job can't wait",
+     "25% off work-classification letters; due-diligence file per job; toolbox talk templates"
+    ],
+    "value": "Checks are priced per job and never included: put the list price on your quote and pay the member rate.",
+    "entry": "First pre-work check"
+   },
+   "prebid": 1,
+   "visitDays": 5,
+   "awareness": 0
+  },
+  "pro": {
+   "name": "Cleared-to-Start Pass Pro",
+   "d": 0.15,
+   "m": 499,
+   "inc": [
+    "Compliance desk: phone and email advice, business hours",
+    "3 pre-bid reviews of the owner's DSS a month (extra reviews $125)",
+    "25% off work-classification letters",
+    "Written interim instructions on site when a job can't wait for results",
+    "Due-diligence file per job and toolbox talk templates",
+    "Worker awareness session once a year; reports branded for your client",
+    "Site visits scheduled within 3 business days"
+   ],
+   "short": "Pro",
+   "fits": "4 or more jobs a month",
+   "extraReview": 125,
+   "pitch": {
+    "inc": [
+     "Compliance desk: phone and email advice, business hours",
+     "3 pre-bid reviews a month (extras $125)",
+     "Site visit within 3 business days",
+     "15% off pre-work checks and project services",
+     "Reports branded for your client",
+     "1 worker awareness session a year; 25% off work-classification letters"
+    ],
+    "value": "A typical pre-work check saves a Pro member about $110 and a project DSS about $180–270; three pre-bid reviews a month and booking within 3 business days carry the rest of the value.",
+    "entry": "First pre-work check"
+   },
+   "prebid": 3,
+   "visitDays": 3,
+   "awareness": 1
+  },
+  "rp": {
+   "name": "Cleared-to-Start Pass Restoration Priority",
+   "d": 0.15,
+   "m": 699,
+   "inc": [
+    "Compliance desk: phone and email advice, business hours",
+    "3 pre-bid reviews of the owner's DSS a month (extra reviews $125)",
+    "25% off work-classification letters",
+    "Written interim instructions on site when a job can't wait for results",
+    "Due-diligence file per job and toolbox talk templates",
+    "Worker awareness session once a year; reports branded for your client",
+    "Site visits next business day, Monday to Friday"
+   ],
+   "short": "Restoration Priority",
+   "fits": "Fire, flood and mould restoration firms",
+   "extraReview": 125,
+   "pitch": {
+    "inc": [
+     "Next-business-day site visits, Monday to Friday",
+     "Compliance desk: phone and email advice, business hours",
+     "3 pre-bid reviews a month (extras $125)",
+     "15% off pre-work checks and project services",
+     "Written interim instructions on every call; adjuster-ready reports",
+     "Reports branded for your client; 1 worker awareness session a year"
+    ],
+    "value": "Checks are priced per job and never included. Lab results take 5 business days; interim instructions let the job proceed.",
+    "entry": "Discovery call"
+   },
+   "prebid": 3,
+   "visitDays": null,
+   "awareness": 1
+  }
+ },
+ "entryDesc": {
+  "DSS update": "a review and update of your existing asbestos report, priced by building class (a baseline survey if there's no report yet); your first report, whether a new survey or a DSS update, is priced at your program's member rate if you sign before the work, and if you sign within 30 days of receiving it the difference is credited on your first program invoice",
+  "First pre-work check": "one limited sampling visit or project-specific DSS on your next job in an older building, at the list price, so you see the report before you commit",
+  "Discovery call": "a 30-minute call to scope your buildings or jobs and your project calendar"
+ },
+ "programValue": "No program includes a report: reports are bought when a project needs one, at the member rate.",
+ "firstReportCreditDays": 30,
+ "subscription": {
+  "termMonths": 12,
+  "cancelNoticeDays": 30
+ },
+ "release": {
+  "invoices": [
+   "fieldwork",
+   "results"
+  ],
+  "deposit": false
+ },
+ "classDCheckIn": 2,
+ "deskReplyDays": 1,
+ "turnaround": {
+  "limited": 7,
+  "updateNoSampling": 5,
+  "updateSampling": [
+   8,
+   10
+  ],
+  "project": [
+   8,
+   10
+  ],
+  "survey": [
+   10,
+   15
+  ],
+  "fullAB": [
+   10,
+   15
+  ],
+  "fullCD": [
+   15,
+   20
+  ],
+  "predemo": [
+   15,
+   25
+  ]
+ }
+}

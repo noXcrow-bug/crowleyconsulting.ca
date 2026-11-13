@@ -163,6 +163,7 @@
   if (!root) return;
 
   var TIERS = window.NCC_TIERS || {};
+  var PUB = window.NCC_PUBLIC || { reports: {}, entry: {}, labDays: "", taProjectTo: "", jobsStarter: "", jobsPro: "" };
   var Q = {
     who: { title: "Which describes you best?", options: [
       ["building", "I own or manage a commercial or institutional building", "Offices, plazas, churches, schools, clinics, municipal buildings"],
@@ -178,7 +179,7 @@
     b_board: { title: "Is a board or a joint health and safety committee asking about asbestos?", options: [["yes", "Yes"], ["no", "No"]] },
     b_contractors: { title: "How often are contractors or maintenance staff working in the building?", options: [["often", "Several times a year or more"], ["rarely", "Rarely"]] },
     b_record: { title: "When was your asbestos record last updated?", help: "Owners must re-inspect and update it at least once every 12 months.", options: [["recent", "Within the last 12 months"], ["old", "More than 12 months ago"], ["none", "We don't have one, or I don't know"]] },
-    c_jobs: { title: "How many jobs a month are in buildings built before 1990?", options: [["few", "1 to 3 a month"], ["many", "4 or more a month"]] },
+    c_jobs: { title: "How many jobs a month are in buildings built before 1990?", options: [["few", PUB.jobsStarter + " a month"], ["many", PUB.jobsPro + " a month"]] },
     // Project path: does this project need a designated substance survey (OHSA s.30)?
     p_type: { title: "What type of building is it?", options: [["commercial", "Commercial", "Offices, retail, plazas, hotels"], ["institutional", "Institutional", "Schools, healthcare, government, churches"], ["industrial", "Industrial", "Plants, warehouses, shops"], ["multi", "Multi-unit residential", "Apartments, condominiums, townhouse complexes"], ["house", "Single-family home"]] },
     p_age: { title: "Was the building built before 1990?", help: "Age changes what we expect to find, not whether the owner needs a list.", options: [["yes", "Yes, before 1990"], ["no", "No, 1990 or later"], ["unsure", "I'm not sure"]] },
@@ -228,12 +229,10 @@
       default: return { special: a.who };
     }
   }
-  var ENTRY_DESC = {
-    "DSS update": "We review your existing report, walk the building and fill any sampling gaps, from $550 plus samples. Sign a program within 30 days and the update is repriced at your member rate.",
-    "Baseline survey": "An asbestos building survey becomes your on-site record, from $1,800 plus samples. Sign a program before the work starts and it's priced at your member rate, or sign within 30 days of receiving it and the difference is credited on your first program invoice.",
-    "First pre-work check": "One limited sampling visit or project report on your next job in an older building, at the list price (from $650), so you see a report before you commit.",
-    "Discovery call": "A 30-minute call to scope your buildings or jobs, followed by a written proposal."
-  };
+  /* Prices, turnarounds and the next-step wording come from the price list via the page (window.NCC_PUBLIC, written by
+     tools/build.py from tools/prices.json). Nothing here types a price (2026-11-12). Without it, prices are left out. */
+  var ENTRY_DESC = PUB.entry;
+  function fromPrice(k) { var r = PUB.reports[k]; return r ? "$" + r[1].toLocaleString("en-CA") : ""; }
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function total() { return answers.who ? path.length : 3; }
@@ -257,7 +256,7 @@
   }
 
   // ---- Project path: how much work the owner's designated substance list will take ----
-  var PRICES = { limited: ["Limited sampling visit", 650], update: ["DSS update or re-assessment", 550], project: ["Project-specific DSS", 1500], survey: ["Asbestos building survey", 1800], full: ["Full-building DSS and hazardous materials survey", 2400], demo: ["Pre-demolition DSS", 3900] };
+  var PRICES = PUB.reports;
   // Routing lives in assets/ncc-rules.js (window.NCC_RULES.route), shared with NCC Office's intake so both give the same answer.
   function projectRoute(a) {
     var R = window.NCC_RULES;
@@ -283,15 +282,15 @@
     var r = projectRoute(a), L = LEVEL[r.level === 3 && a.p_report !== "recent" ? "3n" : r.level], out = [];
     out.push('<div class="rec"><span class="small">Your result</span><span class="t">' + esc(L[0]) + '</span><p>' + esc(L[1]) + '</p>');
     if (r.level !== "survey") out.push('<p class="small">Under OHSA section 30, before any project starts the owner must find out which designated substances are present and give the list to the contractor before a contract is signed. It applies whatever the building\u2019s age or the job\u2019s size; what changes is how much work it takes.</p>');
-    if (r.report) { var P = PRICES[r.report]; out.push('<span class="p">' + esc(P[0]) + ': from $' + P[1].toLocaleString("en-CA") + ' <span class="small">CAD before HST, plus samples</span></span><p class="small"><a href="services.html">See the report menu and how samples are priced</a></p>'); }
-    else if (r.level === "survey") out.push('<span class="p">Asbestos building survey from $1,800, or all designated substances from $2,400 <span class="small">CAD before HST, plus samples</span></span><p class="small"><a href="services.html">See the report menu</a></p>');
+    if (r.report && PRICES[r.report]) { var P = PRICES[r.report]; out.push('<span class="p">' + esc(P[0]) + ': from $' + P[1].toLocaleString("en-CA") + ' <span class="small">CAD before HST, plus samples</span></span><p class="small"><a href="services.html">See the report menu and how samples are priced</a></p>'); }
+    else if (r.level === "survey") out.push('<span class="p">Asbestos building survey from ' + fromPrice("survey") + ', or all designated substances from ' + fromPrice("full") + ' <span class="small">CAD before HST, plus samples</span></span><p class="small"><a href="services.html">See the report menu</a></p>');
     else out.push('<p class="small">' + (a.p_report === "recent" ? 'Not sure it does? Book a call and have the report handy; we\u2019ll tell you whether it covers the job.' : 'Book a call and we\u2019ll tell you what the list needs to include for this job.') + '</p>');
     out.push('</div>');
     var flags = [];
     if (r.level !== "survey" && a.p_age !== "no") flags.push(["", "In a building built before 1990, assume asbestos-containing materials may be present until sampling shows otherwise."]);
     if (r.level !== "survey" && a.p_age === "no") flags.push(["", "Newer buildings still need a list. Silica is in almost all concrete and masonry, and lead, mercury and other substances turn up in buildings of every age."]);
     if (a.p_work === "demo" && a.p_report === "recent") flags.push(["", "For demolition, the report has to be a destructive pre-demolition survey that opened up walls, floors and ceilings. A regular building survey isn't enough."]);
-    if (a.p_time === "month" && r.level !== 3) flags.push(["", "Timing is tight. A project report takes about 8 to 10 business days after the site visit, including the lab\u2019s 5 business days, and we don\u2019t offer rush analysis. Book the visit now."]);
+    if (a.p_time === "month" && r.level !== 3) flags.push(["", "Timing is tight. A project report takes about " + PUB.taProjectTo + " business days after the site visit, including the lab\u2019s " + PUB.labDays + " business days, and we don\u2019t offer rush analysis. Book the visit now."]);
     var role = ROLE[a.p_role];
     return { html: out.join("") + flags.map(function (f) { return '<p class="flag ' + f[0] + '">' + esc(f[1]) + '</p>'; }).join("") + (role && r.level !== "survey" ? '<p>' + role + '</p>' : ''),
       text: { 1: "Project: survey needed", 2: "Project: targeted check", 3: "Project: may be covered", survey: "Project: building survey" }[r.level] + (r.report ? " (" + PRICES[r.report][0] + ")" : "") };
@@ -315,11 +314,11 @@
     } else if (r.special === "abatement") {
       html = '<div class="rec"><span class="t">One-off services</span><p>We offer surveys, specifications, air monitoring and clearance to abatement contractors job by job. To keep clearance work independent, we don’t sell the Cleared-to-Start Pass to abatement firms, and we don’t clear work our Pass holders abate.</p></div>';
     } else if (r.special === "homeowner") {
-      html = '<div class="rec"><span class="t">Limited sampling visit</span><span class="p">From $650</span><p>Homes need testing once per renovation, not a subscription. We sample the materials your work will disturb, priced per sample, and lab results take 5 business days.</p></div>';
+      html = '<div class="rec"><span class="t">Limited sampling visit</span><span class="p">From ' + fromPrice("limited") + '</span><p>Homes need testing once per renovation, not a subscription. We sample the materials your work will disturb, priced per sample, and lab results take ' + PUB.labDays + ' business days.</p></div>';
     } else {
       var T = TIERS[r.tier];
       var perB = T.program === "Building programs" ? ", per building, priced by size" : "";
-      html = '<div class="rec"><span class="small">Recommended for you</span><span class="t">' + esc(T.program) + ': ' + esc(T.name) + '</span><span class="p">' + (T.price ? (perB ? 'From $' : '$') + T.price.toLocaleString("en-CA") + ' a month' : 'Price on request') + ' <span class="small">CAD before HST' + perB + ', 12-month agreement</span></span><p class="small">' + esc(T.fits) + '</p>' +
+      html = '<div class="rec"><span class="small">Recommended for you</span><span class="t">' + esc(T.program) + ': ' + esc(T.name) + '</span><span class="p">' + (T.price ? (perB ? 'From $' : '$') + T.price.toLocaleString("en-CA") + ' a month' : 'Price on request') + ' <span class="small">CAD before HST' + perB + ', ' + PUB.termMonths + '-month agreement</span></span><p class="small">' + esc(T.fits) + '</p>' +
         '<ul>' + T.inc.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + '</ul>' +
         '<p><a href="' + T.page + '">See the full ' + esc(T.program) + ' comparison</a></p></div>' +
         '<div><h3 style="margin-bottom:6px">Your next step: ' + esc(r.entry) + '</h3><p>' + esc(ENTRY_DESC[r.entry]) + '</p></div>';
