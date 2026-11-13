@@ -268,41 +268,38 @@ MARK = ('<svg class="reg-mark" viewBox="0 0 512 512" aria-hidden="true"><polygon
         '<line pathLength="1" x1="180.97" y1="264.68" x2="235.95" y2="183.18"/><line pathLength="1" class="am" x1="210.19" y1="323.91" x2="301.81" y2="188.09"/><line pathLength="1" x1="276.05" y1="328.82" x2="331.03" y2="247.32"/></svg>')
 def fdate(iso):
     y, m, d = map(int, iso.split("-")); return date(y, m, d).strftime("%b %-d, %Y")
-EX_BUILDINGS = [  # mirrors the Survey Workbench examples bexbrock01 / sexbrock01 and bexferr01 / sexferr01 (example: true); change them there first
- {"slug": "brockmere-professional-centre", "name": "Brockmere Professional Centre", "where": "Windsor · office building", "built": 1971,
-  "last": "2026-09-15", "next": "2027-09-15", "reviews": "Unlimited (Facility Partner)", "surveys": [("2026-09-15", "Asbestos building survey (s. 8 baseline)", "NCC-EX001")],
-  "rows": [
-   {"loc": "Mechanical room", "mat": "Pipe fitting insulation (elbows and tees)", "st": "act", "res": "Chrysotile 45%", "type": "Friable", "id": "NCC-EX001-ASB-04A", "qty": "38 fittings",
-    "do": "One elbow at hot-water riser 2 was struck during a valve replacement. The area is roped off and repair under Type 2 procedures is booked. Call before any valve or pipe work in the room.",
-    "hist": [("2026-11-03", "Poor: one elbow torn and crumbling at riser 2; rest of the fittings unchanged"), ("2026-09-15", "Fair: found in the baseline survey")]},
-   {"loc": "Corridors and tenant suites", "mat": "23 cm [9-inch] floor tile and mastic", "st": "monitor", "res": "Tile: none detected · Mastic: chrysotile 4%", "type": "Non-friable", "id": "NCC-EX001-ASB-03A", "qty": "620 m² [6,674 ft²]",
-    "do": "Leave in place. No grinding, scraping or tile removal. New flooring can go over it; removal is quoted first.",
-    "hist": [("2026-10-08", "Good: checked under the carpet at Suite 204 during a fit-out review"), ("2026-09-15", "Good: found in the baseline survey")]},
-   {"loc": "Main entrance and lobby", "mat": "Textured ceiling finish (stipple)", "st": "good", "res": "Chrysotile 2%", "type": "Friable", "id": "NCC-EX001-ASB-06A", "qty": "140 m² [1,507 ft²]",
-    "do": "Leave in place. Nobody scrapes, sands or drills the lobby ceiling without a desk review first.",
-    "hist": [("2026-09-15", "Good: found in the baseline survey")]},
-   {"loc": "Roof", "mat": "Built-up roofing felt", "st": "good", "res": "Presumed asbestos (not sampled)", "type": "Non-friable", "id": "Not sampled", "qty": "950 m² [10,226 ft²]",
-    "do": "Treated as asbestos until it's tested. Roof work is quoted with sampling first, or with asbestos procedures.",
-    "hist": [("2026-09-15", "Good: presumed in the baseline survey")]},
-   {"loc": "Stairwells", "mat": "Cream enamel on steel handrails (lead)", "st": "good", "res": "Lead 0.9% by weight (lead-based)", "type": "Paint", "id": "NCC-EX001-PB-01", "qty": "Stair handrails",
-    "do": "Leave in place. No sanding, grinding or heat gun. Refinishing needs lead precautions in the tender.",
-    "hist": [("2026-09-15", "Good: intact")]}]},
- {"slug": "ferrand-row-plaza", "name": "Ferrand Row Plaza", "where": "Windsor · retail plaza", "built": 1964,
-  "last": "2026-09-29", "next": "2027-09-29", "reviews": "Unlimited (Facility Partner)", "surveys": [("2026-09-29", "DSS update or re-assessment", "NCC-EX002")],
-  "rows": [
-   {"loc": "Storefront canopy", "mat": "Asbestos cement soffit panels", "st": "monitor", "res": "Visually identified asbestos cement", "type": "Non-friable", "id": "Visual ID", "qty": "210 m² [2,260 ft²]",
-    "do": "Don't drill or cut the soffit. Use the existing bracket holes for signs, or have a panel removed under Type 1 procedures first. Two cracked panels above Unit 6 are sealed or replaced before the new sign goes up.",
-    "hist": [("2026-10-30", "Fair: two cracked panels above the Unit 6 entrance, no debris"), ("2026-09-29", "Good")]},
-   {"loc": "Rear service corridor", "mat": "30 cm [12-inch] floor tile and mastic", "st": "good", "res": "Tile: none detected · Mastic: chrysotile 3%", "type": "Non-friable", "id": "NCC-EX002-ASB-02A", "qty": "160 m² [1,722 ft²]",
-    "do": "Leave in place. No grinding or scraping; call before any flooring work in the corridor.",
-    "hist": [("2026-09-29", "Good")]},
-   {"loc": "Roof", "mat": "Roofing mastic at drains and unit curbs", "st": "good", "res": "Presumed asbestos (not sampled)", "type": "Non-friable", "id": "Not sampled", "qty": "12 m² [129 ft²]",
-    "do": "Treated as asbestos until it's tested. Rooftop unit or drain work is quoted with sampling first.",
-    "hist": [("2026-09-29", "Good: presumed")]},
-   {"loc": "Rear lane", "mat": "Yellow paint on steel bollards (lead)", "st": "good", "res": "Lead 1.8% by weight (lead-based)", "type": "Paint", "id": "NCC-EX002-PB-01", "qty": "Bollards",
-    "do": "Leave in place. No sanding, grinding or torch cutting without lead precautions.",
-    "hist": [("2026-09-29", "Good")]}]},
-]
+# Example register: generated from the same template and data as the real client register pages, so the website
+# example can't drift from what clients receive (Noah, 2026-11-13). Source files:
+#   tools/register-template.html  = claude/client-register-template.html (NCC project), copied verbatim
+#   tools/register-example.json   = the Brockmere demo register data (built from claude/brockmere-example-records.json
+#                                    through NCC Office's survey page; photos embedded and corner-marked)
+# When either changes in the project, copy it here and rebuild. Never hand-edit rows on the website.
+REG_TPL = open(os.path.join(ROOT, "tools", "register-template.html")).read()
+REG_DATA = json.load(open(os.path.join(ROOT, "tools", "register-example.json")))
+REG_MEANS = {"act": "Repair, remove or isolate before the area is used or disturbed.", "monitor": "Leave in place; check its condition at every visit.", "good": "Leave in place; manage under the asbestos management program.", "lead": "Leave in place; no sanding, grinding, torch cutting or heat gun without lead precautions."}
+def _ex_row(x):
+    smp = x.get("samples") or []
+    rid = smp[0] if smp else ("Visual ID" if x.get("basis") == "visual-acm" else "Not sampled")
+    typ = x.get("friable") or ("Paint" if "lead" in (x.get("result") or "").lower() else "")
+    note = (x.get("reason") or "").strip() or (REG_MEANS["lead"] if x.get("sub") == "Lead (paint)" and x["status"] == "good" else "")
+    spots = [z for z in x.get("spots", []) if z.get("status") != "fixed"]
+    do = " ".join(filter(None, [f'{z["where"]}: {z.get("note") or z.get("action", "")}' for z in spots] + [note or REG_MEANS[x["status"]]]))
+    hist = sorted({(h["date"], (h.get("condition") + ": " if h.get("condition") else "") + (h.get("note") or "")) for h in x.get("history", []) if h.get("date")}, reverse=True)
+    return {"loc": x["loc"], "mat": x["mat"], "st": x["status"], "res": x["result"], "type": typ, "id": rid, "qty": x.get("qty") or "", "do": do, "hist": hist}
+EX_BUILDINGS = [{"slug": b["slug"], "name": b["name"], "built": b.get("yearBuilt", ""), "last": b.get("last", ""), "next": b.get("next", ""),
+                 "reviews": f'{b.get("reviewsUsed", 0)} used · ' + ("unlimited" if b.get("reviewsIncl") == -1 else f'{b.get("reviewsIncl")} included'),
+                 "rows": [_ex_row(x) for x in b["lines"] if x["status"] in ("act", "monitor", "good") and x.get("base") != "ds" and not (x.get("loc") or "").startswith("Building-wide")]}
+                for b in REG_DATA["buildings"]]
+def write_example_register():
+    """examples/register-brockmere.html: the real client register page with the demo data, framed on register-example.html."""
+    data = json.dumps(REG_DATA, ensure_ascii=False).replace("</", "<\\/")
+    doc = REG_TPL.replace("/*DATA*/", data, 1)
+    assert "<title>" in doc
+    if "<!DOCTYPE" not in doc[:200].upper():  # the template is an artifact body; a standalone page needs these
+        doc = '<!DOCTYPE html>\n<html lang="en-CA">\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n' + doc
+    doc = doc.replace("<title>", '<meta name="robots" content="noindex"><link rel="canonical" href="' + SITE["domain"] + '/register-example.html">\n<title>', 1)
+    os.makedirs(os.path.join(ROOT, "examples"), exist_ok=True)
+    open(os.path.join(ROOT, "examples", "register-brockmere.html"), "w").write(doc)
 def reg_rows(rows, pre):
     out = []
     for i, r in enumerate(rows):
@@ -586,27 +583,15 @@ s = f"""<section class="hero"><div class="wrap">{crumbs((None, "Reports and pric
 page("services.html", "Asbestos and designated substance reports and prices | Noah Crowley Consulting", "Designated substance reports and asbestos surveys in southwestern Ontario, priced as a report fee plus samples: from [[from.limited]] for a limited sampling visit and [[from.project]] for a project-specific DSS.", s, "services.html", schema=[SVC_SCHEMA, SVC_FAQ_SCHEMA])
 
 # ---------------------------------------------------------------- example register (public demo of the client register snapshot)
-def ex_building(b, n):
-    attn = [r for r in b["rows"] if r["st"] in ("act", "monitor")]
-    attn.sort(key=lambda r: r["st"] != "act")
-    at = "".join(f'<li class="{r["st"]}"><span class="status {r["st"]}">{ST_LABEL[r["st"]]}</span><b>{e(r["loc"])} · {e(r["mat"])}</b><span>{e(r["do"])}</span></li>' for r in attn)
-    sv = "".join(f'<li><span class="mono">{fdate(d)}</span><span>{e(t)} · <span class="mono">{e(no)}</span></span></li>' for d, t, no in b["surveys"])
-    return f"""<section class="bld" id="{b['slug']}" aria-labelledby="h-{b['slug']}">
-<div class="bld-head"><div><p class="eyebrow">{e(b['where'])} · built <span class="mono">{b['built']}</span></p><h2 id="h-{b['slug']}">{e(b['name'])}</h2></div></div>
-<div class="bld-grid"><div class="bld-main">{register(b, "b" + str(n))}</div>
-<aside class="bld-side"><h3>Needs attention</h3>{f'<ul class="attn">{at}</ul>' if at else '<p class="small">Nothing needs action right now.</p>'}
-<h3>Surveys on file</h3><ul class="svlog">{sv}</ul></aside></div></section>"""
+write_example_register()
 ex = f"""<section class="hero"><div class="wrap">{crumbs(("building-owners.html", "Building programs"), (None, "Example register"))}
-<div class="hero-copy" style="max-width:62ch"><p class="ex-flag"><b>Example</b> Invented client and buildings, shown to explain how a program client's register works.</p>
+<div class="hero-copy" style="max-width:62ch">
 <h1>Your asbestos record, on any phone</h1>
-<p class="lede">Every building program client gets a register snapshot like this one. Show it to an inspector, send it to a contractor before they bid, and check a material before anyone drills. A fresh snapshot is shared within [[snapshotDays]] business days of every survey, reassessment, lab result or condition change.</p></div>
+<p class="lede">Every building program client gets a register snapshot like this one. Show it to an inspector, send it to a contractor before they bid, and check a material before anyone drills. A fresh snapshot is shared within [[snapshotDays]] business days of every survey, reassessment, lab result or condition change. Below is the same register page a program client receives, filled with an invented client's data.</p>
+<p><a class="btn ghost" href="examples/register-brockmere.html" target="_blank" rel="noopener">Open it full screen</a></p></div>
 </div></section>
-<section class="section tight"><div class="wrap ex-wrap">
-<nav class="bld-switch" aria-label="Buildings"><a href="#all" data-go="all">All buildings</a>{"".join(f'<a href="#{b["slug"]}" data-go="{b["slug"]}">{e(b["name"])}</a>' for b in EX_BUILDINGS)}</nav>
-<div class="drill"><div><h2>Before anyone drills, cuts or lifts a tile</h2><p>Check the material here first. If it says Act now or Monitor, or it isn't listed, call before work starts. A written desk review comes back within [[deskReply]] business day.</p></div>
-{f'<a class="btn amber" href="{tel()}">{ICON["phone"]}Call {e(SITE["phone"])}</a>' if SITE["phone"] else ''}</div>
-{"".join(ex_building(b, i) for i, b in enumerate(EX_BUILDINGS))}
-<p class="small" style="max-width:80ch">A register summarises the surveys and condition checks listed for each building and is kept under O. Reg. 278/05 and section 30 of the Occupational Health and Safety Act. It doesn't replace the full survey reports. Materials hidden in walls, ceilings or equipment may not have been seen: if a suspect material turns up during work, stop and call.</p>
+<section class="section tight"><div class="wrap">
+<div class="reg-frame"><iframe id="exReg" src="examples/register-brockmere.html" title="Example designated substance register (Brockmere Property Group, invented)" loading="lazy"></iframe></div>
 </div></section>""" + cta("Want a register like this for your building?", "Take the Obligation Check to see which program fits, or book a free 30-minute call.", "obligation-check.html")
 page("register-example.html", "Example asbestos register | What program clients see | Noah Crowley Consulting", "An example of the designated substance register snapshot every building program client gets: statuses, lab results, condition history and what to do, on any phone.", ex, "building-owners.html")
 
