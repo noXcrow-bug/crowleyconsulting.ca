@@ -7,11 +7,12 @@
    - The trigger decides the scope (whole building vs the work area), not the age.
    - Never say "not required", and never confirm "no asbestos" without lab results.
    - Cleared-to-Start Pass is never offered to abatement contractors.
-   - Lab: 5 business days from the lab's receipt; 8-10 business days start to finish; no rush service.
+   - Lab: results come back in the lab's turnaround from receipt and a project report takes its Guide turnaround start to finish; no rush service.
+     Since R-2026.11f both numbers come from the price list the page passes in (pb.labDays, pb.turnaround.project): none are typed here.
    window.NCC_RULES = { version, TRIGGERS, ROLES, USES, REPORTS, AREAS, SCALES, SEGMENT, era, cls, bizDaysUntil, route, fromIntake, recommend, flags, summary } */
 (function (root) {
   "use strict";
-  const version = "R-2026.11e";
+  const version = "R-2026.11f";
 
   const TRIGGERS = [
     ["reno", "Renovation or repairs"], ["demo", "Demolition"], ["claim", "Insurance claim / restoration (fire, flood, mould)"],
@@ -124,9 +125,10 @@
   /* Warnings to raise on the call. Each { lvl: "act"|"warn"|"info", t, say } */
   function flags(a, pb) {
     a = a || {};
-    const out = [], e = era(a.built), lab = (pb && pb.labDays) || 5, bd = a.startWithin === "month" ? 15 : bizDaysUntil(a.start, a.today);
-    if (bd !== null && bd < 10) out.push({ lvl: "act", t: `Work starts in ${bd} business day${bd === 1 ? "" : "s"}. Results take 8-10 business days from the site visit (lab: ${lab} from receipt). No rush service.`, say: "Tell them now, before anything else: we can't have results before the start date." });
-    else if (bd !== null && bd < 22) out.push({ lvl: "warn", t: "Work starts within a month. Book the site visit soon: results take 8-10 business days, no rush service.", say: "To be ready on time we should get in this week or next." });
+    const out = [], e = era(a.built), lab = pb && pb.labDays ? String(pb.labDays) : "the lab's turnaround",
+      tp = pb && pb.turnaround && pb.turnaround.project ? `${pb.turnaround.project[0]}-${pb.turnaround.project[1]} business days` : "several business days", bd = a.startWithin === "month" ? 15 : bizDaysUntil(a.start, a.today);
+    if (bd !== null && bd < 10) out.push({ lvl: "act", t: `Work starts in ${bd} business day${bd === 1 ? "" : "s"}. Results take ${tp} from the site visit (lab: ${lab} from receipt). No rush service.`, say: "Tell them now, before anything else: we can't have results before the start date." });
+    else if (bd !== null && bd < 22) out.push({ lvl: "warn", t: `Work starts within a month. Book the site visit soon: results take ${tp}, no rush service.`, say: "To be ready on time we should get in this week or next." });
     if (a.role === "abatement") out.push({ lvl: "warn", t: "Abatement contractor: the Cleared-to-Start Pass is not offered to abatement contractors.", say: "We can survey for the building owner; the report goes to the owner." });
     if (isDemo(a) && (a.report === "current" || a.report === "old" || a.report === "partial")) out.push({ lvl: "warn", t: "Demolition with an existing report: it still needs a destructive pre-demolition survey.", say: "" });
     if (isDemo(a)) out.push({ lvl: "info", t: "Demolition samples use the demolition sample rate on the quote.", say: "" });
