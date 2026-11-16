@@ -396,7 +396,7 @@ HOME_FAQ, HOME_FAQ_SCHEMA = faq([
  ("Who is responsible for the designated substance list before a renovation?", "The project owner. Under section 30 of the Occupational Health and Safety Act, the owner lists every designated substance in the work area before the project begins and includes the list in the tender."),
  ("How much does it cost?", "Reports start at [[from.limited]] for a limited sampling visit and [[from.project]] for a project-specific designated substance report. Each report is a report fee plus the samples taken, so the total depends on the building. Building programs start at [[m.ce]] a month per building and the Cleared-to-Start Pass at [[m.starter]] a month. All prices are CAD before HST."),
  ("Does a program include my designated substance report?", "No, on purpose. A report is triggered by a project, not the calendar, so you'd be paying for it in years you don't need it. The program keeps your record current and gives you a member rate on every report."),
- ("How long do lab results take?", "[[labDays]] business days from when the lab receives the samples. We don't offer rush analysis. If work can't wait, we leave written interim instructions on site."),
+ ("How long do lab results take?", "[[labDays]] business days from when the lab receives the samples. Rush analysis is available at extra cost; ask when you book. If work can't wait, we leave written interim instructions on site."),
  ("Do you remove asbestos?", "No. We are independent consultants: we survey, write specifications, oversee abatement and test the air, but we never remove or abate anything and take no referral fees.")])
 home = home.replace('<section class="section white"><div class="wrap split">\n<div class="prose"><h2>Independent, on purpose</h2>', HOME_FAQ.replace('class="section white"', 'class="section"') + '<section class="section white"><div class="wrap split">\n<div class="prose"><h2>Independent, on purpose</h2>', 1)
 page("index.html", "Asbestos & Designated Substance Consulting in Windsor, ON | Noah Crowley Consulting", f"Independent asbestos and designated substance surveys and reports in {REGIONS}. Reports from [[from.limited]], building programs from [[m.ce]] a month.", home, schema=[home_schema, HOME_FAQ_SCHEMA])
@@ -526,7 +526,7 @@ c = segment_hero("Contractors", "Cleared-to-Start Pass",
  ("Interim instructions on site", ["When needed", "When needed", "Every call"]),
  ("Reports branded for your client", ["No", "Yes", "Yes"]),
  ("Worker awareness", ["Toolbox talk templates", "[[aware.pro]] live session[[pl:aware.pro]] a year", "[[aware.rp]] live session[[pl:aware.rp]] a year"])])}
-<p class="small" style="margin-top:12px">Monthly, CAD before HST, [[termMonths]]-month agreement. Pre-work checks are never included in the monthly fee: each one is priced per job at your member rate, from [[from.limited]] at list. Lab results take [[labDays]] business days on every pass; we don't offer rush analysis.</p>
+<p class="small" style="margin-top:12px">Monthly, CAD before HST, [[termMonths]]-month agreement. Pre-work checks are never included in the monthly fee: each one is priced per job at your member rate, from [[from.limited]] at list. Lab results take [[labDays]] business days on every pass; rush analysis is available at extra cost.</p>
 </div></section>
 
 <section class="section white"><div class="wrap split">
@@ -549,7 +549,7 @@ page("contractors.html", "Cleared-to-Start Pass | The contractor compliance desk
 SVC_FAQ_HTML, SVC_FAQ_SCHEMA = faq([
  ("How much does a designated substance report cost?", "Reports start at [[from.limited]] for a limited sampling visit and [[from.project]] for a project-specific designated substance report. Each report is a report fee plus the samples taken: [[sample.comp]] a sample ([[sample.demo]] on a demolition survey), including lab analysis of the first layer, and [[layer]] for each extra layer. All prices are CAD before HST."),
  ("Why is it priced per sample?", "The lab analyzes every layer in a sample, and buildings differ: a floor tile and its glue are two layers, a plastered wall can be three. Pricing per sample means you pay for what your building actually needs, and we ask before going over the top of your quoted range."),
- ("How long does a report take?", "From about [[ta.updateNo]] business days for a DSS update without sampling to [[ta.predemo]] business days for a pre-demolition survey. Lab results take [[labDays]] business days from when the lab receives the samples, and we don't offer rush analysis."),
+ ("How long does a report take?", "From about [[ta.updateNo]] business days for a DSS update without sampling to [[ta.predemo]] business days for a pre-demolition survey. Lab results take [[labDays]] business days from when the lab receives the samples; rush analysis is available at extra cost."),
  ("Is there a minimum charge or travel fee?", "The minimum charge for a site visit is [[minVisit]] before HST. Travel is free within [[freeKm]] km [[[freeMi]] mi] of Riverside Dr. and Ouellette Ave. (downtown Windsor)."),
  ("Do you do the asbestos removal?", "No. We write the abatement specification, review bids, inspect the work and test the air, including Type 3 clearance, but we never remove anything and take no referral fees."),
 ])
@@ -576,7 +576,7 @@ s = f"""<section class="hero"><div class="wrap">{crumbs((None, "Reports and pric
 <div class="prose"><h2>After the report</h2>
 <p>If materials have to come out, we write the abatement specification contractors bid on, review the bids, inspect the work and test the air, including Type 3 clearance. These are quoted per project. We never do the removal ourselves.</p>
 <h2>Lab turnaround</h2>
-<p>Lab results take [[labDays]] business days from when the lab receives the samples. We don't offer rush analysis. If work can't wait, we leave written interim instructions on site so it can continue lawfully.</p></div>
+<p>Lab results take [[labDays]] business days from when the lab receives the samples. Rush analysis is available at extra cost; ask when you book. If work can't wait, we leave written interim instructions on site so it can continue lawfully.</p></div>
 </div></section>
 <section class="section white"><div class="wrap"><div class="section-head"><h2>Common jobs</h2></div>
 <div class="link-list">{"".join(f'<a href="{h}"><strong>{t}</strong><span>What it involves, what it costs and how long it takes</span></a>' for h, t in TRIGGERS)}</div></div></section>""" + SVC_FAQ_HTML + cta("Not sure which report you need?", "The Obligation Check points you to the right one, or send us the job details and we'll quote it.")
@@ -863,7 +863,7 @@ a = f"""<section class="hero"><div class="wrap">{crumbs((None, "How we work"))}
 <section class="section white"><div class="wrap split">
 <div class="prose"><h2>Independence</h2><p>We never remove or abate anything and take no referral fees. We don't sell the Cleared-to-Start Pass to abatement contractors, and we don't do clearance on work a Pass holder abates. It's written into every agreement.</p>
 <h2>One named consultant</h2><p>You deal with the same person who walks your building, writes your report and answers your pre-work questions.</p></div>
-<div class="prose"><h2>How pricing works</h2><p>Reports are priced as a report fee plus the samples taken. Your quote gives an estimated range of samples, you pay for the samples actually taken, and we ask on site before going over the top of the range. Samples are [[sample.comp]] each ([[sample.demo]] on a demolition survey), including lab analysis of the first layer; extra layers are [[layer]] each. Lab results take [[labDays]] business days; we don't offer rush analysis.</p>
+<div class="prose"><h2>How pricing works</h2><p>Reports are priced as a report fee plus the samples taken. Your quote gives an estimated range of samples, you pay for the samples actually taken, and we ask on site before going over the top of the range. Samples are [[sample.comp]] each ([[sample.demo]] on a demolition survey), including lab analysis of the first layer; extra layers are [[layer]] each. Lab results take [[labDays]] business days; rush analysis is available at extra cost.</p>
 <p>Programs run on [[termMonths]]-month agreements at a monthly fee per building. They keep your record current and give you a member rate on reports; they never include a report themselves.</p>
 <h2>Where we work</h2><p>{", ".join(f'<a href="{h}">{t}</a>' for h, t in CITIES)}, and the towns around them.</p></div>
 </div></section>""" + cta()
@@ -932,7 +932,7 @@ LLMS = f"""# {SITE['online']}
 
 - Clients: commercial and institutional building owners, landlords and condos, general and restoration contractors.
 - Reports cover all 11 Ontario designated substances and are priced as a report fee plus samples taken. Prices are CAD before HST.
-- Lab results take [[labDays]] business days from the lab's receipt. Rush analysis is not offered.
+- Lab results take [[labDays]] business days from the lab's receipt. Rush analysis is available at extra cost.
 - Contact: {SITE['phone']}, {SITE['email']}, {SITE['domain']}/contact.html
 
 ## Reports (starting prices)
