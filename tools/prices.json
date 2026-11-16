@@ -303,7 +303,9 @@
   "project": "Project-specific DSS",
   "survey": "Asbestos building survey",
   "full": "Full-building DSS + hazmat",
-  "predemo": "Pre-demolition DSS"
+  "predemo": "Pre-demolition DSS",
+  "ambient": "Ambient Air Test",
+  "clearance": "Type 3 clearance air test"
  },
  "firstReports": [
   "update",
