@@ -419,7 +419,7 @@ def program_rules(member=True):
     "[[termMonths]]-month agreement, billed monthly, or [[termMonths]] months for the price of [[prepaidMonths]] paid up front. Prices are per building and depend on its size; we confirm yours in writing.",
     "No program includes a designated substance report or survey. Reports are bought when a project needs one, at your member rate. Lab costs are never marked up for members.",
     "Every program starts from a current asbestos record: a baseline survey, or a DSS update of a recent report. Your first report, whether a new asbestos survey or a DSS update of the report you have, is priced at your program's member rate if you sign before the work. Sign within [[creditDays]] days of receiving it and the difference is credited on your first program invoice.",
-    "Lab results take [[labDays]] business days from when the lab receives the samples. No rush analysis. If work can't wait, we leave written interim instructions on site.",
+    "Lab results take [[labDays]] business days from when the lab receives the samples. Rush analysis is available at extra cost; ask when you book. If work can't wait, we leave written interim instructions on site.",
     "We never remove or abate anything and take no referral fees, so no result is shaped by someone with a stake in the job."])
 # ---------------------------------------------------------------- building owners
 b = segment_hero("Building owners", "Building programs",

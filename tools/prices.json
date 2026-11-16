@@ -1,19 +1,19 @@
 {
  "schema": 1,
  "stamp": {
-  "pb": "PB-2026.11e",
-  "guideRev": 280,
+  "pb": "PB-2026.11f",
+  "guideRev": 307,
   "syncedAt": "2026-11-16",
   "source": "NCC Service Menu & Price Guide (NCC-011), https://claude.ai/artifact/84N2JjXRZs2aPDF4kX7niV",
   "how": "Generated from the Price Guide by Claude when asked to 'update the NCC Office price list' (project note claude/ncc-price-list.md). Never edit by hand; change the Guide first."
  },
  "sample": {
-  "comp": 100,
-  "demo": 150
+  "comp": 135,
+  "demo": 185
  },
- "labPart": 35,
- "layer": 45,
- "layerMember": 45,
+ "labPart": 70,
+ "layer": 80,
+ "layerMember": 80,
  "layersPerSample": 2.5,
  "minVisit": 450,
  "hst": 0.13,
@@ -52,12 +52,12 @@
   }
  },
  "publicFrom": {
-  "limited": 650,
+  "limited": 755,
   "update": 550,
-  "project": 1500,
-  "survey": 1800,
-  "full": 2400,
-  "predemo": 3900
+  "project": 1815,
+  "survey": 2220,
+  "full": 2925,
+  "predemo": 4600
  },
  "fees": {
   "limited": {
@@ -563,5 +563,22 @@
    25
   ]
  },
- "registerSnapshotDays": 5
+ "registerSnapshotDays": 5,
+ "lab": {
+  "name": "OSHTECH Incorporated",
+  "city": "London"
+ },
+ "rush": {
+  "perSample": 70,
+  "perLayer": 70,
+  "daysAfterReceipt": 1,
+  "usualDaysAfterFieldwork": 2
+ },
+ "air": {
+  "sample": 140,
+  "clearanceVisit": 1650,
+  "ambientVisit": 1150,
+  "ambientUsualSamples": 6,
+  "refFcc": 0.01
+ }
 }
