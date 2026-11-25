@@ -175,6 +175,11 @@
    }
   }
  },
+ "estimator": {
+  "compPlus": 0.2,
+  "demoPlus": 0.15,
+  "oldEraPlus": 0.25
+ },
  "bulkSampling": {
   "visit": 450,
   "callout": 600,
@@ -305,6 +310,7 @@
   "clearance": "Clearance Air Testing",
   "training": "Asbestos Instruction & Training",
   "peer": "Peer Review",
-  "disturbance": "Air sampling after a disturbance (non-clearance)"
+  "disturbance": "Air sampling after a disturbance (non-clearance)",
+  "leadWipe": "Lead clearance wipe sampling"
  }
 }
