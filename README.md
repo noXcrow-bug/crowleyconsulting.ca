@@ -8,10 +8,10 @@ Plain HTML, CSS and JavaScript, hosted free on GitHub Pages. No build step is ne
 | Page | Purpose |
 | --- | --- |
 | `index.html` | Home: building owners, landlords, contractors, reports |
-| `building-owners.html`, `landlords.html` | Building programs (Compliance Essentials, Project Ready, Facility Partner) |
-| `contractors.html` | Cleared-to-Start Pass, the contractor compliance desk |
+| `building-owners.html`, `landlords.html` | Building owners and landlords: the Annual Asbestos Reassessment Program, full-building and pre-demolition DSS |
+| `contractors.html` | Contractors: renovation-scope DSS, Bulk Material Sampling and call-outs, clearance air testing, training |
 | `employers.html` | O. Reg. 490/09 duties; exposure monitoring not available yet (waits on a hygienist arrangement) |
-| `obligation-check.html` | The Obligation Check quiz (routing rules from the business plan) |
+| `obligation-check.html` | The Obligation Check quiz (routing rules in `assets/ncc-rules.js`, shared with NCC Office) |
 | `services.html` | Report menu with public "from" prices |
 | `asbestos-testing-*.html` | Local search pages: Windsor, Leamington, Chatham, Sarnia, London |
 | `asbestos-testing-before-renovation.html` and three more | Trigger pages for search |
@@ -36,7 +36,7 @@ Phone and email are written into every page for search engines. To change them, 
 
 ## Prices
 
-Copy never types a price, percentage, turnaround or inclusion count. It writes a token such as `[[from.limited]]` or
+Copy never types a price, percentage, turnaround or inclusion count. It writes a token such as `[[from.reno]]` or
 `[[labDays]]`, and the build fills it from `tools/prices.json`. Every build then runs two guards and stops if either fails:
 
 - **No typed prices:** `tools/build.py`, `assets/site.js` and `assets/ncc-rules.js` may not contain an NCC price or
