@@ -323,7 +323,7 @@
     var recText = proj ? proj.text : r.special ? ({ project: "One-off report", employer: "Exposure monitoring (not available yet; notify at launch)" }[r.special] || r.special) : (OFFERS[r.offer] ? OFFERS[r.offer].name : r.offer) + " (" + answers.who + ") → " + r.entry;
 
     root.innerHTML = '<div class="result" id="result" tabindex="-1">' +
-      '<div class="print-only print-head"><img src="assets/ncc-logo-online-compact.svg" alt="Noah Crowley Consulting" width="606" height="128"><span>Obligation Check result · ' + new Date().toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" }) + ' · crowleyconsulting.ca/obligation-check</span></div>' +
+      '<div class="print-only print-head"><img src="assets/ncc-lockup.svg" alt="Noah Crowley Asbestos and Designated Substances Consulting" width="655" height="184"><span>Obligation Check result · ' + new Date().toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" }) + ' · crowleyconsulting.ca/obligation-check</span></div>' +
       '<h2 class="q-title" style="margin:0">Your Obligation Check result</h2>' + flagHtml + html + DISCLAIMER +
       '<div class="result-actions"><button type="button" class="btn ghost sm" data-save>Save as PDF</button><button type="button" class="btn ghost sm" data-share>Share this result</button></div>' +
       '<form class="form" id="quote" data-form data-name="obligation-check" data-success="Sent. We’ll be in touch within one business day to book your next step.">' +

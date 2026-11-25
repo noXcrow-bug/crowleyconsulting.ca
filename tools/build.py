@@ -108,6 +108,7 @@ def head(title, desc, fname, schema=None):
 <meta name="format-detection" content="telephone=no">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/ibm-plex-sans-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -129,7 +130,7 @@ def header(active):
     links = "".join(f'<a href="{h}"{" aria-current=\"page\"" if h == active else ""}>{t}</a>' for h, t in NAV)
     call = f'<a class="icon-btn call-btn" href="{tel()}" aria-label="Call {e(SITE["phone"])}">{ICON["phone"]}</a>' if SITE["phone"] else ""
     return f"""<header class="site-head"><div class="wrap head-row">
-<a class="brand" href="index.html" aria-label="{e(SITE['online'])}, home"><img src="assets/ncc-logo-online-compact.svg" alt="{e(SITE['online'])}" width="551" height="128"></a>
+<a class="brand" href="index.html" aria-label="{e(SITE['online'])}, home"><img src="assets/ncc-lockup.svg" alt="{e(SITE['online'])}" width="655" height="184"></a>
 <div class="head-actions">{call}<button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><span class="burger" aria-hidden="true"><i></i><i></i></span><span class="menu-label">Menu</span></button></div>
 <nav class="nav" id="site-nav" aria-label="Main">{links}<a class="btn amber" href="obligation-check.html">Take the Obligation Check</a></nav>
 </div></header>
@@ -147,7 +148,7 @@ def footer(fname=""):
     return f"""</main>
 <footer class="site-foot"><div class="wrap">
 <div class="foot-grid">
-<div class="foot-brand"><img src="assets/ncc-logo-online-compact-reverse.svg" alt="{e(SITE['online'])}" width="413" height="96">
+<div class="foot-brand"><img src="assets/ncc-lockup-dark.svg" alt="{e(SITE['online'])}" width="655" height="184">
 <p>Independent asbestos and designated substances consulting for {REGIONS}. We never remove or abate anything and take no referral fees.</p></div>
 <div><h4>Services</h4><ul>
 <li><a href="building-owners.html">Annual Asbestos Reassessment</a></li><li><a href="landlords.html">Landlords and condos</a></li>
@@ -233,8 +234,7 @@ def segment_hero(crumb, h1, lede, seg):
 # ---------------------------------------------------------------- the register (homepage card and the example page)
 # Example data only: invented buildings, shown to explain what a program client sees. Dates are ISO; quantities metric with imperial in brackets.
 ST_LABEL = {"act": "Act now", "monitor": "Monitor", "good": "Good"}
-MARK = ('<svg class="reg-mark" viewBox="0 0 512 512" aria-hidden="true"><polygon pathLength="1" points="256,75.78 412.08,165.89 412.08,346.11 256,436.22 99.92,346.11 99.92,165.89"/>'
-        '<line pathLength="1" x1="180.97" y1="264.68" x2="235.95" y2="183.18"/><line pathLength="1" class="am" x1="210.19" y1="323.91" x2="301.81" y2="188.09"/><line pathLength="1" x1="276.05" y1="328.82" x2="331.03" y2="247.32"/></svg>')
+MARK = '<img class="reg-mark" src="assets/ncc-logo-dark.svg" alt="" width="30" height="30">'
 def fdate(iso):
     y, m, d = map(int, iso.split("-")); return date(y, m, d).strftime("%b %-d, %Y")
 # Example register: generated from the same template and data as the real client register pages, so the website
@@ -290,7 +290,7 @@ REGISTER = register(EX_BUILDINGS[0], "hr", foot='Tap a row to see the result and
 
 home_schema = {"@context": "https://schema.org", "@type": "ProfessionalService", "@id": BIZ_ID, "name": SITE["legal"], "alternateName": SITE["online"], "legalName": SITE["legal"],
     "knowsAbout": ["Asbestos testing", "Designated substance survey", "O. Reg. 278/05 asbestos management", "Type 3 asbestos clearance", "Lead paint testing"],
-    "url": SITE["domain"] + "/", "logo": SITE["domain"] + "/assets/ncc-logo-primary.svg", "image": SITE["domain"] + "/assets/og-image.png",
+    "url": SITE["domain"] + "/", "logo": SITE["domain"] + "/assets/ncc-lockup.svg", "image": SITE["domain"] + "/assets/og-image.png",
     "description": "Independent designated substance surveys, asbestos testing, annual asbestos reassessments, abatement design and oversight, and Type 3 clearance air testing in southwestern Ontario.",
     "areaServed": [{"@type": "AdministrativeArea", "name": n} for n in ["Windsor-Essex", "Chatham-Kent", "Sarnia-Lambton", "London, Ontario"]],
     "address": {"@type": "PostalAddress", "addressLocality": SITE["city"], "addressRegion": "ON", "addressCountry": "CA"},

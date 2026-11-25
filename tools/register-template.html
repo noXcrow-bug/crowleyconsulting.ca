@@ -2,31 +2,32 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Serif:wght@500&display=swap">
 <style>
 /* Layout: one client, one page. Sticky building switcher on top, portfolio summary first, then one register per building:
    what needs attention, the full register (a table on wide screens, stacked rows on phones), other substances, logs.
    Uses the NCC "Office" (light) / "Authority" (dark) brand tokens from the other NCC tools. */
 :root {
   --bg: #EEF0EC; --surface: #FFFFFF; --surface-2: #FAFBFA; --ink: #14233A; --muted: #4A5869; --line: #D7DCD6;
-  --mark: #14233A; --amber: #E8A317; --amber-ink: #14233A;
+  --mark: #14233A; --mark-ink: #F4F1EA; --amber: #E8A317; --amber-ink: #14233A;
   --act: #8E2F21; --act-soft: #F6E1DC; --mon: #7A5405; --mon-soft: #FBEFD2; --good: #1F5E5A; --good-soft: #DDEDEB; --na: #4A5869; --na-soft: #E5E8E3;
   --f-sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
   --f-cond: "IBM Plex Sans Condensed", "IBM Plex Sans", "Arial Narrow", system-ui, sans-serif;
+  --f-serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
   --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   --r: 14px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0E1A2B; --surface: #14233A; --surface-2: #192B45; --ink: #F4F1EA; --muted: #A7B1BF; --line: #2A3F5E;
-    --mark: #F4F1EA; --amber: #E8A317; --amber-ink: #14233A;
+    --mark: #F4F1EA; --mark-ink: #14233A; --amber: #E8A317; --amber-ink: #14233A;
     --act: #F08A78; --act-soft: #3D2220; --mon: #EDB55E; --mon-soft: #3A3018; --good: #6CC2B0; --good-soft: #17363A; --na: #A7B1BF; --na-soft: #1E3049;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0E1A2B; --surface: #14233A; --surface-2: #192B45; --ink: #F4F1EA; --muted: #A7B1BF; --line: #2A3F5E;
-  --mark: #F4F1EA; --amber: #E8A317; --amber-ink: #14233A;
+  --mark: #F4F1EA; --mark-ink: #14233A; --amber: #E8A317; --amber-ink: #14233A;
   --act: #F08A78; --act-soft: #3D2220; --mon: #EDB55E; --mon-soft: #3A3018; --good: #6CC2B0; --good-soft: #17363A; --na: #A7B1BF; --na-soft: #1E3049;
   color-scheme: dark;
 }
@@ -48,10 +49,10 @@ a { color: inherit; text-decoration-color: var(--amber); text-underline-offset: 
 /* header */
 .top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 14px 24px; }
 .lockup { display: flex; align-items: center; gap: 12px; }
-.lockup svg { width: 42px; height: 42px; flex: none; }
-.lockup .nm { font-weight: 600; font-size: 17px; letter-spacing: .14em; line-height: 1; }
-.lockup .rule { width: 24px; height: 3px; background: var(--amber); margin: 6px 0 5px; border-radius: 2px; }
-.lockup .sb { font-size: 10.5px; letter-spacing: .26em; text-transform: uppercase; color: var(--muted); }
+.lockup svg { width: 52px; height: 52px; flex: none; }
+.lockup .nm { font: 500 18px/1 var(--f-serif); letter-spacing: .12em; display: inline-block; padding-bottom: 6px; border-bottom: 1.5px solid var(--amber); margin-bottom: 6px; }
+.lockup .co { font: 600 9px/1 var(--f-sans); letter-spacing: .62em; margin-bottom: 5px; }
+.lockup .sb { font-size: 10.5px; letter-spacing: .01em; color: var(--muted); }
 .title { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .title h1 { font-family: var(--f-cond); font-weight: 700; font-size: clamp(26px, 5vw, 38px); letter-spacing: .01em; }
 .title .for { color: var(--muted); font-size: 14.5px; }
@@ -170,7 +171,7 @@ dialog.lb figcaption { font-size: 14px; line-height: 1.4; }
 dialog.lb figcaption .muted { color: #C9D1DB; font-size: 13px; display: block; }
 dialog.lb .x { position: absolute; top: 6px; right: 6px; font: 600 14px var(--f-sans); background: rgba(0,0,0,.55); color: #fff; border: 1px solid rgba(255,255,255,.5); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
 footer { font-size: 12.5px; color: var(--muted); max-width: 80ch; display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); padding-top: 14px; }
-@media (max-width: 480px) { .lockup .nm { font-size: 13px; letter-spacing: .06em; } .lockup .sb { font-size: 8.5px; letter-spacing: .14em; } }
+@media (max-width: 480px) { .lockup svg { width: 44px; height: 44px; } .lockup .nm { font-size: 15px; letter-spacing: .1em; } .lockup .co { font-size: 8px; letter-spacing: .5em; } .lockup .sb { font-size: 9.5px; } }
 </style>
 
 <div class="wrap" id="app">
@@ -178,8 +179,8 @@ footer { font-size: 12.5px; color: var(--muted); max-width: 80ch; display: flex;
   <header class="top">
     <div class="title">
       <div class="lockup">
-        <svg viewBox="0 0 512 512" aria-hidden="true"><polygon points="256,75.78 412.08,165.89 412.08,346.11 256,436.22 99.92,346.11 99.92,165.89" fill="none" stroke="var(--mark)" stroke-width="28.67" stroke-linejoin="round"/><line x1="180.97" y1="264.68" x2="235.95" y2="183.18" stroke="var(--mark)" stroke-width="26.62" stroke-linecap="round"/><line x1="210.19" y1="323.91" x2="301.81" y2="188.09" stroke="#E8A317" stroke-width="26.62" stroke-linecap="round"/><line x1="276.05" y1="328.82" x2="331.03" y2="247.32" stroke="var(--mark)" stroke-width="26.62" stroke-linecap="round"/></svg>
-        <div><div class="nm">NOAH CROWLEY CONSULTING</div><div class="rule"></div><div class="sb">Asbestos and Designated Substances</div></div>
+        <svg viewBox="0 0 184 184" aria-hidden="true"><polygon points="92,11 173,92 92,173 11,92" fill="var(--mark, #14233A)" stroke="var(--mark, #14233A)" stroke-width="10" stroke-linejoin="round"/><polygon points="92,21 163,92 92,163 21,92" fill="none" stroke="#E8A317" stroke-width="2.2" stroke-linejoin="round"/><g fill="var(--mark-ink, #F4F1EA)"><path transform="translate(55.47 86.66) scale(0.04200 -0.04200)" d="M45 60H116V638H45V698H285L597 182H602V638H531V698H745V638H674V0H551L193 587H188V60H259V0H45Z"/></g><g fill="var(--mark-ink, #F4F1EA)"><path transform="translate(99.12 126.66) scale(0.04200 -0.04200)" d="M357 -12Q285 -12 228.5 15.0Q172 42 132.5 90.0Q93 138 72.5 204.0Q52 270 52 348Q52 436 75.5 503.5Q99 571 139.0 617.0Q179 663 233.0 686.5Q287 710 347 710Q412 710 449.0 687.5Q486 665 500 639H505V698H608V481H505V528Q505 579 468.5 610.0Q432 641 366 641Q288 641 247.0 590.0Q206 539 206 446V267Q206 169 254.5 120.5Q303 72 383 72Q449 72 494.5 106.5Q540 141 563 198L614 169Q602 133 579.5 100.5Q557 68 524.5 43.0Q492 18 450.0 3.0Q408 -12 357 -12Z"/></g><line x1="117" y1="67" x2="67" y2="117" stroke="#E8A317" stroke-width="2.8" stroke-linecap="round"/></svg>
+        <div><div class="nm">NOAH CROWLEY</div><div class="co">CONSULTING</div><div class="sb">Asbestos and Designated Substances</div></div>
       </div>
       <h1>Designated Substance Register</h1>
       <div class="for" id="forLine"></div>
