@@ -13,47 +13,41 @@ import json, os, re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 P = json.load(open(os.path.join(ROOT, "tools", "prices.json")))
-assert P.get("schema") == 1 and P.get("stamp", {}).get("pb"), "tools/prices.json is not a valid NCC price list"
+assert P.get("schema") == 2 and P.get("stamp", {}).get("pb"), "tools/prices.json is not a schema-2 NCC price list (PB-2026.11g or later)"
 
 def money(x):
     x = float(x); return f"${x:,.0f}" if x == int(x) else f"${x:,.2f}"
 def pct(d): return f"{round(d * 100)}%"
-def rng(v, sep="–"): return f"{v[0]}{sep}{v[1]}"
-WORD = {1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six"}
+def rng(v, sep="–"): return f"{v[0]}{sep}{v[1]}" if v[0] != v[1] else str(v[0])
+def fee(v): return money(v["from"]) if isinstance(v, dict) else money(v)
 
-PG, PS = P["programs"], P["passes"]
-def first_monthly(prog): return next(v for v in prog["m"].values() if v is not None)
-def jobs(fits): return re.match(r"(\d+(?:–\d+)?(?: or more)?) jobs a month", fits).group(1)
-T = P["turnaround"]
-
+S, D, RA, CL, PR = P["sample"], P["dss"], P["reassess"], P["clearance"], P["peer"]
 V = {
- "pb": P["stamp"]["pb"], "hst": pct(P["hst"]), "labDays": str(P["labDays"]),
- "sample.comp": money(P["sample"]["comp"]), "sample.demo": money(P["sample"]["demo"]), "layer": money(P["layer"]),
- "minVisit": money(P["minVisit"]), "freeKm": str(P["travel"]["freeKm"]), "freeMi": str(P["travel"]["freeMi"]),
- "paymentDays": str(P["paymentDays"]), "quoteValidDays": str(P["quoteValidDays"]), "creditDays": str(P["firstReportCreditDays"]),
- "termMonths": str(P["subscription"]["termMonths"]), "prepaidMonths": str(P["prepaidMonths"]),
- "deskReply": str(P["deskReplyDays"]), "snapshotDays": str(P["registerSnapshotDays"]), "classLetterOff": pct(P["classLetterOff"]),
+ "pb": P["stamp"]["pb"], "hst": pct(P["hst"]), "labDays": str(P["labDays"]), "rushDays": rng(P["rush"]["days"]), "rushDays.to": rng(P["rush"]["days"], " to "),
+ "visitDays": str(P["siteVisitDays"]),
+ "sample": money(S["bulk"]), "layer": money(S["layer"]), "sample.demo": money(S["demo"]), "layer.demo": money(S["demoLayer"]), "sample.verm": money(S["verm"]),
+ "rush.sample": money(S["rushBulk"]), "rush.layer": money(S["rushLayer"]), "rush.demo": money(S["rushDemo"]), "rush.verm": money(S["rushVerm"]),
+ "minVisit": money(P["minVisit"]), "freeKm": str(P["travel"]["freeKm"]), "freeMi": str(P["travel"]["freeMi"]), "perKm": money(P["travel"]["perKm"]),
+ "afterHours": pct(P["afterHours"]), "overnight": money(P["overnight"]), "binder": money(P["binder"]), "hazAddon": money(P["hazAddon"]),
+ "paymentDays": str(P["paymentDays"]), "quoteValidDays": str(P["quoteValidDays"]), "cancelDays": str(RA["cancelNoticeDays"]),
  "classA.m2": f"{P['classes']['A']['m2']:,}", "classA.ft2": f"{P['classes']['A']['ft2']:,}",
- "d.min": pct(min(p["d"] for p in PG.values())), "d.max": pct(max(p["d"] for p in PG.values())),
- "ta.limited": str(T["limited"]), "ta.updateNo": str(T["updateNoSampling"]), "ta.updateS": rng(T["updateSampling"]),
- "ta.project": rng(T["project"]), "ta.project.to": rng(T["project"], " to "), "ta.survey": rng(T["survey"]),
- "ta.full": f"{T['fullAB'][0]}–{T['fullCD'][1]}", "ta.predemo": rng(T["predemo"]), "ta.predemo.to": rng(T["predemo"], " to "),
+ "classB.m2": f"{P['classes']['B']['m2']:,}", "classB.ft2": f"{P['classes']['B']['ft2']:,}", "classC.m2": f"{P['classes']['C']['m2']:,}", "classC.ft2": f"{P['classes']['C']['ft2']:,}",
+ "bulk.visit": money(P["bulkSampling"]["visit"]), "bulk.callout": money(P["bulkSampling"]["callout"]),
+ "abate.spec": money(P["abatement"]["spec"]), "abate.specDays": str(P["abatement"]["specDays"][0]), "abate.visit": money(P["abatement"]["visit"]), "abate.package": money(P["abatement"]["package"]),
+ "clr.small": money(CL["small"]), "clr.mid": money(CL["mid"]), "clr.large": money(CL["large"]), "clr.days": rng(CL["days"]),
+ "clr.lead": money(CL["leadWipe"]), "clr.disturb": money(CL["disturbance"]),
+ "train.t12": money(P["training"]["type12"]), "train.t12max": str(P["training"]["type12Max"]), "train.aware": money(P["training"]["awareness"]), "train.awaremax": str(P["training"]["awarenessMax"]),
+ "peer.daysAB": str(PR["deskDays"]["A"][0]), "peer.daysCD": str(PR["deskDays"]["C"][0]),
 }
+for k in ("reno", "full", "predemo"):
+    V[f"ta.{k}"] = rng(D[k]["days"]); V[f"ta.{k}.to"] = rng(D[k]["days"], " to ")
+    for c in "ABCD": V[f"{k}.{c}"] = fee(D[k]["fee"][c])
+for c in "ABCD":
+    V[f"ra.setup.{c}"] = fee(RA["setup"][c]); V[f"ra.annual.{c}"] = fee(RA["annual"][c])
+    V[f"peer.desk.{c}"] = fee(PR["desk"][c]); V[f"peer.visit.{c}"] = fee(PR["visit"][c])
 for k, v in P["publicFrom"].items(): V[f"from.{k}"] = money(v)
-for k, p in PG.items():
-    V[f"m.{k}"] = money(first_monthly(p)); V[f"d.{k}"] = pct(p["d"])
-    V[f"sched.{k}"] = str(p["schedDays"]); V[f"train.{k}"] = str(p["training"]); V[f"deskN.{k}"] = str(p["deskReviews"])
-    V[f"inspCell.{k}"] = {1: "Once a year", 2: "Twice a year"}[p["inspections"]]
-    V[f"trainCell.{k}"] = "Not included" if p["training"] == 0 else f"{p['training']} session{'s' if p['training'] > 1 else ''} a year"
-    V[f"deskCell.{k}"] = "Not included" if p["deskReviews"] == 0 else "Unlimited" if p["deskReviews"] == -1 else f"{p['deskReviews']} a year"
-for k, p in PS.items():
-    V[f"m.{k}"] = money(p["m"]); V[f"d.{k}"] = pct(p["d"]); V[f"prebid.{k}"] = str(p["prebid"]); V[f"aware.{k}"] = str(p["awareness"])
-    V[f"jobs.{k}"] = jobs(p["fits"]) if "jobs a month" in p["fits"] else ""
-    V[f"jobs.{k}.to"] = V[f"jobs.{k}"].replace("–", " to ")
-    V[f"visit.{k}"] = "" if p["visitDays"] is None else str(p["visitDays"])
-    V[f"visitCell.{k}"] = "Next business day, Monday to Friday" if p["visitDays"] is None else f"Within {p['visitDays']} business days"
 # numbers the code needs as numbers (schema.org prices, the Obligation Check)
-NUM = {"from": P["publicFrom"], "m": {**{k: first_monthly(p) for k, p in PG.items()}, **{k: p["m"] for k, p in PS.items()}}}
+NUM = {"from": P["publicFrom"]}
 
 TOKEN = re.compile(r"\[\[(pl:)?([\w.]+)\]\]")
 def fill(s):

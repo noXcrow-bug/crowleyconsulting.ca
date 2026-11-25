@@ -3,7 +3,7 @@
 "client": "Brockmere Property Group Inc.",
 "attention": "Marcus Delorme, Facilities Director",
 "asOf": "2026-11-07",
-"program": "Facility Partner",
+"program": "Annual Asbestos Reassessment",
 "firm": {
 "phone": "519-890-9654",
 "email": "info@crowleyconsulting.ca"
@@ -17,7 +17,7 @@
 "yearBuilt": "1971",
 "client": "Brockmere Property Group Inc.",
 "contact": "Marcus Delorme, Facilities Director",
-"program": "Facility Partner",
+"program": "Annual Asbestos Reassessment",
 "reviewsUsed": 3,
 "reviewsIncl": -1,
 "termStart": "2026-09-01",
@@ -507,17 +507,17 @@
 },
 {
 "date": "2026-10-27",
-"what": "Desk review, data cabling through 2F corridor ceiling. Ceiling tile: none detected. Cleared, with a stop-work note for the pipe fittings above the ceiling near the riser (HM-04)."
+"what": "Pre-work check, data cabling through 2F corridor ceiling. Ceiling tile: none detected. Cleared, with a stop-work note for the pipe fittings above the ceiling near the riser (HM-04)."
 },
 {
 "date": "2026-10-08",
-"what": "Desk review, Suite 204 fit-out: new demising wall and ceiling grid. Joint compound (HM-02) and ceiling tile (HM-01): none detected. Cleared; silica dust controls for drywall cutting."
+"what": "Pre-work check, Suite 204 fit-out: new demising wall and ceiling grid. Joint compound (HM-02) and ceiling tile (HM-01): none detected. Cleared; silica dust controls for drywall cutting."
 }
 ],
 "surveys": [
 {
 "projectNo": "NCC-EX001",
-"type": "Asbestos building survey (s. 8 baseline)",
+"type": "Full-building DSS",
 "date": "2026-09-15",
 "by": "Noah Crowley",
 "exclusions": "8 tenant suites not entered; finishes assumed to match the representative suites. Roof membrane not cored. Wall cavities and above-ceiling spaces only viewed where tiles lift.",
@@ -533,7 +533,7 @@
 "yearBuilt": "1964",
 "client": "Brockmere Property Group Inc.",
 "contact": "Marcus Delorme, Facilities Director",
-"program": "Facility Partner",
+"program": "Annual Asbestos Reassessment",
 "reviewsUsed": 2,
 "reviewsIncl": -1,
 "termStart": "2026-09-01",
@@ -802,17 +802,17 @@
 "reviews": [
 {
 "date": "2026-10-30",
-"what": "Desk review, Unit 6 sign installation through the canopy soffit (HM-01, asbestos cement). Not cleared: use the existing bracket holes or have the panel removed under Type 1 procedures first."
+"what": "Pre-work check, Unit 6 sign installation through the canopy soffit (HM-01, asbestos cement). Not cleared: use the existing bracket holes or have the panel removed under Type 1 procedures first."
 },
 {
 "date": "2026-10-14",
-"what": "Desk review, Unit 5 flooring replacement. Unit 5 floor is ceramic on slab, not the corridor tile. Cleared."
+"what": "Pre-work check, Unit 5 flooring replacement. Unit 5 floor is ceramic on slab, not the corridor tile. Cleared."
 }
 ],
 "surveys": [
 {
 "projectNo": "NCC-EX002",
-"type": "DSS update or re-assessment",
+"type": "Annual Asbestos Reassessment",
 "date": "2026-09-29",
 "by": "Noah Crowley",
 "exclusions": "Units 3 and 7 not entered (tenants unavailable); assumed to match Units 2 and 5.",
