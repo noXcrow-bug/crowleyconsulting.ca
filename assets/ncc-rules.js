@@ -7,14 +7,15 @@
    - The trigger decides the scope (whole building vs the work area), not the age.
    - Never say "not required". Material wording (2026-11-13): lab results under the asbestos threshold are "none detected"; materials judged by sight
      are "non-suspect". Never word any result, lab or visual, as the absence of asbestos.
-   - Cleared-to-Start Pass is never offered to abatement contractors.
-   - Lab: results come back in the lab's turnaround from receipt and a project report takes its Guide turnaround start to finish.
-     Rush is a paid option since PB-2026.11f (pb.rush: results about pb.rush.usualDaysAfterFieldwork business days after the visit).
-     Since R-2026.11f both numbers come from the price list the page passes in (pb.labDays, pb.turnaround.project): none are typed here.
+   - Clearance air testing is sold to abatement contractors (PB-2026.11g); the fee never depends on the result.
+   - Lab: results come back in the lab's turnaround from receipt and a renovation-scope survey takes its Guide turnaround start to finish.
+     Rush is a paid option at double the sample price (pb.rush.days business days). All numbers come from the price list the page
+     passes in (schema 2: pb.labDays, pb.dss.reno.days, pb.rush.days): none are typed here.
+   - R-2026.11i (2026-11-24, PB-2026.11g, decision 64): products are reno | full | predemo | bulk. Retired: programs, Pass, member rates, limited sampling visit, DSS update and asbestos building survey.
    window.NCC_RULES = { version, TRIGGERS, ROLES, USES, REPORTS, AREAS, SCALES, SEGMENT, era, cls, bizDaysUntil, route, fromIntake, recommend, flags, summary } */
 (function (root) {
   "use strict";
-  const version = "R-2026.11h";
+  const version = "R-2026.11i";
 
   const TRIGGERS = [
     ["reno", "Renovation or repairs"], ["demo", "Demolition"], ["claim", "Insurance claim / restoration (fire, flood, mould)"],
@@ -65,10 +66,10 @@
      p = { use ("house" = single-family), era: "old" | "new" | "" (not sure), work: "demo" | "major" | "minor" | "due" | "know",
            disturb: materials the work disturbs (any keys), plus "none" (won't open materials) and/or "unsure", report: "none" | "current" | "old" | "unsure" }
      Returns { level, key }: level 1 = survey needed, 2 = targeted check or review, 3 = may already be covered / should be simple,
-     "survey" = not a project yet (purchase or general question). key = limited | update | project | survey | full | predemo, or null (no product yet). */
+     "survey" = not a project yet (purchase or general question). key = bulk | reno | full | predemo, or null (no product yet). */
   function route(p) {
     const d = p.disturb || [], work = p.work, real = d.filter((x) => x !== "none" && x !== "unsure");
-    if (work === "due" || work === "know") return { level: "survey", key: work === "due" ? "full" : "survey" };
+    if (work === "due" || work === "know") return { level: "survey", key: "full" };
     const unsure = p.era === "" || p.report === "unsure" || d.includes("unsure");
     const opens = work === "demo" || work === "major" || real.length > 0;
     const old = p.era !== "new", house = p.use === "house";
@@ -79,9 +80,8 @@
     else level = 2;
     if (work === "demo") key = "predemo";
     else if (level === 3) key = null;
-    else if (p.report === "old") key = "update";
-    else if (house) key = "limited"; /* R-2026.11d/e (Noah): the limited visit is never SUGGESTED as a commercial project's list. Its letter (results + Type 1/2/3) is not the owner's s.30 designated substance list, so a commercial project gets a Project-specific DSS. The limited visit itself stays on sale for any building ("just test these materials"; see recommend()). */
-    else key = "project";
+    else if (house) key = "bulk"; /* A house: Bulk Material Sampling of the materials the work touches. Its letter is not the owner's s.30 list, so it is never SUGGESTED as a commercial project's list; it stays on sale for any building ("just test these materials"; see recommend()). */
+    else key = "reno"; /* an old report that doesn't cover the work is replaced by a renovation-scope survey of the work area (the DSS update was retired in PB-2026.11g) */
     return { level, key };
   }
   /* Intake answers -> route() input */
@@ -94,45 +94,41 @@
     return { use: isHouse(a) ? "house" : a.use, era: era(a.built), work, disturb: areas.length ? areas : (a.areas || []).length ? ["whole"] : ["unsure"], report };
   }
 
-  /* The likely fit for the intake. a = { trigger, role, use, built, areaM2, report, areas[], scale, start, today, member: {kind: "pass"|"program", name} for active clients }.
+  /* The likely fit for the intake. a = { trigger, role, use, built, areaM2, report, areas[], scale, start, today }.
      Returns { key, name, cls, level, why, say, also, from }; key is a price-list report key or "review" / "simple" (no product yet). */
   function recommend(a, pb) {
     a = a || {};
-    const names = (pb && pb.names) || { limited: "Limited sampling visit", update: "DSS update or re-assessment", project: "Project-specific DSS", survey: "Asbestos building survey", full: "Full-building DSS + hazmat", predemo: "Pre-demolition DSS" };
+    const names = (pb && pb.names) || { reno: "Renovation-scope DSS", full: "Full-building DSS", predemo: "Pre-demolition DSS", bulk: "Bulk Material Sampling", reassess: "Annual Asbestos Reassessment Program", clearance: "Clearance Air Testing", peer: "Peer Review" };
     const p = fromIntake(a), r = route(p), c = isHouse(a) ? "A" : cls(a.areaM2, pb), e = p.era;
     let key = r.key, why, say;
     if (key === "predemo") { why = "Demolition needs a destructive pre-demolition survey, even if there's a recent report."; say = "For demolition we do a destructive survey: we open up walls, floors and ceilings so nothing is missed."; }
     else if (key === null && a.report === "current") { key = "review"; why = "They say they have a current report that covers this work. Read it before selling anything."; say = "Send me a copy of your report. If it covers this work, you may not need much from us."; }
     else if (key === null) { key = "simple"; why = "Newer building and work that won't open up materials: likely a short list. The owner still needs one before work starts."; say = "This one should be simple, but the owner still needs the list before the contract is signed."; }
-    else if (key === "limited") { why = "A house renovation: test or presume each material the work touches. Letter with results and the Type 1/2/3 classification; not a designated substance list. Homeowner pays; no program."; say = "For a house, we only test the materials your renovation will disturb."; }
-    else if (key === "update") { why = a.report === "partial" ? "Their report doesn't cover this work: update it to take in the work area." : "There's a report, but it's old or out of date. Updating it costs less than starting over."; say = "We can update your existing report instead of starting from scratch."; }
-    else if (key === "full" || key === "survey") { why = key === "full" ? "A sale or refinance: a full DSS covers every designated substance for the buyer or lender." : "They want to know what's in the building. An asbestos building survey answers it; a full DSS adds the other designated substances."; say = "A survey tells you what's in the building and becomes your list when work is planned."; }
-    else { why = a.trigger === "tender" ? "Tender documents need the designated substance list for the work (OHSA s.30)." : r.level === 1 ? "Nothing on file covers work that opens up this building: the work area needs sampling (OHSA s.30)." : "The work area needs a designated substance list before work starts (OHSA s.30)."; say = "We survey just the areas your project touches, and you get the report the contractor needs."; }
+    else if (key === "bulk") { why = "A house renovation: test or presume each material the work touches (Bulk Material Sampling). Letter with results and the Type 1/2/3 classification; not a designated substance list. Homeowner pays."; say = "For a house, we only test the materials your renovation will disturb."; }
+    else if (key === "full") { why = a.trigger === "sale" ? "A sale or refinance: a full-building DSS covers every designated substance for the buyer or lender." : "They want to know what's in the building: a full-building DSS answers it and becomes the list when work is planned."; say = "A survey tells you what's in the building and becomes your list when work is planned."; }
+    else { why = a.report === "old" || a.report === "partial" ? "Their report is old or doesn't cover this work: a renovation-scope survey of the work area replaces it (OHSA s.30). Offer a peer review if they want the old report checked first." : a.trigger === "tender" ? "Tender documents need the designated substance list for the work (OHSA s.30)." : r.level === 1 ? "Nothing on file covers work that opens up this building: the work area needs sampling (OHSA s.30)." : "The work area needs a designated substance list before work starts (OHSA s.30)."; say = "We survey just the areas your project touches, and you get the report the contractor needs."; }
     if (e === "new" && !["review", "simple"].includes(key)) why += " Built 1990 or later: still needs it, but expect fewer suspect materials, so a smaller sample estimate.";
-    const also = [], m = a.member || null;
-    /* Existing clients first (R-2026.11c/d, Noah): Pass members and program clients -> their member rate. */
-    if (m && m.kind === "pass") also.push(`Pass member (${m.name || "Cleared-to-Start Pass"}): bill it at their Pass member rate (pre-work checks aren't included in the Pass).`);
-    if (m && m.kind === "program") also.push(`Program client (${m.name || "building program"}): quote it at their member rate.`);
-    if (!isHouse(a) && ["project", "update", "simple"].includes(key)) also.push(`If they only want specific materials tested, not a project list: ${names.limited} (1-3 materials). Say plainly it isn't their designated substance list.`);
-    if (key === "limited" && p.disturb.filter((x) => x !== "none" && x !== "unsure" && x !== "whole").length > 3) also.push("More than 3 materials: past the limited visit's fee scope (1-3 materials). Quote this house case by case.");
-    if (!m && CONTRACTOR.has(a.role) && a.role !== "abatement" && key !== "predemo") also.push("If they do this kind of work often: the Cleared-to-Start Pass. Ask how many jobs a month.");
-    if (!m && (a.role === "owner" || a.role === "pm") && !isHouse(a)) also.push("Later, once the report is delivered: a building program (mention it then, not on this call).");
-    if (key === "review") also.push(`If the report is older or doesn't match the building: ${names.update}.`);
-    if (key === "simple") also.push(`If they're unsure what the work touches: ${names.limited}.`);
+    const also = [];
+    if (!isHouse(a) && ["reno", "simple"].includes(key)) also.push(`If they only want specific materials tested, not a project list: ${names.bulk}. Say plainly it isn't their designated substance list.`);
+    if (a.trigger === "concern" || a.trigger === "claim") also.push(`Material already disturbed: the unexpected-find call-out (same or next business day, rush lab), and air sampling after a disturbance if they're worried about the air.`);
+    if (a.role === "abatement") also.push(`Abatement contractor: ${names.clearance} is sold to them directly; the fee never depends on the result.`);
+    if ((a.role === "owner" || a.role === "pm") && !isHouse(a)) also.push(`Later, once the report is delivered: the ${names.reassess} (mention it then, not on this call).`);
+    if (key === "review") also.push(`If the report is older or doesn't match the building: a ${names.reno} of the work area, or a ${names.peer} if they want it checked first.`);
+    if (key === "simple") also.push(`If they're unsure what the work touches: ${names.bulk}.`);
     const from = pb && pb.publicFrom && pb.publicFrom[key] != null ? pb.publicFrom[key] : null;
     const NM = { review: "Review their existing report", simple: "Likely a short list (confirm the scope)" };
-    return { key, name: NM[key] || names[key], cls: c, level: r.level, scope: ["survey", "full", "predemo"].includes(key) ? "whole" : "project", era: e, why, say, also, from };
+    return { key, name: NM[key] || names[key], cls: c, level: r.level, scope: ["full", "predemo"].includes(key) ? "whole" : "project", era: e, why, say, also, from };
   }
 
   /* Warnings to raise on the call. Each { lvl: "act"|"warn"|"info", t, say } */
   function flags(a, pb) {
     a = a || {};
     const out = [], e = era(a.built), lab = pb && pb.labDays ? String(pb.labDays) : "the lab's turnaround",
-      tp = pb && pb.turnaround && pb.turnaround.project ? `${pb.turnaround.project[0]}-${pb.turnaround.project[1]} business days` : "several business days", bd = a.startWithin === "month" ? 15 : bizDaysUntil(a.start, a.today),
-      rush = pb && pb.rush && pb.rush.usualDaysAfterFieldwork ? pb.rush.usualDaysAfterFieldwork : null;
-    if (bd !== null && bd < 10) out.push({ lvl: "act", t: `Work starts in ${bd} business day${bd === 1 ? "" : "s"}. Results take ${tp} from the site visit (lab: ${lab} from receipt).${rush ? ` Rush, at extra cost, gets lab results about ${rush} business days after the visit.` : " No rush service."}`, say: rush ? "Tell them now: standard results won't be ready before the start date. Rush lab results cost extra." : "Tell them now, before anything else: we can't have results before the start date." });
-    else if (bd !== null && bd < 22) out.push({ lvl: "warn", t: `Work starts within a month. Book the site visit soon: results take ${tp}${rush ? `, or lab results in about ${rush} business days with rush (extra cost)` : ", no rush service"}.`, say: "To be ready on time we should get in this week or next." });
-    if (a.role === "abatement") out.push({ lvl: "warn", t: "Abatement contractor: the Cleared-to-Start Pass is not offered to abatement contractors.", say: "We can survey for the building owner; the report goes to the owner." });
+      rd = pb && pb.dss && pb.dss.reno && pb.dss.reno.days, tp = rd ? (rd[0] === rd[1] ? `${rd[0]} business days` : `${rd[0]}-${rd[1]} business days`) : "several business days", bd = a.startWithin === "month" ? 15 : bizDaysUntil(a.start, a.today),
+      rush = pb && pb.rush && pb.rush.days ? `${pb.rush.days[0]}-${pb.rush.days[1]}` : null;
+    if (bd !== null && bd < 10) out.push({ lvl: "act", t: `Work starts in ${bd} business day${bd === 1 ? "" : "s"}. Results take ${tp} from the site visit (lab: ${lab} from receipt).${rush ? ` Rush, at double the sample price, gets lab results in ${rush} business days.` : ""}`, say: rush ? "Tell them now: standard results won't be ready before the start date. Rush costs double the sample price." : "Tell them now, before anything else: we can't have results before the start date." });
+    else if (bd !== null && bd < 22) out.push({ lvl: "warn", t: `Work starts within a month. Book the site visit soon: results take ${tp}${rush ? `, or lab results in ${rush} business days with rush (double the sample price)` : ""}.`, say: "To be ready on time we should get in this week or next." });
+    if (a.role === "abatement") out.push({ lvl: "info", t: "Abatement contractor: clearance air testing can be sold to them directly. Surveys are still addressed to the building owner.", say: "Our clearance fee doesn't depend on the result, and we report it as found." });
     if (isDemo(a) && (a.report === "current" || a.report === "old" || a.report === "partial")) out.push({ lvl: "warn", t: "Demolition with an existing report: it still needs a destructive pre-demolition survey.", say: "" });
     if (isDemo(a)) out.push({ lvl: "info", t: "Demolition samples use the demolition sample rate on the quote.", say: "" });
     if (a.trigger === "concern") out.push({ lvl: "act", t: "Damaged material or exposure worry: tell them not to disturb it and keep people away until it's sampled.", say: "Don't touch or clean it up yourselves. Keep people out of that area until we've sampled it." });

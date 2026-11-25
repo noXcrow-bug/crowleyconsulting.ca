@@ -174,7 +174,7 @@ footer { font-size: 12.5px; color: var(--muted); max-width: 80ch; display: flex;
 </style>
 
 <div class="wrap" id="app">
-  <div class="demo" id="demo" hidden><b>Example</b><span>Invented client and buildings, shown to explain how a program client's register works. Not a real company or a real survey.</span></div>
+  <div class="demo" id="demo" hidden><b>Example</b><span>Invented client and buildings, shown to explain how an Annual Reassessment client's register works. Not a real company or a real survey.</span></div>
   <header class="top">
     <div class="title">
       <div class="lockup">
@@ -190,7 +190,7 @@ footer { font-size: 12.5px; color: var(--muted); max-width: 80ch; display: flex;
   <section class="portfolio" id="portfolio" aria-label="All buildings"></section>
   <section class="callout" aria-label="Before any work">
     <div><h2>Before anyone drills, cuts or lifts a tile</h2>
-      <p>Check the material in this register. If it says Act now or Monitor, or the material isn't listed, call before work starts. A written desk review comes back within 1 business day.</p></div>
+      <p>Check the material in this register. If it says Act now or Monitor, or the material isn't listed, call before work starts.</p></div>
     <div class="contact"><span id="ph"></span><span id="em"></span></div>
   </section>
   <div class="legend" id="legend"></div>
@@ -272,7 +272,6 @@ footer { font-size: 12.5px; color: var(--muted); max-width: 80ch; display: flex;
       <div class="facts">
         <div><span class="eyebrow">Last assessed</span><b class="num">${esc(fmt(b.last))}</b></div>
         <div><span class="eyebrow">Next reassessment</span><b class="num">${esc(fmt(b.next))}</b></div>
-        <div><span class="eyebrow">Desk reviews this term</span><b>${esc(reviewsLine)}</b></div>
         <div><span class="eyebrow">Built</span><b class="num">${esc(b.yearBuilt)}</b></div>
       </div>
       ${b.notes ? `<p class="note">${esc(b.notes)}</p>` : ""}
@@ -281,7 +280,7 @@ footer { font-size: 12.5px; color: var(--muted); max-width: 80ch; display: flex;
       ${other.length ? `<div class="block"><h3>Other designated substances present</h3><div class="log">${other.map(x => `<div><span class="dt"><span class="tag">${esc(x.result.replace(" present", ""))}</span></span><span><b>${esc(x.sub)}</b><br><span class="muted">${esc(x.desc)}</span></span></div>`).join("")}</div></div>` : ""}
       ${non.length ? `<details class="more"><summary>${esc(nonTitle)}</summary>${nonSus ? `<p class="note">Non-suspect materials were assessed by sight and not sampled. If work turns up something not described here, such as another layer underneath or older material behind a finish, stop and call before disturbing it.</p>` : ""}<div class="tw"><table class="reg">${head}<tbody>${non.map(row).join("")}</tbody></table></div></details>` : ""}
       <div class="two">
-        <div class="block"><h3>Desk reviews and call-outs</h3>${b.reviews.length ? `<div class="log">${b.reviews.map(r => `<div><span class="dt">${esc(r.date)}</span><span>${esc(r.what)}</span></div>`).join("")}</div>` : `<span class="empty">None yet this term.</span>`}</div>
+        <div class="block"><h3>Call-outs and pre-work checks</h3>${b.reviews.length ? `<div class="log">${b.reviews.map(r => `<div><span class="dt">${esc(r.date)}</span><span>${esc(r.what)}</span></div>`).join("")}</div>` : `<span class="empty">None yet this term.</span>`}</div>
         <div class="block"><h3>Surveys</h3><div class="log">${b.surveys.map(s => `<div><span class="dt">${esc(s.date)}</span><span><b>${esc(s.type)}</b> · <span class="mono">${esc(s.projectNo)}</span><br><span class="muted">${esc(s.by)}</span></span></div>`).join("")}</div>
           ${excl.length ? `<p class="note"><b>Areas not accessed:</b> ${esc(excl.join(" "))}</p>` : ""}</div>
       </div>

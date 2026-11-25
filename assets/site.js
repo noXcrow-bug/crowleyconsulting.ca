@@ -162,8 +162,8 @@
   var root = document.getElementById("quiz");
   if (!root) return;
 
-  var TIERS = window.NCC_TIERS || {};
-  var PUB = window.NCC_PUBLIC || { reports: {}, entry: {}, labDays: "", taProjectTo: "", jobsStarter: "", jobsPro: "" };
+  var PUB = window.NCC_PUBLIC || { reports: {}, offers: {}, entry: {}, labDays: "", rushDays: "", taRenoTo: "" };
+  var OFFERS = PUB.offers || {};
   var Q = {
     who: { title: "Which describes you best?", options: [
       ["building", "I own or manage a commercial or institutional building", "Offices, plazas, churches, schools, clinics, municipal buildings"],
@@ -176,10 +176,7 @@
       ["homeowner", "I'm a homeowner planning a renovation", ""] ] },
     b_age: { title: "Was the building built before 1990?", help: "Asbestos-containing materials were used widely before 1990 and can still turn up in newer buildings.", options: [["yes", "Yes, before 1990"], ["no", "No, 1990 or later"], ["unsure", "I'm not sure"]] },
     b_count: { title: "How many buildings do you look after?", options: [["one", "One"], ["two", "Two"], ["many", "Three or more"]] },
-    b_board: { title: "Is a board or a joint health and safety committee asking about asbestos?", options: [["yes", "Yes"], ["no", "No"]] },
-    b_contractors: { title: "How often are contractors or maintenance staff working in the building?", options: [["often", "Several times a year or more"], ["rarely", "Rarely"]] },
     b_record: { title: "When was your asbestos record last updated?", help: "Owners must re-inspect and update it at least once every 12 months.", options: [["recent", "Within the last 12 months"], ["old", "More than 12 months ago"], ["none", "We don't have one, or I don't know"]] },
-    c_jobs: { title: "How many jobs a month are in buildings built before 1990?", options: [["few", PUB.jobsStarter + " a month"], ["many", PUB.jobsPro + " a month"]] },
     // Project path: does this project need a designated substance survey (OHSA s.30)?
     p_type: { title: "What type of building is it?", options: [["commercial", "Commercial", "Offices, retail, plazas, hotels"], ["institutional", "Institutional", "Schools, healthcare, government, churches"], ["industrial", "Industrial", "Plants, warehouses, shops"], ["multi", "Multi-unit residential", "Apartments, condominiums, townhouse complexes"], ["house", "Single-family home"]] },
     p_age: { title: "Was the building built before 1990?", help: "Age changes what we expect to find, not whether the owner needs a list.", options: [["yes", "Yes, before 1990"], ["no", "No, 1990 or later"], ["unsure", "I'm not sure"]] },
@@ -190,9 +187,9 @@
     p_time: { title: "When should the work start?", options: [["month", "Within 1 month"], ["quarter", "In 1 to 3 months"], ["later", "In 3 months or more"], ["planning", "Just planning"]] }
   };
   var FLOW = {
-    building: ["b_age", "b_count", "b_board", "b_contractors", "b_record"],
-    rental: ["b_age", "b_count", "b_board", "b_contractors", "b_record"],
-    contractor: ["c_jobs"],
+    building: ["b_age", "b_count", "b_record"],
+    rental: ["b_age", "b_count", "b_record"],
+    contractor: [],
     project: ["p_type", "p_age", "p_work", "p_disturb", "p_report", "p_role", "p_time"],
     restoration: [], employer: [], abatement: [], homeowner: []
   };
@@ -216,16 +213,15 @@
     }
   }
 
+  /* PB-2026.11g (decision 59): no programs or passes. Owners and landlords get the Annual Reassessment; contractors,
+     restoration firms, abatement contractors and homeowners get the matching one-off service. */
   function route(a) {
     switch (a.who) {
       case "building": case "rental":
-        var entry = a.b_record === "none" ? "Baseline survey" : "DSS update";
-        if (a.b_count === "many" || a.b_board === "yes") return { tier: "bp_fp", entry: "Discovery call" };
-        if (a.b_contractors === "often" || a.b_count === "two") return { tier: "bp_pr", entry: entry };
-        return { tier: "bp_ess", entry: entry };
-      case "contractor":
-        return a.c_jobs === "many" ? { tier: "pw_pro", entry: "First pre-work check" } : { tier: "pw_start", entry: "First pre-work check" };
-      case "restoration": return { tier: "pw_rr", entry: "Discovery call" };
+        if (a.b_count === "many") return { offer: "reassess", entry: "Discovery call" };
+        return { offer: "reassess", entry: a.b_record === "none" ? "Full-building DSS first" : "Year 1 setup" };
+      case "contractor": case "restoration": case "abatement": case "homeowner":
+        return { offer: a.who, entry: "Book a site visit" };
       default: return { special: a.who };
     }
   }
@@ -263,34 +259,34 @@
     if (!R || !R.route) return { level: 2, report: null };
     var r = R.route({ use: a.p_type, era: { yes: "old", no: "new", unsure: "" }[a.p_age], work: { demo: "demo", major: "major", minor: "minor", mep: "minor", finish: "minor", due: "due", know: "know" }[a.p_work],
       disturb: a.p_disturb || [], report: { recent: "current", old: "old", none: "none", unsure: "unsure" }[a.p_report] });
-    return { level: r.level, report: r.key === "predemo" ? "demo" : r.key };
+    return { level: r.level, report: r.key };
   }
   var LEVEL = {
     1: ["A designated substance survey is needed before this project starts", "Nothing on file covers work that will open up this building. The list has to be made by sampling the materials the work will disturb."],
     2: ["Start with a targeted check or a review of what you have", "Some of what we'd need to know is missing or out of date. A targeted check of the work area, or a review of your existing report, settles it."],
     3: ["Your existing information may already cover this", "Confirm that your report is current and covers the work area, and that it goes to the contractor before the contract is signed."],
     "3n": ["This one should be simple", "A newer building and work that won't open up building materials usually means a short list. The owner still needs one before the work starts, and it has to reach the contractor before a contract is signed."],
-    survey: ["A building survey answers that", "A purchase or a general question isn't a project, so section 30 doesn't apply yet. A survey tells you what's in the building and becomes the list when work is planned."]
+    survey: ["A full-building survey answers that", "A purchase or a general question isn't a project, so section 30 doesn't apply yet. A survey tells you what's in the building and becomes the list when work is planned."]
   };
   var ROLE = {
     owner: "As the owner, the list is your duty. If a contractor later finds a substance you ought to have known about, you can be liable for their losses.",
     manager: "Do the project list and your yearly O. Reg. 278/05 re-inspection together, and keep your asbestos management program current.",
     gc: "Get the owner's list before you price the job. It's what protects you from stop-work orders and change-order disputes when something turns up behind a wall.",
-    trade: "If you work in older buildings every month, the <a href=\"contractors.html\">Cleared-to-Start Pass</a> gives you a compliance desk to call before you bid or cut."
+    trade: "If you work in older buildings often, book <a href=\"contractors.html\">Bulk Material Sampling</a> before you cut: a visit plus the samples you need, with results before you start."
   };
   function projectHtml(a) {
     var r = projectRoute(a), L = LEVEL[r.level === 3 && a.p_report !== "recent" ? "3n" : r.level], out = [];
     out.push('<div class="rec"><span class="small">Your result</span><span class="t">' + esc(L[0]) + '</span><p>' + esc(L[1]) + '</p>');
     if (r.level !== "survey") out.push('<p class="small">Under OHSA section 30, before any project starts the owner must find out which designated substances are present and give the list to the contractor before a contract is signed. It applies whatever the building\u2019s age or the job\u2019s size; what changes is how much work it takes.</p>');
     if (r.report && PRICES[r.report]) { var P = PRICES[r.report]; out.push('<span class="p">' + esc(P[0]) + ': from $' + P[1].toLocaleString("en-CA") + ' <span class="small">CAD before HST, plus samples</span></span><p class="small"><a href="services.html">See the report menu and how samples are priced</a></p>'); }
-    else if (r.level === "survey") out.push('<span class="p">Asbestos building survey from ' + fromPrice("survey") + ', or all designated substances from ' + fromPrice("full") + ' <span class="small">CAD before HST, plus samples</span></span><p class="small"><a href="services.html">See the report menu</a></p>');
+    else if (r.level === "survey") out.push('<span class="p">Full-building DSS from ' + fromPrice("full") + ' <span class="small">CAD before HST, plus samples</span></span><p class="small"><a href="services.html">See the report menu</a></p>');
     else out.push('<p class="small">' + (a.p_report === "recent" ? 'Not sure it does? Book a call and have the report handy; we\u2019ll tell you whether it covers the job.' : 'Book a call and we\u2019ll tell you what the list needs to include for this job.') + '</p>');
     out.push('</div>');
     var flags = [];
     if (r.level !== "survey" && a.p_age !== "no") flags.push(["", "In a building built before 1990, assume asbestos-containing materials may be present until sampling shows otherwise."]);
     if (r.level !== "survey" && a.p_age === "no") flags.push(["", "Newer buildings still need a list. Silica is in almost all concrete and masonry, and lead, mercury and other substances turn up in buildings of every age."]);
     if (a.p_work === "demo" && a.p_report === "recent") flags.push(["", "For demolition, the report has to be a destructive pre-demolition survey that opened up walls, floors and ceilings. A regular building survey isn't enough."]);
-    if (a.p_time === "month" && r.level !== 3) flags.push(["", "Timing is tight. A project report takes about " + PUB.taProjectTo + " business days after the site visit, including the lab\u2019s " + PUB.labDays + " business days, and we don\u2019t offer rush analysis. Book the visit now."]);
+    if (a.p_time === "month" && r.level !== 3) flags.push(["", "Timing is tight. A renovation-scope survey takes about " + PUB.taRenoTo + " business days after the site visit, including the lab\u2019s " + PUB.labDays + " business days. Rush lab analysis takes " + PUB.rushDays + " business days at double the sample price. Book the visit now."]);
     var role = ROLE[a.p_role];
     return { html: out.join("") + flags.map(function (f) { return '<p class="flag ' + f[0] + '">' + esc(f[1]) + '</p>'; }).join("") + (role && r.level !== "survey" ? '<p>' + role + '</p>' : ''),
       text: { 1: "Project: survey needed", 2: "Project: targeted check", 3: "Project: may be covered", survey: "Project: building survey" }[r.level] + (r.report ? " (" + PRICES[r.report][0] + ")" : "") };
@@ -303,7 +299,7 @@
     if (answers.b_age === "yes" || answers.b_age === "unsure") flags.push(["", "In a pre-1990 building, assume asbestos-containing materials may be present. Owners must identify them, keep a record on site and re-inspect at least every 12 months."]);
     if (answers.b_record === "old") flags.push(["", "Your asbestos record is overdue. Owners must update it at least once every 12 months, and a missing or stale record was the most common order in the Ministry's 2023–24 asbestos campaign."]);
     if (answers.b_record === "none") flags.push(["", "No record on file is the gap inspectors find most often. Before any renovation, repair or demolition you'll also need a list of every designated substance in the work area."]);
-    if (answers.b_record === "recent") flags.push(["ok", "Good: your record is within the 12-month window. A program keeps it that way and answers “can we drill here?” from the register."]);
+    if (answers.b_record === "recent") flags.push(["ok", "Good: your record is within the 12-month window. The Annual Reassessment keeps it that way, with the notices and a register you can show an inspector."]);
 
     if (proj) {
       html = proj.html +
@@ -311,16 +307,11 @@
         '<p class="small"><a href="guide-demolition-renovation-dss.html">Read the demolition and renovation DSS checklist</a></p>';
     } else if (r.special === "employer") {
       html = '<div class="rec"><span class="t">Exposure monitoring: not available yet</span><p>O. Reg. 490/09 asks for a written exposure assessment made with your JHSC, and air monitoring where workers may be exposed. Exposure monitoring is not available yet. Call 519-890-9654 to tell us what you need, and we will contact you when it launches.</p><p><a href="guide-designated-substance-self-check.html">Take the one-page self-check</a></p></div>';
-    } else if (r.special === "abatement") {
-      html = '<div class="rec"><span class="t">One-off services</span><p>We offer surveys, specifications, air monitoring and clearance to abatement contractors job by job. To keep clearance work independent, we don’t sell the Cleared-to-Start Pass to abatement firms, and we don’t clear work our Pass holders abate.</p></div>';
-    } else if (r.special === "homeowner") {
-      html = '<div class="rec"><span class="t">Limited sampling visit</span><span class="p">From ' + fromPrice("limited") + '</span><p>Homes need testing once per renovation, not a subscription. We sample the materials your work will disturb, priced per sample, and lab results take ' + PUB.labDays + ' business days.</p></div>';
-    } else {
-      var T = TIERS[r.tier];
-      var perB = T.program === "Building programs" ? ", per building, priced by size" : "";
-      html = '<div class="rec"><span class="small">Recommended for you</span><span class="t">' + esc(T.program) + ': ' + esc(T.name) + '</span><span class="p">' + (T.price ? (perB ? 'From $' : '$') + T.price.toLocaleString("en-CA") + ' a month' : 'Price on request') + ' <span class="small">CAD before HST' + perB + ', ' + PUB.termMonths + '-month agreement</span></span><p class="small">' + esc(T.fits) + '</p>' +
+    } else if (r.offer && OFFERS[r.offer]) {
+      var T = OFFERS[r.offer];
+      html = '<div class="rec"><span class="small">Recommended for you</span><span class="t">' + esc(T.name) + '</span><span class="p">From $' + T.price.toLocaleString("en-CA") + ' <span class="small">CAD before HST, ' + esc(T.unit) + '</span></span>' +
         '<ul>' + T.inc.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + '</ul>' +
-        '<p><a href="' + T.page + '">See the full ' + esc(T.program) + ' comparison</a></p></div>' +
+        '<p><a href="' + T.page + '">See the details and prices</a></p></div>' +
         '<div><h3 style="margin-bottom:6px">Your next step: ' + esc(r.entry) + '</h3><p>' + esc(ENTRY_DESC[r.entry]) + '</p></div>';
     }
     var flagHtml = flags.map(function (f) { return '<p class="flag ' + f[0] + '">' + esc(f[1]) + '</p>'; }).join("");
@@ -329,7 +320,7 @@
       var labels = q.options.filter(function (x) { return Array.isArray(v) ? v.indexOf(x[0]) > -1 : x[0] === v; }).map(function (x) { return x[1]; });
       return labels.length ? q.title + " " + labels.join(", ") : "";
     }).filter(Boolean).join(" | ");
-    var recText = proj ? proj.text : r.special ? ({ abatement: "One-off services (abatement contractor)", homeowner: "Limited sampling visit (homeowner)", project: "One-off report", employer: "Exposure monitoring (not available yet; notify at launch)" }[r.special] || r.special) : TIERS[r.tier].program + " " + TIERS[r.tier].name + " → " + r.entry;
+    var recText = proj ? proj.text : r.special ? ({ project: "One-off report", employer: "Exposure monitoring (not available yet; notify at launch)" }[r.special] || r.special) : (OFFERS[r.offer] ? OFFERS[r.offer].name : r.offer) + " (" + answers.who + ") → " + r.entry;
 
     root.innerHTML = '<div class="result" id="result" tabindex="-1">' +
       '<div class="print-only print-head"><img src="assets/ncc-logo-online-compact.svg" alt="Noah Crowley Consulting" width="606" height="128"><span>Obligation Check result · ' + new Date().toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" }) + ' · crowleyconsulting.ca/obligation-check</span></div>' +

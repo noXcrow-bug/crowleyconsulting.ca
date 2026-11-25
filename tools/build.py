@@ -29,38 +29,26 @@ YEAR = date.today().year
 e = H.escape
 ASSET_V = hashlib.sha1(b"".join(open(os.path.join(ROOT, "assets", f), "rb").read() for f in ("site.css", "site.js", "config.js", "ncc-rules.js"))).hexdigest()[:8]
 
-# ---------------------------------------------------------------- tiers (from tools/prices.json)
-# The website may quote only the public "from" prices in the price book. Anything more specific is quoted per building.
+# ---------------------------------------------------------------- products (from tools/prices.json)
+# The website quotes the Guide's public prices only (products 1-5, 7, 8 and the add-ons). Product 6 and the Guide's
+# "pricing assumptions" are never published (PB-2026.11g, decision 59).
 PRICE_BOOK = P["stamp"]["pb"]
-TIERS = {
- "bp_ess": dict(program="Building programs", name=P["programs"]["ce"]["name"], price=NUM["m"]["ce"], fits="Owners who need the yearly record kept current", page="building-owners.html",
-   inc=["Yearly asbestos record update and visual condition inspection", "Client register snapshot after each change, and an on-site inspector binder", "Occupier and contractor notice templates", "Annual compliance letter for insurers, lenders and tenants", "[[d.ce]] off reports, site visits and project work", "Phone advice if suspect material turns up"]),
- "bp_pr": dict(program="Building programs", name=P["programs"]["pr"]["name"], price=NUM["m"]["pr"], fits="Buildings where contractors are working several times a year", page="building-owners.html",
-   inc=["Yearly asbestos record update and visual condition inspection", "Notices prepared and issued to occupiers and contractors for you", "[[deskN.pr]] written “can we drill here?” desk reviews a year, answered within [[deskReply]] business day", "[[train.pr]] maintenance staff awareness session[[pl:train.pr]] a year", "[[d.pr]] off reports, site visits and project work", "Fieldwork booked within [[sched.pr]] business days; site visit the next business day if something turns up"]),
- "bp_fp": dict(program="Building programs", name=P["programs"]["fp"]["name"], price=NUM["m"]["fp"], fits="Three or more buildings, or a board or JHSC asking questions", page="building-owners.html",
-   inc=["Record update and condition inspection twice a year", "Notices prepared, issued and tracked", "Unlimited written desk reviews, answered within [[deskReply]] business day", "[[train.fp]] staff awareness session[[pl:train.fp]] a year and a yearly board or JHSC presentation", "[[d.fp]] off reports, site visits and project work", "Fieldwork within [[sched.fp]] business days, a same-day visit if something turns up, and a yearly abatement budget"]),
- "pw_start": dict(program="Cleared-to-Start Pass", name=P["passes"]["starter"]["short"], price=NUM["m"]["starter"], fits="Renovators and trades with [[jobs.starter]] jobs a month in older buildings", page="contractors.html",
-   inc=["A compliance desk to call before you bid or cut, business hours", "[[prebid.starter]] pre-bid review[[pl:prebid.starter]] of the owner's designated substance report a month", "Site visit within [[visit.starter]] business days when a job needs testing", "[[d.starter]] off pre-work checks", "Written interim instructions on site when a job can't wait", "[[classLetterOff]] off work-classification letters, a due-diligence file per job, toolbox talk templates"]),
- "pw_pro": dict(program="Cleared-to-Start Pass", name=P["passes"]["pro"]["short"], price=NUM["m"]["pro"], fits="General contractors and fit-out firms with [[jobs.pro]] jobs a month", page="contractors.html",
-   inc=["The compliance desk, business hours", "[[prebid.pro]] pre-bid review[[pl:prebid.pro]] a month", "Site visit within [[visit.pro]] business days", "[[d.pro]] off pre-work checks", "Reports branded for your client", "[[aware.pro]] live worker awareness session[[pl:aware.pro]] a year"]),
- "pw_rr": dict(program="Cleared-to-Start Pass", name=P["passes"]["rp"]["short"], price=NUM["m"]["rp"], fits="Fire, flood and mould restoration firms, for the rebuild phase of a claim", page="contractors.html",
-   inc=["Next-business-day site visits, Monday to Friday", "The compliance desk, business hours", "[[prebid.rp]] pre-bid review[[pl:prebid.rp]] a month", "[[d.rp]] off pre-work checks", "Written interim instructions on every call, adjuster-ready reports", "Reports branded for your client and [[aware.rp]] worker awareness session[[pl:aware.rp]] a year"]),
-}
-
-# The public report menu: the lowest price of each product, always said as "from".
-REPORTS = [
- ("Limited sampling visit", NUM["from"]["limited"], "One to three suspect materials before a small repair: one floor, one pipe run, one wall", "A letter with lab results and the work classification for the planned job", "About [[ta.limited]] business days"),
- ("DSS update or re-assessment", NUM["from"]["update"], "An existing report that is out of date, or another firm's report that fell short", "A walk-through, gap sampling and a current, tender-ready report", "[[ta.updateNo]] business days; [[ta.updateS]] with sampling"),
- ("Project-specific DSS", NUM["from"]["project"], "Renovation, repair or a tender for one work area", "All 11 designated substances in the work area, ready to attach to the tender", "[[ta.project]] business days"),
- ("Asbestos building survey", NUM["from"]["survey"], "No survey on file for the building, or the start of a building program", "The whole-building inventory that becomes your O. Reg. 278/05 record", "[[ta.survey]] business days"),
- ("Full-building DSS and hazardous materials survey", NUM["from"]["full"], "Acquisition, capital planning, several projects in one building", "All 11 substances plus PCBs, mould and refrigerants across the building", "[[ta.full]] business days"),
- ("Pre-demolition DSS", NUM["from"]["predemo"], "A vacant building coming down, or a demolition permit", "A destructive survey of every space so materials can come out before demolition", "[[ta.predemo]] business days"),
+F = NUM["from"]
+# (name, from price, when you need it, what you get, turnaround, page)
+PRODUCTS = [
+ ("Renovation-scope DSS", F["reno"], "Renovation, repair or a tender for one work area", "All 11 designated substances in the work area, ready to attach to the tender", "[[ta.reno]] business days", "services.html"),
+ ("Full-building DSS", F["full"], "Acquisition, capital planning, several projects in one building, or no survey on file", "All 11 designated substances across the whole building: the master reference for later projects", "[[ta.full]] business days", "services.html"),
+ ("Pre-demolition DSS", F["predemo"], "A vacant building coming down, or a demolition permit", "A destructive survey of every space so materials can come out before demolition", "[[ta.predemo]] business days", "services.html"),
+ ("Bulk Material Sampling", F["bulk"], "A few specific materials before drilling or cutting, or a find mid-job", "Sampling, lab analysis and a short letter: the result per material, photos, and the work classification if positive", "[[labDays]] business days; [[rushDays]] on a call-out", "contractors.html"),
+ ("Annual Asbestos Reassessment Program", F["reassess"], "Keeping the O. Reg. 278/05 asbestos record current every year", "Year 1 builds the record; every year a walk-through, condition ratings, an updated record and notices", "Yearly", "building-owners.html"),
+ ("Abatement Design & Oversight", F["abatement"], "Asbestos removal that needs a tender and someone on the owner's side", "Specification and tender package, site inspections, clearance and close-out", "Specification in [[abate.specDays]] business days", "services.html"),
+ ("Clearance Air Testing", F["clearance"], "A Type 3 enclosure ready to come down", "Final visual inspection, air samples at the Table 3 count, rush lab analysis and a pass/fail certificate", "[[clr.days]] business days", "contractors.html"),
+ ("Asbestos Instruction & Training", F["training"], "Workers in Type 1 and Type 2 operations, or building staff who need awareness training", "On-site training with attendance records and certificates", "Half day or full day", "services.html"),
+ ("Peer Review", F["peer"], "A second opinion on another firm's survey or abatement specification", "A written memo listing each gap, its risk and the fix, plus a follow-up call", "[[peer.daysAB]] or [[peer.daysCD]] business days", "services.html"),
 ]
+PKEY = ["reno", "full", "predemo", "bulk", "reassess", "abatement", "clearance", "training", "peer"]
 
 def money(n): return "${:,.0f}".format(n)
-def plabel(k, small=" a month"):
-    p = TIERS[k]["price"]
-    return (f'from {money(p)}' if k.startswith('bp_') else money(p)) + f'<small>{small}</small>' if p else '<small>Price on request</small>'
 
 # ---------------------------------------------------------------- page chrome
 NAV = [("building-owners.html", "Building owners"), ("landlords.html", "Landlords"), ("contractors.html", "Contractors"),
@@ -161,9 +149,9 @@ def footer(fname=""):
 <div class="foot-grid">
 <div class="foot-brand"><img src="assets/ncc-logo-online-compact-reverse.svg" alt="{e(SITE['online'])}" width="413" height="96">
 <p>Independent asbestos and designated substances consulting for {REGIONS}. We never remove or abate anything and take no referral fees.</p></div>
-<div><h4>Programs</h4><ul>
-<li><a href="building-owners.html">Building programs</a></li><li><a href="landlords.html">Landlords and condos</a></li>
-<li><a href="contractors.html">Cleared-to-Start Pass</a></li><li><a href="services.html">Reports and prices</a></li>
+<div><h4>Services</h4><ul>
+<li><a href="building-owners.html">Annual Asbestos Reassessment</a></li><li><a href="landlords.html">Landlords and condos</a></li>
+<li><a href="contractors.html">Testing and clearance for contractors</a></li><li><a href="services.html">Reports and prices</a></li>
 <li><a href="obligation-check.html">Obligation Check</a></li></ul></div>
 <div><h4>Where we work</h4><ul>{"".join(f'<li><a href="{h}">Asbestos testing in {t}</a></li>' for h, t in CITIES)}</ul></div>
 <div><h4>Guides and contact</h4><ul>{"".join(f'<li><a href="{h}">{t}</a></li>' for h, t, _ in GUIDES)}{contact}<li><a href="about.html">How we work</a></li></ul></div>
@@ -194,7 +182,7 @@ def page(fname, title, desc, body, active=None, schema=None, extra_js=""):
 
 DSS_CHECK = '<p class="dss-check"><a href="obligation-check.html#project">Not sure if your project needs a DSS? <strong>Check in 60 seconds</strong></a></p>'
 
-def cta(title="Find out what applies to you in two minutes.", text="Answer a few questions and the Obligation Check tells you which duties you carry, which program fits and what the first step costs.", href="obligation-check.html"):
+def cta(title="Find out what applies to you in two minutes.", text="Answer a few questions and the Obligation Check tells you which duties you carry, what fits and what the first step costs.", href="obligation-check.html"):
     return f"""<section class="cta-band"><div class="wrap"><div><h2>{title}</h2><p>{text}</p></div>
 <div class="btn-row"><a class="btn" href="{href}">Take the Obligation Check</a><a class="btn ghost" href="contact.html#book" data-book>Book a call</a></div></div></section>"""
 
@@ -213,47 +201,28 @@ def faq(items):
 def service_schema(name, desc, low):
     return {"@context": "https://schema.org", "@type": "Service", "name": name, "description": desc, "provider": {"@id": BIZ_ID},
         "areaServed": ["Windsor, ON", "Essex County, ON", "Chatham-Kent, ON", "Sarnia-Lambton, ON", "London, ON"],
-        "offers": {"@type": "Offer", "priceCurrency": "CAD", "price": str(low), "description": f"From ${low:,} a month before HST"}}
+        "offers": {"@type": "Offer", "priceCurrency": "CAD", "price": str(low), "description": f"From ${low:,} before HST"}}
 
 def ul(items): return "<ul>" + "".join(f"<li>{x}</li>" for x in items) + "</ul>"
 
-def tier_table(keys, rows):
-    th = "".join(f'<th scope="col"><span class="tname">{TIERS[k]["name"]}</span><span class="tprice">{plabel(k)}</span></th>' for k in keys)
-    body = ""
-    def cls(v): return "yes" if v == "Yes" else ("no" if v.startswith("Not included") or v in ("No", "None") else "")
-    rows = [(fill(label), [fill(v) for v in vals]) for label, vals in rows]
-    for label, vals in rows:
-        tds = "".join(f'<td class="{cls(v)}">{v}</td>' if cls(v) else f"<td>{v}</td>" for v in vals)
-        body += f'<tr><th scope="row">{label}</th>{tds}</tr>'
-    table = f'<div class="table-wrap tier-table"><table class="data tiers wide"><thead><tr><th scope="col"><span class="small">Monthly, CAD before HST</span></th>{th}</tr></thead><tbody>{body}</tbody></table></div>'
-    # Phone version: one card per tier in a snap-scrolling row, with a segmented control above it
-    gid = keys[0].split("_")[0]
-    seg = "".join(f'<button type="button" role="tab" aria-selected="{"true" if i == 0 else "false"}" aria-controls="tc-{k}" data-i="{i}">{TIERS[k]["name"]}</button>' for i, k in enumerate(keys))
-    cards = ""
-    for i, k in enumerate(keys):
-        T = TIERS[k]
-        dl = "".join(f'<div class="{cls(vals[i])}"><dt>{label}</dt><dd>{vals[i]}</dd></div>' for label, vals in rows if label != "Fits")
-        fits = next((vals[i] for label, vals in rows if label == "Fits"), T["fits"])
-        cards += f'<article class="tier-card" id="tc-{k}" role="tabpanel" aria-label="{T["name"]}"><header><h3>{T["name"]}</h3><p class="tc-price">{plabel(k)}</p><p class="tc-fits">{fits}</p></header><dl>{dl}</dl></article>'
-    mobile = f'<div class="tier-cards" data-tiers><div class="seg" role="tablist" aria-label="Choose a tier"><span class="seg-thumb" aria-hidden="true"></span>{seg}</div><div class="tc-track">{cards}</div><p class="small tc-note">Monthly, CAD before HST. Swipe to compare.</p></div>'
-    return table + mobile
+def reassess_table():
+    rows = "".join(f'<tr><th scope="row">Class {c}</th><td data-label="Floor area">{a}</td><td class="num" data-label="Year 1 setup">{"From " if c == "D" else ""}[[ra.setup.{c}]]</td><td class="num" data-label="Each year after">{"From " if c == "D" else ""}[[ra.annual.{c}]]</td></tr>'
+        for c, a in (("A", "Under [[classA.m2]] m² [[[classA.ft2]] sq ft]"), ("B", "[[classA.m2]]–[[classB.m2]] m² [[[classA.ft2]]–[[classB.ft2]] sq ft]"), ("C", "[[classB.m2]]–[[classC.m2]] m² [[[classB.ft2]]–[[classC.ft2]] sq ft]"), ("D", "Over [[classC.m2]] m² [[[classC.ft2]] sq ft]")))
+    return f"""<div class="table-wrap stack"><table class="data"><thead><tr><th scope="col">Building</th><th scope="col">Floor area</th><th scope="col" class="num">Year 1 setup</th><th scope="col" class="num">Each year after</th></tr></thead><tbody>{rows}</tbody></table></div>
+<p class="small" style="margin-top:12px">CAD before HST, per building. The Year 1 setup covers the whole first year, with no other fee that year. From the second year, the annual fee is billed once a year in advance.</p>"""
 
-def value_table(rows, total, program, saving=""):
-    body = "".join(f'<tr><th scope="row">{a}</th><td class="num">{money(b)}</td></tr>' for a, b in rows)
-    return f"""<div class="table-wrap"><table class="data"><thead><tr><th scope="col">Bought one at a time</th><th class="num" scope="col">List price</th></tr></thead>
-<tbody>{body}</tbody><tfoot><tr><th scope="row">The same year à la carte</th><td class="num">{money(total)}</td></tr>
-<tr><th scope="row">The same year in the program</th><td class="num">{money(program)}</td></tr></tfoot></table></div>{f'<p class="small" style="margin-top:10px">{saving}</p>' if saving else ''}"""
-
-def start_steps(entry, entry_text, contractor=False):
-    if contractor:
-        return f"""<div class="steps">
-<div class="step"><h3>{entry}</h3><p>{entry_text}</p></div>
-<div class="step"><h3>Your due-diligence file</h3><p>Each report goes to the building owner, because it's the owner's list, with a copy for you to keep with the job.</p></div>
-<div class="step"><h3>Monthly coverage</h3><p>Pre-bid reviews, the compliance desk and faster site visits run every month, and every check after that costs you the member rate.</p></div></div>"""
-    return f"""<div class="steps">
-<div class="step"><h3>{entry}</h3><p>{entry_text}</p></div>
-<div class="step"><h3>Record and register</h3><p>Your report becomes the on-site record and a register snapshot, refreshed after each change, that you can show an inspector or a contractor on a phone. <a href="register-example.html">See an example</a></p></div>
-<div class="step"><h3>Monthly coverage</h3><p>The yearly update, notices and reviews happen on schedule, and every report after that costs you the member rate.</p></div></div>"""
+REASSESS_INC = ["Year 1: we build your asbestos record from your existing survey", "Every year: a walk-through of every recorded material, a condition rating and an updated record", "Written notices to occupants and to contractors working in the building", "Your register snapshot, refreshed after each change, with a PDF for the on-site binder"]
+def reassess_terms():
+    return ul(["The Year 1 setup covers the whole first year. From the second year the fee is paid a full year in advance.",
+     "It renews each year unless you cancel at least [[cancelDays]] days before the renewal date. There's no refund for part of a year, and it ends when the building is fully abated.",
+     "The setup builds the record from an existing survey. If there isn't a usable one, a full-building designated substance survey comes first, from [[from.full]] plus samples.",
+     "Designated substance surveys for projects are never included: a project triggers them, not the calendar. They're quoted when you need one.",
+     "We never remove or abate anything and take no referral fees, so no result is shaped by someone with a stake in the job."])
+def start_steps():
+    return """<div class="steps">
+<div class="step"><h3>Year 1 setup</h3><p>We turn your existing survey into your on-site asbestos record and register. The setup fee covers the whole first year.</p></div>
+<div class="step"><h3>Record and register</h3><p>Your record becomes a register snapshot, refreshed after each change, that you can show an inspector or a contractor on a phone. <a href="register-example.html">See an example</a></p></div>
+<div class="step"><h3>Every year after</h3><p>A walk-through of every recorded material, condition ratings, an updated record and the notices, billed once a year in advance.</p></div></div>"""
 
 def segment_hero(crumb, h1, lede, seg):
     return f"""<section class="hero"><div class="wrap">{crumbs((None, crumb))}
@@ -314,7 +283,7 @@ def reg_rows(rows, pre):
 def register(b, pre, title="Designated substance register", tag="Example", foot=""):
     return f"""<figure class="register" data-register aria-label="Example of a designated substance register snapshot">
 <div class="reg-head">{MARK}<b>{e(title)}</b><span>{e(tag)}</span></div>
-<div class="reg-meta"><span><strong>Last reassessed</strong> <span class="mono">{fdate(b["last"])}</span></span><span><strong>Next due</strong> <span class="mono">{fdate(b["next"])}</span></span><span><strong>Pre-work reviews</strong> {e(b["reviews"])}</span></div>
+<div class="reg-meta"><span><strong>Last reassessed</strong> <span class="mono">{fdate(b["last"])}</span></span><span><strong>Next due</strong> <span class="mono">{fdate(b["next"])}</span></span></div>
 <table class="reg-table"><thead><tr><th>Location</th><th>Material</th><th>Status</th></tr></thead><tbody>{reg_rows(b["rows"], pre)}</tbody></table>
 {f'<figcaption class="reg-foot">{foot}</figcaption>' if foot else ""}</figure>"""
 REGISTER = register(EX_BUILDINGS[0], "hr", foot='Tap a row to see the result and its history. <a href="register-example.html">See a full example register</a>')
@@ -322,7 +291,7 @@ REGISTER = register(EX_BUILDINGS[0], "hr", foot='Tap a row to see the result and
 home_schema = {"@context": "https://schema.org", "@type": "ProfessionalService", "@id": BIZ_ID, "name": SITE["legal"], "alternateName": SITE["online"], "legalName": SITE["legal"],
     "knowsAbout": ["Asbestos testing", "Designated substance survey", "O. Reg. 278/05 asbestos management", "Type 3 asbestos clearance", "Lead paint testing"],
     "url": SITE["domain"] + "/", "logo": SITE["domain"] + "/assets/ncc-logo-primary.svg", "image": SITE["domain"] + "/assets/og-image.png",
-    "description": "Independent asbestos and designated substances surveys, registers, abatement oversight with air monitoring, and Type 3 clearance in southwestern Ontario.",
+    "description": "Independent designated substance surveys, asbestos testing, annual asbestos reassessments, abatement design and oversight, and Type 3 clearance air testing in southwestern Ontario.",
     "areaServed": [{"@type": "AdministrativeArea", "name": n} for n in ["Windsor-Essex", "Chatham-Kent", "Sarnia-Lambton", "London, Ontario"]],
     "address": {"@type": "PostalAddress", "addressLocality": SITE["city"], "addressRegion": "ON", "addressCountry": "CA"},
     "priceRange": "$$"}
@@ -335,7 +304,7 @@ home = f"""
 <section class="hero"><div class="wrap hero-grid">
 <div class="hero-copy">
 <h1>Asbestos and designated substance compliance, kept current all year.</h1>
-<p class="lede">Independent surveys and designated substance reports when a project needs one, and a building program that keeps your asbestos record current in between. For owners, facility managers, landlords and contractors.</p>
+<p class="lede">Independent designated substance surveys when a project needs one, testing when a job turns something up, and a yearly reassessment that keeps your asbestos record current. For owners, facility managers, landlords and contractors.</p>
 <div class="btn-row"><a class="btn amber" href="obligation-check.html">Take the Obligation Check</a><a class="btn ghost" href="#doors">Find what fits</a></div>
 {DSS_CHECK}
 <p class="area">Serving {REGIONS}.</p>
@@ -346,18 +315,18 @@ home = f"""
 <section class="section tight" id="doors"><div class="wrap">
 <div class="section-head"><h2>Start with what you're responsible for</h2></div>
 <div class="doors">
-<a class="door" href="building-owners.html"><h3>I own or manage a building</h3><p>Keep your asbestos record current, answer contractors before they drill, and stay ready for an inspector.</p><span class="go">Building programs, from [[m.ce]] a month{ICON["chev"]}</span></a>
-<a class="door" href="landlords.html"><h3>I rent out units or run a condo</h3><p>The same record and notices for rental and condo buildings, plus a quick check before a suite is renovated.</p><span class="go">Building programs, from [[m.ce]] a month{ICON["chev"]}</span></a>
-<a class="door" href="contractors.html"><h3>I'm about to open walls or floors</h3><p>A compliance desk to call before you bid or cut, and a site visit booked when a job needs testing.</p><span class="go">Cleared-to-Start Pass, from [[m.starter]] a month{ICON["chev"]}</span></a>
-<a class="door" href="services.html"><h3>I need a report for a project</h3><p>Designated substance surveys and reports for renovation, tenders, purchases and demolition permits.</p><span class="go">Reports from [[from.limited]]{ICON["chev"]}</span></a>
+<a class="door" href="building-owners.html"><h3>I own or manage a building</h3><p>Keep your asbestos record current every year, with notices sent and a register you can show an inspector.</p><span class="go">Annual Reassessment, from [[from.reassess]]{ICON["chev"]}</span></a>
+<a class="door" href="landlords.html"><h3>I rent out units or run a condo</h3><p>The same yearly record and notices for rental and condo buildings, plus a quick test before a suite is renovated.</p><span class="go">Suite testing, from [[bulk.visit]]{ICON["chev"]}</span></a>
+<a class="door" href="contractors.html"><h3>I'm about to open walls or floors</h3><p>Test the materials before you cut, a call-out when work uncovers something, and clearance air testing.</p><span class="go">Bulk Material Sampling, from [[bulk.visit]]{ICON["chev"]}</span></a>
+<a class="door" href="services.html"><h3>I need a report for a project</h3><p>Designated substance surveys for renovation, tenders, purchases and demolition permits.</p><span class="go">Surveys from [[from.reno]]{ICON["chev"]}</span></a>
 </div></div></section>
 
 <section class="section white"><div class="wrap">
 <div class="section-head"><h2>How it works</h2><p class="lede">The first step is free and takes two minutes.</p></div>
 <div class="steps">
 <div class="step"><h3>Take the Obligation Check</h3><p>A two-minute quiz that tells you which legal duties apply to your building or job, and what to do first.</p></div>
-<div class="step"><h3>Bring your record up to date</h3><p>Usually a DSS update of the report you already have, or a baseline survey if there isn't one. Join a program within [[creditDays]] days and the report is repriced at the member rate.</p></div>
-<div class="step"><h3>Stay current</h3><p>The yearly update, notices and contractor answers are handled for a monthly fee. When a project needs a report, members pay less for it.</p></div>
+<div class="step"><h3>Get the right report</h3><p>A designated substance survey for the project, or a full-building survey if there isn't one on file. Priced by building size, plus the samples taken.</p></div>
+<div class="step"><h3>Stay current</h3><p>The Annual Asbestos Reassessment updates your record every year, sends the notices and keeps your register current.</p></div>
 </div></div></section>
 
 <section class="section navy"><div class="wrap split">
@@ -372,21 +341,21 @@ home = f"""
 </div></div></section>
 
 <section class="section" id="programs"><div class="wrap">
-<div class="section-head"><h2>Reports when a project needs one. A program for the rest of the year.</h2><p class="lede">A designated substance report is tied to a project, not the calendar, so no program includes one. The programs keep your record current, handle notices and contractor questions, and make every report cheaper when you do need one.</p></div>
+<div class="section-head"><h2>A report when a project needs one. A yearly reassessment in between.</h2><p class="lede">A designated substance survey is tied to a project, not the calendar, so the Annual Reassessment never includes one. It keeps your record current between projects.</p></div>
 <div class="programs">
-<a class="program" href="building-owners.html"><h3>Building programs</h3><span class="price">from [[m.ce]]/mo</span><p>Compliance Essentials, Project Ready and Facility Partner, priced per building by size. For commercial, institutional and multi-unit residential buildings.</p></a>
-<a class="program" href="contractors.html"><h3>Cleared-to-Start Pass</h3><span class="price">from [[m.starter]]/mo</span><p>The contractor compliance desk: pre-bid reviews of the owner's report, faster site visits and member rates on every pre-work check.</p></a>
-<a class="program" href="services.html"><h3>Reports and surveys</h3><span class="price">from [[from.limited]]</span><p>Six report products from a limited sampling visit to a pre-demolition survey, priced by building size, plus samples as needed.</p></a>
+<a class="program" href="services.html"><h3>Designated substance surveys</h3><span class="price">from [[from.reno]]</span><p>Renovation-scope, full-building and pre-demolition surveys, priced by building size, plus samples as needed.</p></a>
+<a class="program" href="building-owners.html"><h3>Annual Asbestos Reassessment</h3><span class="price">from [[from.reassess]]</span><p>Your O. Reg. 278/05 record built in year one, then re-inspected and updated every year, with notices and a register.</p></a>
+<a class="program" href="contractors.html"><h3>Testing and clearance</h3><span class="price">from [[bulk.visit]]</span><p>Bulk Material Sampling before you cut, same- or next-day call-outs when work uncovers something, and Type 3 clearance air testing.</p></a>
 </div>
 </div></section>
 
 <section class="section white"><div class="wrap split">
 <div class="prose"><h2>Independent, on purpose</h2>
-<p>We never remove or abate anything, we take no referral fees, and we don't sell the Cleared-to-Start Pass to abatement contractors. When we tell you a material is fine to leave in place, nobody on our side gains from the opposite answer.</p>
+<p>We never remove or abate anything and take no referral fees. When we tell you a material is fine to leave in place, nobody on our side gains from the opposite answer. When we test the air for an abatement contractor, our fee doesn't depend on the result.</p>
 <p>You deal with one named consultant who knows your buildings.</p>
 <p><a href="about.html">How we work</a></p></div>
 <div class="prose"><h2>All 11 designated substances</h2>
-<p>Asbestos, lead, mercury and silica turn up in buildings. Isocyanates, benzene, vinyl chloride, acrylonitrile, arsenic, ethylene oxide and coke oven emissions are mostly found in industrial processes. A pre-project list has to consider all of them, so every report we write does.</p>
+<p>Asbestos, lead, mercury and silica turn up in buildings. Isocyanates, benzene, vinyl chloride, acrylonitrile, arsenic, ethylene oxide and coke oven emissions are mostly found in industrial processes. A pre-project list has to consider all of them, so every survey we write does.</p>
 <p><a href="services.html">See reports and prices</a></p></div>
 </div></section>
 """ + cta()
@@ -394,36 +363,16 @@ HOME_FAQ, HOME_FAQ_SCHEMA = faq([
  ("What are Ontario's designated substances?", "There are 11: acrylonitrile, arsenic, asbestos, benzene, coke oven emissions, ethylene oxide, isocyanates, lead, mercury, silica and vinyl chloride. Asbestos, lead, mercury and silica are the ones usually found in buildings."),
  ("How often does a building owner have to update the asbestos record?", "At least once every 12 months, and whenever new information comes to light, under O. Reg. 278/05. The record has to be kept on the premises."),
  ("Who is responsible for the designated substance list before a renovation?", "The project owner. Under section 30 of the Occupational Health and Safety Act, the owner lists every designated substance in the work area before the project begins and includes the list in the tender."),
- ("How much does it cost?", "Reports start at [[from.limited]] for a limited sampling visit and [[from.project]] for a project-specific designated substance report. Each report is a report fee plus the samples taken, so the total depends on the building. Building programs start at [[m.ce]] a month per building and the Cleared-to-Start Pass at [[m.starter]] a month. All prices are CAD before HST."),
- ("Does a program include my designated substance report?", "No, on purpose. A report is triggered by a project, not the calendar, so you'd be paying for it in years you don't need it. The program keeps your record current and gives you a member rate on every report."),
- ("How long do lab results take?", "[[labDays]] business days from when the lab receives the samples. Rush analysis is available at extra cost; ask when you book. If work can't wait, we leave written interim instructions on site."),
- ("Do you remove asbestos?", "No. We are independent consultants: we survey, write specifications, oversee abatement and test the air, but we never remove or abate anything and take no referral fees.")])
+ ("How much does it cost?", "Designated substance surveys start at [[from.reno]] for one work area and [[from.full]] for a whole building, plus samples at [[sample]] each. Testing a few materials starts at [[bulk.visit]] for the visit, plus samples. The Annual Asbestos Reassessment starts at [[from.reassess]] for the first year. All prices are CAD before HST."),
+ ("Does the Annual Reassessment include my designated substance survey?", "No, on purpose. A survey is triggered by a project, not the calendar, so you'd be paying for it in years you don't need it. The reassessment keeps your record current; if you don't have a usable survey yet, a full-building survey comes first."),
+ ("How long do lab results take?", "[[labDays]] business days from when the lab receives the samples. Rush analysis takes [[rushDays]] business days, at double the sample price. If work can't wait, we leave written interim instructions on site."),
+ ("Do you remove asbestos?", "No. We are independent consultants: we survey, test, write specifications, oversee abatement and test the air, but we never remove or abate anything and take no referral fees.")])
 home = home.replace('<section class="section white"><div class="wrap split">\n<div class="prose"><h2>Independent, on purpose</h2>', HOME_FAQ.replace('class="section white"', 'class="section"') + '<section class="section white"><div class="wrap split">\n<div class="prose"><h2>Independent, on purpose</h2>', 1)
-page("index.html", "Asbestos & Designated Substance Consulting in Windsor, ON | Noah Crowley Consulting", f"Independent asbestos and designated substance surveys and reports in {REGIONS}. Reports from [[from.limited]], building programs from [[m.ce]] a month.", home, schema=[home_schema, HOME_FAQ_SCHEMA])
+page("index.html", "Asbestos & Designated Substance Consulting in Windsor, ON | Noah Crowley Consulting", f"Independent asbestos and designated substance surveys and reports in {REGIONS}. Surveys from [[from.reno]], testing from [[bulk.visit]], annual asbestos reassessments from [[from.reassess]].", home, schema=[home_schema, HOME_FAQ_SCHEMA])
 
-# ---------------------------------------------------------------- building programs table
-BP_ROWS = [
- ("Fits", ["Owners who need the yearly record kept current", "Contractors working in the building several times a year", "3 or more buildings, or a board or JHSC asking questions"]),
- ("Yearly record update and condition inspection", ["[[inspCell.ce]]", "[[inspCell.pr]]", "[[inspCell.fp]]"]),
- ("Register snapshot and inspector binder", ["Yes", "Yes", "Yes, one per building"]),
- ("Occupier and contractor notices", ["Templates supplied", "Prepared and issued for you", "Prepared, issued and tracked"]),
- ("“Can we drill here?” desk reviews, within [[deskReply]] business day", ["[[deskCell.ce]]", "[[deskCell.pr]]", "[[deskCell.fp]]"]),
- ("Maintenance staff awareness training", ["[[trainCell.ce]]", "[[trainCell.pr]]", "[[trainCell.fp]]"]),
- ("Member rate on reports, site visits and project work", ["[[d.ce]] off", "[[d.pr]] off", "[[d.fp]] off"]),
- ("Fieldwork scheduling", ["Within [[sched.ce]] business days", "Within [[sched.pr]] business days", "Within [[sched.fp]] business days"]),
- ("If suspect material turns up", ["Phone advice", "Site visit next business day", "Site visit same business day"]),
- ("Board or JHSC presentation, abatement budget", ["No", "No", "Once a year"])]
-
-def program_rules(member=True):
-    return ul([
-    "[[termMonths]]-month agreement, billed monthly, or [[termMonths]] months for the price of [[prepaidMonths]] paid up front. Prices are per building and depend on its size; we confirm yours in writing.",
-    "No program includes a designated substance report or survey. Reports are bought when a project needs one, at your member rate. Lab costs are never marked up for members.",
-    "Every program starts from a current asbestos record: a baseline survey, or a DSS update of a recent report. Your first report, whether a new asbestos survey or a DSS update of the report you have, is priced at your program's member rate if you sign before the work. Sign within [[creditDays]] days of receiving it and the difference is credited on your first program invoice.",
-    "Lab results take [[labDays]] business days from when the lab receives the samples. Rush analysis is available at extra cost; ask when you book. If work can't wait, we leave written interim instructions on site.",
-    "We never remove or abate anything and take no referral fees, so no result is shaped by someone with a stake in the job."])
 # ---------------------------------------------------------------- building owners
-b = segment_hero("Building owners", "Building programs",
-    "For owners and facility managers of commercial, institutional and multi-unit residential buildings: offices, plazas, schools, churches, clinics and small municipalities. Your 12-month asbestos update, your paper trail and your “can we drill here?” answers, handled for one monthly fee per building.", "building") + f"""
+b = segment_hero("Building owners", "Annual Asbestos Reassessment",
+    "For owners and facility managers of commercial, institutional and multi-unit residential buildings: offices, plazas, schools, churches, clinics and small municipalities. Your 12-month asbestos update, your notices and your register, for one yearly fee per building.", "building") + f"""
 <section class="section white"><div class="wrap split">
 <div class="duty"><h3>What the law asks of building owners</h3>{ul([
  "Keep an asbestos record on the premises: where each material is, its condition, and whether it is friable (O. Reg. 278/05).",
@@ -437,25 +386,24 @@ b = segment_hero("Building owners", "Building programs",
 </div></section>
 
 <section class="section"><div class="wrap">
-<div class="section-head"><h2>Compare the programs</h2></div>
-{tier_table(["bp_ess", "bp_pr", "bp_fp"], BP_ROWS)}
-<p class="small" style="margin-top:12px">Monthly, CAD before HST, per building. The price depends on the building's size; the figures above are the lowest. Facility Partner isn't offered for buildings under [[classA.m2]] m² [[[classA.ft2]] sq ft].</p>
+<div class="section-head"><h2>Prices by building size</h2></div>
+{reassess_table()}
 </div></section>
 
 <section class="section white"><div class="wrap split">
-<div class="prose"><h2>What the program is, and isn't</h2>
-<p>A designated substance report is triggered by a project: a renovation, a tender, a sale, a demolition. It isn't something you need every year, so we don't bundle it into a monthly fee you'd pay in years without a project.</p>
-<p>What you need every year is the record kept current, notices out, staff trained and a straight answer when a contractor asks what's in the ceiling. That's the program. When a project comes, the report costs you [[d.min]] to [[d.max]] less.</p>
+<div class="prose"><h2>What's included</h2>{ul(REASSESS_INC)}
+<h3>What it isn't</h3>
+<p>A designated substance survey is triggered by a project: a renovation, a tender, a sale, a demolition. It isn't something you need every year, so it isn't in the yearly fee. When a project comes, we quote the survey for it. Staff awareness training is also booked separately, from [[train.aware]] a session.</p>
 <p><a href="services.html">See the report menu</a></p></div>
-<div class="prose"><h2>How it starts</h2>{start_steps("DSS update", "We review your existing report, walk the building and fill any sampling gaps, from [[from.update]] plus samples. No report yet? A baseline asbestos survey starts at [[from.survey]].")}
-<h3>Included in every program</h3>{program_rules()}</div>
+<div class="prose"><h2>How it works</h2>{start_steps()}
+<h3>Terms</h3>{reassess_terms()}</div>
 </div></section>
-""" + cta("Is your asbestos record within 12 months?", "The Obligation Check takes two minutes and tells you which program fits your buildings.", "obligation-check.html#building")
-page("building-owners.html", "Building programs | Asbestos records and registers | Noah Crowley Consulting", "Yearly asbestos record updates, notices, staff training and “can we drill here?” answers for building owners in southwestern Ontario. From [[m.ce]] a month per building.", b, "building-owners.html", schema=service_schema("Building programs", "Monthly asbestos and designated substance compliance program in southwestern Ontario", NUM["m"]["ce"]))
+""" + cta("Is your asbestos record within 12 months?", "The Obligation Check takes two minutes and tells you what your buildings need first.", "obligation-check.html#building")
+page("building-owners.html", "Annual Asbestos Reassessment | Asbestos records and registers | Noah Crowley Consulting", "Yearly asbestos record updates, notices and a register for building owners in southwestern Ontario. From [[from.reassess]] per building for the first year.", b, "building-owners.html", schema=service_schema("Annual Asbestos Reassessment Program", "Yearly O. Reg. 278/05 asbestos record reassessment in southwestern Ontario", F["reassess"]))
 
 # ---------------------------------------------------------------- landlords
-r = segment_hero("Landlords", "Building programs for landlords and condos",
-    "For landlords with five or more units, property managers and condominium corporations. A suite turns over, the crew lifts 23 cm [9-inch] floor tile or sands a stippled ceiling, and you now have exposed workers, a contaminated unit and an unhappy tenant. Check first, and keep the record that tells you where to look.", "rental") + f"""
+r = segment_hero("Landlords", "Asbestos records and suite testing for landlords and condos",
+    "For landlords with five or more units, property managers and condominium corporations. A suite turns over, the crew lifts 23 cm [9-inch] floor tile or sands a stippled ceiling, and you now have exposed workers, a contaminated unit and an unhappy tenant. Test first, and keep the record that tells you where to look.", "rental") + f"""
 <section class="section white"><div class="wrap split">
 <div class="duty"><h3>What the law asks of rental owners</h3>{ul([
  "Keep an asbestos record, update it at least every 12 months, and give tenants written notice of asbestos in the areas they occupy.",
@@ -463,28 +411,27 @@ r = segment_hero("Landlords", "Building programs for landlords and condos",
  "List every designated substance in the work area before a renovation or repair project begins.",
  "Older suites also hide lead paint and mercury thermostats; the same check picks them up."])}</div>
 <div class="prose"><h2>Before a suite is renovated</h2>
-<p>A limited sampling visit checks the one to three materials your crew will disturb, from [[from.limited]] plus samples as needed. You get a written result about [[ta.limited]] business days after the visit, so book it before the tenant leaves.</p>
-<p>Program members pay [[d.min]] to [[d.max]] less on the report fee and our time on each sample for every suite check.</p>
+<p>Bulk Material Sampling tests the few materials your crew will disturb: a [[bulk.visit]] visit plus [[sample]] a sample, with the lab's analysis of the first layer included. Results take [[labDays]] business days, so book it before the tenant leaves.</p>
+<p>Already uncovered something? An unexpected-find call-out comes the same or next business day, with rush lab results in [[rushDays]] business days.</p>
 <p><a href="guide-suite-turnover-checklist.html">Get the suite turnover checklist</a></p></div>
 </div></section>
 
 <section class="section"><div class="wrap">
-<div class="section-head"><h2>The same programs as every building</h2></div>
-{tier_table(["bp_ess", "bp_pr", "bp_fp"], BP_ROWS)}
-<p class="small" style="margin-top:12px">Monthly, CAD before HST, per building, priced by the building's size. Condo boards usually choose Facility Partner for the yearly board presentation and abatement budget for reserve fund planning.</p>
+<div class="section-head"><h2>The Annual Asbestos Reassessment</h2><p class="lede">The same yearly record, notices and register as every building, priced by the building's size.</p></div>
+{reassess_table()}
 </div></section>
 
 <section class="section white"><div class="wrap split">
-<div class="prose"><h2>How it starts</h2>{start_steps("DSS update", "We bring your existing report up to date, from [[from.update]] plus samples. No report yet? A baseline survey of the building starts at [[from.survey]].")}</div>
-<div class="prose"><h3>Included in every program</h3>{program_rules()}</div>
+<div class="prose"><h2>How it works</h2>{start_steps()}</div>
+<div class="prose"><h3>What's included</h3>{ul(REASSESS_INC)}<h3>Terms</h3>{reassess_terms()}</div>
 </div></section>
-""" + cta("Got a suite turning over soon?", "Book a limited sampling visit, or take the Obligation Check to see which program fits your buildings.", "obligation-check.html#rental")
-page("landlords.html", "Asbestos programs for landlords and condos | Noah Crowley Consulting", "Asbestos records, tenant notices and suite checks for landlords, property managers and condo corporations in Windsor-Essex and southwestern Ontario. Programs from [[m.ce]] a month per building.", r, "landlords.html", schema=service_schema("Building programs for landlords", "Monthly asbestos and designated substance compliance program in southwestern Ontario", NUM["m"]["ce"]))
+""" + cta("Got a suite turning over soon?", "Book Bulk Material Sampling, or take the Obligation Check to see what your buildings need.", "obligation-check.html#rental")
+page("landlords.html", "Asbestos records and suite testing for landlords and condos | Noah Crowley Consulting", "Asbestos records, tenant notices and suite testing for landlords, property managers and condo corporations in Windsor-Essex and southwestern Ontario. Suite testing from [[bulk.visit]] plus samples.", r, "landlords.html", schema=service_schema("Annual Asbestos Reassessment for landlords", "Yearly asbestos record reassessment for rental and condo buildings in southwestern Ontario", F["reassess"]))
 
 # ---------------------------------------------------------------- employers
 w = f"""<section class="hero"><div class="wrap">{crumbs((None, "Employers"))}
 <div class="hero-copy" style="max-width:860px"><h1>Designated substances at work</h1>
-<p class="lede">For employers whose workers use, handle or store a designated substance under O. Reg. 490/09. We're not taking on ongoing workplace programs right now. Workplace exposure monitoring is not available yet. Call 519-890-9654 and tell us what you need, and we'll contact you when it launches.</p>
+<p class="lede">For employers whose workers use, handle or store a designated substance under O. Reg. 490/09. Workplace exposure monitoring is not available yet. Call 519-890-9654 and tell us what you need, and we'll contact you when it launches.</p>
 <div class="btn-row"><a class="btn amber" href="contact.html">Leave your details</a><a class="btn ghost" href="guide-designated-substance-self-check.html">Take the self-check</a></div></div></div></section>
 <section class="section white"><div class="wrap split">
 <div class="duty"><h3>What O. Reg. 490/09 asks of employers</h3>{ul([
@@ -494,116 +441,146 @@ w = f"""<section class="hero"><div class="wrap">{crumbs((None, "Employers"))}
  "Medical surveillance for asbestos, benzene, coke oven emissions, isocyanates, lead, mercury and silica."])}<p class="small">The regulation doesn't apply on construction projects, where Regulation 833 and the building duties govern.</p></div>
 <div class="prose"><h2>What we can do</h2>
 <p>Workplace exposure monitoring is not available yet. Call 519-890-9654 and tell us what you need, and we'll contact you when it launches.</p>
-<p>If your building is older than 1990, it also carries the asbestos duties every owner has. See <a href="building-owners.html">building programs</a>.</p></div>
+<p>If your building is older than 1990, it also carries the asbestos duties every owner has. See the <a href="building-owners.html">Annual Asbestos Reassessment</a>.</p></div>
 </div></section>""" + cta("Not sure which duties apply?", "The one-page self-check tells you whether O. Reg. 490/09 applies, or leave your details and we'll contact you when exposure monitoring launches.", "guide-designated-substance-self-check.html")
 page("employers.html", "Designated substances at work | O. Reg. 490/09 | Noah Crowley Consulting", "What O. Reg. 490/09 asks of Ontario employers in southwestern Ontario. Workplace exposure monitoring is not available yet.", w, "employers.html")
 
 # ---------------------------------------------------------------- contractors
-c = segment_hero("Contractors", "Cleared-to-Start Pass",
-    "The contractor compliance desk. One number to call before you bid or cut: we review the owner's designated substance report for gaps, and when a job needs testing we're on site faster and you pay the member rate.", "contractor") + f"""
+def price_rows(rows):
+    return "".join(f'<tr><th scope="row">{a}</th><td class="num" data-label="Price">{b}</td><td data-label="Results">{c}</td></tr>' for a, b, c in rows)
+c = segment_hero("Contractors", "Testing and clearance for contractors",
+    "Test the materials before your crew cuts, get someone on site the same or next business day when work uncovers something, and book clearance air testing when a Type 3 enclosure is ready to come down.", "contractor") + f"""
 <section class="section white"><div class="wrap split">
 <div class="prose"><h2>The problem it solves</h2>
 <p>On small jobs the owner rarely has a current list. The law puts that duty on the owner, but you're the one standing in the room when a suspect material turns up.</p>
-<p>When unlisted material is found, work has to stop except to identify it, and the Ministry, the owner, the contractor and the JHSC must be notified right away. Lab results take [[labDays]] business days, so a find on day one idles your crew or pushes the job into asbestos procedures by presumption.</p>
-<p>Checking before you price the job moves that find to the quote, where the owner pays for it.</p></div>
-<div class="duty"><h3>What you get</h3>{ul([
- "A compliance desk to call or email during business hours.",
- "Pre-bid reviews: send us the owner's designated substance report before you price the job, and we tell you whether it covers your work.",
- "When it doesn't, a pre-work check at your member rate: a limited sampling visit or a project report for the work area. Put the independent list price on your quote and the owner pays it.",
- "Written interim instructions on site if the client can't wait for results: leave the suspect materials alone, or proceed treating them as asbestos. You choose, and the owner gets a copy.",
- "[[classLetterOff]] off work-classification letters, and a due-diligence file for every job."])}
-<p class="small">“Cleared to start” means the work area was checked before work began. It is not Type 3 clearance air testing, which the building owner retains separately, and we never do clearance on work a Pass holder abates.</p></div>
+<p>When unlisted material is found, work has to stop except to identify it, and the Ministry, the owner, the contractor and the JHSC must be notified right away. Standard lab results take [[labDays]] business days, so a find on day one idles your crew or pushes the job into asbestos procedures by presumption.</p>
+<p>Testing before you price the job moves that find to the quote, where the owner pays for it.</p></div>
+<div class="duty"><h3>What we do for contractors</h3>{ul([
+ "Bulk Material Sampling: we test the few materials your work will disturb, with chain of custody and accredited lab analysis.",
+ "A short letter report for each job: the result per material, photos, and the work classification if a result is positive.",
+ "An unexpected-find call-out the same or next business day when work uncovers suspect material, with rush lab results in [[rushDays]] business days.",
+ "Written interim instructions on site if the job can't wait for results: leave the suspect materials alone, or proceed treating them as asbestos.",
+ "Clearance air testing for Type 3 enclosures, sold directly to abatement contractors.",
+ "Type 1 and Type 2 instruction and training for your crew, at your site."])}
+<p class="small">Each report is addressed to the building owner, because it's the owner's list. You're named as requester and get a copy.</p></div>
 </div></section>
 
 <section class="section"><div class="wrap">
-<div class="section-head"><h2>Compare the passes</h2></div>
-{tier_table(["pw_start", "pw_pro", "pw_rr"], [
- ("Fits", ["Renovators and trades, [[jobs.starter]] jobs a month in older buildings", "General contractors and fit-out firms, [[jobs.pro]] jobs a month", "Restoration firms, for the rebuild phase of a claim"]),
- ("Compliance desk", ["Yes", "Yes", "Yes"]),
- ("Pre-bid reviews of the owner's report", ["[[prebid.starter]] a month", "[[prebid.pro]] a month", "[[prebid.rp]] a month"]),
- ("Member rate on pre-work checks", ["[[d.starter]] off", "[[d.pro]] off", "[[d.rp]] off"]),
- ("Site visit when a job needs testing", ["[[visitCell.starter]]", "[[visitCell.pro]]", "[[visitCell.rp]]"]),
- ("Interim instructions on site", ["When needed", "When needed", "Every call"]),
- ("Reports branded for your client", ["No", "Yes", "Yes"]),
- ("Worker awareness", ["Toolbox talk templates", "[[aware.pro]] live session[[pl:aware.pro]] a year", "[[aware.rp]] live session[[pl:aware.rp]] a year"])])}
-<p class="small" style="margin-top:12px">Monthly, CAD before HST, [[termMonths]]-month agreement. Pre-work checks are never included in the monthly fee: each one is priced per job at your member rate, from [[from.limited]] at list. Lab results take [[labDays]] business days on every pass; rush analysis is available at extra cost.</p>
+<div class="section-head"><h2>Prices</h2></div>
+<div class="table-wrap stack"><table class="data"><thead><tr><th scope="col">Bulk Material Sampling</th><th scope="col" class="num">Price</th><th scope="col">Results</th></tr></thead><tbody>
+{price_rows([("Scheduled visit", "[[bulk.visit]]", "[[labDays]] business days"), ("Each sample, first layer included", "[[sample]]", ""), ("Each extra layer in a sample", "[[layer]]", ""),
+  ("Unexpected-find call-out, same or next business day", "[[bulk.callout]]", "[[rushDays]] business days"), ("Each call-out sample, rush lab, first layer included", "[[rush.sample]]", ""), ("Each extra layer on a call-out sample", "[[rush.layer]]", "")])}
+</tbody></table></div>
+<div class="table-wrap stack" style="margin-top:18px"><table class="data"><thead><tr><th scope="col">Clearance Air Testing</th><th scope="col" class="num">Price</th><th scope="col">Results</th></tr></thead><tbody>
+{price_rows([("Enclosure 10 m² [108 sq ft] or less, 2 air samples", "[[clr.small]]", "[[clr.days]] business days"), ("Enclosure over 10 m² and under 500 m² [5,382 sq ft], 3 air samples", "[[clr.mid]]", "[[clr.days]] business days"),
+  ("Enclosure 500 m² [5,382 sq ft] or more, 5 air samples", "[[clr.large]]", "[[clr.days]] business days"), ("Re-test after a failed clearance", "Same price", "[[clr.days]] business days")])}
+</tbody></table></div>
+<p class="small" style="margin-top:12px">CAD before HST. Samples are billed on top of the visit fee. Rush sample prices are double the standard sample price. Minimum charge for any site visit: [[minVisit]].</p>
 </div></section>
 
 <section class="section white"><div class="wrap split">
 <div class="prose"><h2>The business case</h2>
-<div class="table-wrap stack"><table class="data"><thead><tr><th scope="col">A job in an older building</th><th scope="col">Without the Pass</th><th scope="col">With the Pass</th></tr></thead><tbody>
-<tr><th scope="row">Before you bid</th><td data-label="Without the Pass">Guess, or price around it</td><td data-label="With the Pass">The owner's report reviewed for gaps</td></tr>
-<tr><th scope="row">If testing is needed</th><td data-label="Without the Pass">Next available slot, full price</td><td data-label="With the Pass">Reserved visit, member rate</td></tr>
-<tr><th scope="row">How it's paid</th><td data-label="Without the Pass">Rarely quoted, so absorbed or skipped</td><td data-label="With the Pass">A line on your quote at the list price</td></tr>
-<tr><th scope="row">Suspect material</th><td data-label="Without the Pass">Found mid-job: stop work, notify, wait</td><td data-label="With the Pass">Found before mobilizing and priced into the quote</td></tr>
+<div class="table-wrap stack"><table class="data"><thead><tr><th scope="col">A job in an older building</th><th scope="col">Without testing first</th><th scope="col">With testing first</th></tr></thead><tbody>
+<tr><th scope="row">Before you bid</th><td data-label="Without testing first">Guess, or price around it</td><td data-label="With testing first">The materials you'll disturb are tested</td></tr>
+<tr><th scope="row">How it's paid</th><td data-label="Without testing first">Rarely quoted, so absorbed or skipped</td><td data-label="With testing first">A line on your quote, paid by the owner</td></tr>
+<tr><th scope="row">Suspect material</th><td data-label="Without testing first">Found mid-job: stop work, notify, wait</td><td data-label="With testing first">Found before mobilizing and priced into the quote</td></tr>
 </tbody></table></div>
-<p class="small">Prefer not to bill the line? Absorb it and market “checked before we cut” to clients and insurers instead.</p></div>
-<div class="prose"><h2>How it starts</h2>{start_steps("First pre-work check", "One check on your next job in an older building at the list price, from [[from.limited]], so you see a report before you commit.", contractor=True)}
-<h3>Independence</h3><p>Each report is addressed to the building owner, because it's the owner's list. We do no removal, pay no referral fees, don't sell the Pass to abatement contractors, and never do clearance on work a Pass holder abates.</p>
+<p class="small">Prefer not to bill the line? Absorb it and market “tested before we cut” to clients and insurers instead.</p></div>
+<div class="prose"><h2>Clearance for abatement contractors</h2>
+<p>Type 3 work needs a clearance air test before the enclosure comes down: a final visual inspection, then air samples at the Table 3 count for the enclosure size, analysed on rush. We sell it directly to abatement contractors.</p>
+<p>Our fee doesn't depend on the result, and the result is reported as found. We never remove or abate anything and take no referral fees.</p>
 <p><a href="guide-demolition-renovation-dss.html">Read the demolition and renovation DSS guide</a></p></div>
 </div></section>
-""" + cta("Know what's in the walls before your crew arrives.", "Book your first pre-work check, or take the Obligation Check to see which pass fits your volume.", "obligation-check.html#contractor")
-page("contractors.html", "Cleared-to-Start Pass | The contractor compliance desk | Noah Crowley Consulting", "A compliance desk for contractors, renovators and restoration firms in southwestern Ontario: pre-bid reviews, faster site visits and member rates on pre-work checks. From [[m.starter]] a month.", c, "contractors.html", schema=service_schema("Cleared-to-Start Pass", "Monthly compliance desk for contractors in southwestern Ontario", NUM["m"]["starter"]))
+""" + cta("Know what's in the walls before your crew arrives.", "Book Bulk Material Sampling for your next job, or take the Obligation Check to see what fits.", "obligation-check.html#contractor")
+page("contractors.html", "Asbestos testing and clearance for contractors | Noah Crowley Consulting", "Bulk Material Sampling before you cut, same- or next-day call-outs when work uncovers suspect material, and Type 3 clearance air testing for contractors in southwestern Ontario. From [[bulk.visit]] plus samples.", c, "contractors.html", schema=service_schema("Bulk Material Sampling", "Asbestos testing of specific materials for contractors in southwestern Ontario", F["bulk"]))
 
 # ---------------------------------------------------------------- services
 SVC_FAQ_HTML, SVC_FAQ_SCHEMA = faq([
- ("How much does a designated substance report cost?", "Reports start at [[from.limited]] for a limited sampling visit and [[from.project]] for a project-specific designated substance report. Each report is a report fee plus the samples taken: [[sample.comp]] a sample ([[sample.demo]] on a demolition survey), including lab analysis of the first layer, and [[layer]] for each extra layer. All prices are CAD before HST."),
- ("Why is it priced per sample?", "The lab analyzes every layer in a sample, and buildings differ: a floor tile and its glue are two layers, a plastered wall can be three. Pricing per sample means you pay for what your building actually needs, and we ask before going over the top of your quoted range."),
- ("How long does a report take?", "From about [[ta.updateNo]] business days for a DSS update without sampling to [[ta.predemo]] business days for a pre-demolition survey. Lab results take [[labDays]] business days from when the lab receives the samples; rush analysis is available at extra cost."),
- ("Is there a minimum charge or travel fee?", "The minimum charge for a site visit is [[minVisit]] before HST. Travel is free within [[freeKm]] km [[[freeMi]] mi] of Riverside Dr. and Ouellette Ave. (downtown Windsor)."),
+ ("How much does a designated substance survey cost?", "Surveys start at [[from.reno]] for one work area, [[from.full]] for a whole building and [[from.predemo]] for a pre-demolition survey, by building size. Samples are added on top: [[sample]] each ([[sample.demo]] on a demolition survey), including lab analysis of the first layer, and [[layer]] for each extra layer. All prices are CAD before HST."),
+ ("Why is it priced per sample?", "The lab analyzes every layer in a sample, and buildings differ: a floor tile and its glue are two layers, a plastered wall can be three. Pricing per sample means you pay for what your building actually needs, and we ask before going over the top of the estimate on your quote."),
+ ("How long does a survey take?", "A renovation-scope survey takes [[ta.reno]] business days, a full-building survey [[ta.full]] and a pre-demolition survey [[ta.predemo]], from the end of fieldwork. Lab results take [[labDays]] business days from when the lab receives the samples; rush takes [[rushDays]] business days at double the sample price."),
+ ("Is there a minimum charge or travel fee?", "The minimum charge for a site visit is [[minVisit]] before HST. Travel is free within [[freeKm]] km [[[freeMi]] mi] of Riverside Dr. and Ouellette Ave. (downtown Windsor); beyond that it's [[perKm]] a km for each km past [[freeKm]], counted both ways, by road."),
  ("Do you do the asbestos removal?", "No. We write the abatement specification, review bids, inspect the work and test the air, including Type 3 clearance, but we never remove anything and take no referral fees."),
 ])
-SVC_SCHEMA = {"@context": "https://schema.org", "@type": "Service", "name": "Asbestos and designated substance reports", "serviceType": "Designated substance survey",
+SVC_SCHEMA = {"@context": "https://schema.org", "@type": "Service", "name": "Asbestos and designated substance services", "serviceType": "Designated substance survey",
   "provider": {"@id": BIZ_ID}, "areaServed": ["Windsor, ON", "Essex County, ON", "Chatham-Kent, ON", "Sarnia-Lambton, ON", "London, ON"],
-  "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Report menu", "itemListElement": [
+  "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Service menu", "itemListElement": [
     {"@type": "Offer", "itemOffered": {"@type": "Service", "name": n, "description": g},
-     "priceSpecification": {"@type": "PriceSpecification", "minPrice": p, "priceCurrency": "CAD", "valueAddedTaxIncluded": False}} for n, p, w_, g, t in REPORTS]}}
+     "priceSpecification": {"@type": "PriceSpecification", "minPrice": p, "priceCurrency": "CAD", "valueAddedTaxIncluded": False}} for n, p, w_, g, t, pg in PRODUCTS]}}
+def cls_row(label, key):
+    return f'<tr><th scope="row">{label}</th>' + "".join(f'<td class="num" data-label="Class {c}">{"From " if c == "D" else ""}[[{key}.{c}]]</td>' for c in "ABCD") + f'<td data-label="Turnaround">[[ta.{key}]] business days</td></tr>'
 s = f"""<section class="hero"><div class="wrap">{crumbs((None, "Reports and prices"))}
 <div class="hero-copy" style="max-width:860px"><h1>Reports and prices</h1>
-<p class="lede">Every report covers Ontario's 11 designated substances and is priced as a report fee plus the samples taken. Your quote sets the report fee and an estimated range of samples for your building, and you pay for the samples actually taken. Samples are [[sample.comp]] each ([[sample.demo]] on a demolition survey), and extra layers are [[layer]] each. These are the starting prices. Program members pay [[d.min]] to [[d.max]] less on the report fee and our time on each sample; lab costs and extra layers are not discounted.</p>{DSS_CHECK}</div></div></section>
+<p class="lede">Every survey covers Ontario's 11 designated substances and is priced as a report fee by building size, plus the samples taken. Samples are [[sample]] each ([[sample.demo]] on a demolition survey), and extra layers are [[layer]] each. Rush sample prices are double the standard sample price. These are starting prices: larger or more complex jobs are quoted above them.</p>{DSS_CHECK}</div></div></section>
 <section class="section white"><div class="wrap">
-<div class="section-head"><h2>Report menu</h2></div>
-<div class="table-wrap stack"><table class="data wide"><thead><tr><th scope="col">Report</th><th scope="col">When you need it</th><th scope="col">What you get</th><th scope="col">Turnaround</th><th scope="col" class="num">From</th></tr></thead><tbody>
-{"".join(f'<tr><th scope="row">{n}</th><td data-label="When you need it">{w_}</td><td data-label="What you get">{g}</td><td data-label="Turnaround">{t}</td><td class="num" data-label="From">{money(p)}</td></tr>' for n, p, w_, g, t in REPORTS)}
+<div class="section-head"><h2>Service menu</h2></div>
+<div class="table-wrap stack"><table class="data wide"><thead><tr><th scope="col">Service</th><th scope="col">When you need it</th><th scope="col">What you get</th><th scope="col">Turnaround</th><th scope="col" class="num">From</th></tr></thead><tbody>
+{"".join(f'<tr><th scope="row"><a href="{pg}">{n}</a></th><td data-label="When you need it">{w_}</td><td data-label="What you get">{g}</td><td data-label="Turnaround">{t}</td><td class="num" data-label="From">{money(p)}</td></tr>' for n, p, w_, g, t, pg in PRODUCTS)}
 </tbody></table></div>
-<p class="small" style="margin-top:12px">CAD before HST ([[hst]]). Turnarounds are business days from the end of fieldwork and include the lab's [[labDays]] business days. We confirm the report fee and the estimated sample range in writing before any work starts, and we ask before going over the top of that range.</p>
+<p class="small" style="margin-top:12px">CAD before HST ([[hst]]). Survey turnarounds are business days from the end of fieldwork and include the lab's [[labDays]] business days. We confirm the report fee and the estimated number of samples in writing before any work starts, and we ask before going over the top of that estimate.</p>
 </div></section>
-<section class="section"><div class="wrap split">
+<section class="section"><div class="wrap">
+<div class="section-head"><h2>Survey report fees by building size</h2><p class="lede">Class A is under [[classA.m2]] m² [[[classA.ft2]] sq ft], Class B up to [[classB.m2]] m² [[[classB.ft2]] sq ft], Class C up to [[classC.m2]] m² [[[classC.ft2]] sq ft], and Class D anything larger. Samples are extra.</p></div>
+<div class="table-wrap stack"><table class="data wide"><thead><tr><th scope="col">Survey</th><th scope="col" class="num">Class A</th><th scope="col" class="num">Class B</th><th scope="col" class="num">Class C</th><th scope="col" class="num">Class D</th><th scope="col">Turnaround</th></tr></thead><tbody>
+{cls_row("Renovation-scope DSS (one work area)", "reno")}{cls_row("Full-building DSS", "full")}{cls_row("Pre-demolition DSS (destructive, building vacant)", "predemo")}
+</tbody></table></div>
+</div></section>
+<section class="section white"><div class="wrap split">
 <div class="prose"><h2>Samples and layers</h2>
-<p>A sample is what we take from a material. The lab analyzes every layer in it: a floor tile and its glue are two layers, a plaster wall with a skim coat can be three. Each sample is [[sample.comp]] ([[sample.demo]] on a demolition survey) and includes lab analysis of its first layer. Extra layers are [[layer]] each, billed per layer analyzed. Demolition surveys take more samples, because walls, floors and ceilings are opened up.</p>
+<p>A sample is what we take from a material. The lab analyzes every layer in it: a floor tile and its glue are two layers, a plaster wall with a skim coat can be three. Each sample is [[sample]] ([[sample.demo]] on a demolition survey) and includes lab analysis of its first layer. Extra layers are [[layer]] each, billed per layer analyzed. Vermiculite samples are [[sample.verm]] each.</p>
+<p>Rush sample prices are double the standard sample price, extra layers included: a [[sample]] sample is [[rush.sample]] on rush, and a [[layer]] extra layer is [[rush.layer]]. Rush results take [[rushDays]] business days.</p>
 <h2>Terms</h2>
-{ul(["No deposit. We invoice the report fee and samples when fieldwork ends, and the extra layers when the lab's results arrive. Lab results and the report are released once both invoices are paid; invoices are due in [[paymentDays]] days.", "Minimum charge for a site visit: [[minVisit]] before HST.", "Travel is free within [[freeKm]] km [[[freeMi]] mi] of Riverside Dr. and Ouellette Ave. (downtown Windsor).", "Quotes are valid for [[quoteValidDays]] days."])}</div>
-<div class="prose"><h2>After the report</h2>
-<p>If materials have to come out, we write the abatement specification contractors bid on, review the bids, inspect the work and test the air, including Type 3 clearance. These are quoted per project. We never do the removal ourselves.</p>
-<h2>Lab turnaround</h2>
-<p>Lab results take [[labDays]] business days from when the lab receives the samples. Rush analysis is available at extra cost; ask when you book. If work can't wait, we leave written interim instructions on site so it can continue lawfully.</p></div>
+{ul(["No deposit. A report is invoiced when the work is done and released once the invoice is paid. Other work is due in [[paymentDays]] days. The Annual Reassessment is billed a year in advance.",
+     "Minimum charge for any site visit: [[minVisit]] before HST.",
+     "Travel is free within [[freeKm]] km [[[freeMi]] mi] of Riverside Dr. and Ouellette Ave. (downtown Windsor). Beyond that, [[perKm]] a km for each km past [[freeKm]], counted both ways, by road.",
+     "After-hours or weekend fieldwork, only at your request: +[[afterHours]] on the fieldwork portion.",
+     "A job that needs an overnight stay: [[overnight]] a night for hotel and meals.",
+     "Quotes are valid for [[quoteValidDays]] days."])}</div>
+<div class="prose"><h2>Add-ons</h2>
+{ul(["Other hazardous building materials (PCBs, ozone-depleting substances, mould) added to a survey: [[hazAddon]], any samples at the sample prices above.",
+     "Every report comes as a PDF, and each designated substance survey with one printed binder. A replacement binder is [[binder]]."])}
+<h2>After the report</h2>
+<p>If materials have to come out, Abatement Design & Oversight puts someone on your side: a specification and tender package from [[abate.spec]], site inspection visits at [[abate.visit]] each, or the full package with three site visits, clearance and a close-out report from [[abate.package]]. Clearance air testing starts at [[clr.small]]. We never do the removal ourselves.</p>
+<h2>Training and second opinions</h2>
+<p>On-site Type 1 and Type 2 instruction and training for up to [[train.t12max]] workers is [[train.t12]] a session; asbestos awareness for up to [[train.awaremax]] building staff is [[train.aware]]. A peer review of another firm's survey or specification starts at [[from.peer]].</p></div>
 </div></section>
 <section class="section white"><div class="wrap"><div class="section-head"><h2>Common jobs</h2></div>
 <div class="link-list">{"".join(f'<a href="{h}"><strong>{t}</strong><span>What it involves, what it costs and how long it takes</span></a>' for h, t in TRIGGERS)}</div></div></section>""" + SVC_FAQ_HTML + cta("Not sure which report you need?", "The Obligation Check points you to the right one, or send us the job details and we'll quote it.")
-page("services.html", "Asbestos and designated substance reports and prices | Noah Crowley Consulting", "Designated substance reports and asbestos surveys in southwestern Ontario, priced as a report fee plus samples: from [[from.limited]] for a limited sampling visit and [[from.project]] for a project-specific DSS.", s, "services.html", schema=[SVC_SCHEMA, SVC_FAQ_SCHEMA])
+page("services.html", "Asbestos and designated substance reports and prices | Noah Crowley Consulting", "Designated substance surveys and asbestos testing in southwestern Ontario, priced by building size plus samples: surveys from [[from.reno]], testing from [[bulk.visit]] plus samples.", s, "services.html", schema=[SVC_SCHEMA, SVC_FAQ_SCHEMA])
 
 # ---------------------------------------------------------------- example register (public demo of the client register snapshot)
 write_example_register()
-ex = f"""<section class="hero"><div class="wrap">{crumbs(("building-owners.html", "Building programs"), (None, "Example register"))}
+ex = f"""<section class="hero"><div class="wrap">{crumbs(("building-owners.html", "Annual Reassessment"), (None, "Example register"))}
 <div class="hero-copy" style="max-width:62ch">
 <h1>Your asbestos record, on any phone</h1>
-<p class="lede">Every building program client gets a register snapshot like this one. Show it to an inspector, send it to a contractor before they bid, and check a material before anyone drills. A fresh snapshot is shared within [[snapshotDays]] business days of every survey, reassessment, lab result or condition change. Below is the same register page a program client receives, filled with an invented client's data.</p>
+<p class="lede">Every Annual Asbestos Reassessment client gets a register snapshot like this one. Show it to an inspector, send it to a contractor before they bid, and check a material before anyone drills. A fresh snapshot is shared after every reassessment, lab result or condition change. Below is the same register page a client receives, filled with an invented client's data.</p>
 <p><a class="btn ghost" href="examples/register-brockmere.html" target="_blank" rel="noopener">Open it full screen</a></p></div>
 </div></section>
 <section class="section tight"><div class="wrap">
 <div class="reg-frame"><iframe id="exReg" src="examples/register-brockmere.html" title="Example designated substance register (Brockmere Property Group, invented)" loading="lazy"></iframe></div>
-</div></section>""" + cta("Want a register like this for your building?", "Take the Obligation Check to see which program fits, or book a free 30-minute call.", "obligation-check.html")
-page("register-example.html", "Example asbestos register | What program clients see | Noah Crowley Consulting", "An example of the designated substance register snapshot every building program client gets: statuses, lab results, condition history and what to do, on any phone.", ex, "building-owners.html")
+</div></section>""" + cta("Want a register like this for your building?", "Take the Obligation Check to see what your building needs, or book a free 30-minute call.", "obligation-check.html")
+page("register-example.html", "Example asbestos register | What reassessment clients see | Noah Crowley Consulting", "An example of the designated substance register snapshot every Annual Asbestos Reassessment client gets: statuses, lab results, condition history and what to do, on any phone.", ex, "building-owners.html")
 
 # ---------------------------------------------------------------- quiz
-# What the Obligation Check (assets/site.js) shows: report "from" prices, turnarounds and next-step wording, all from the price list.
+# What the Obligation Check (assets/site.js) shows: "from" prices, turnarounds and next-step wording, all from the price list.
 QUIZ_PUBLIC = {
- "reports": {k: [n, p] for (n, p, *_), k in zip(REPORTS, ["limited", "update", "project", "survey", "full", "demo"])},
- "labDays": "[[labDays]]", "taProjectTo": "[[ta.project.to]]", "jobsStarter": "[[jobs.starter.to]]", "jobsPro": "[[jobs.pro.to]]", "termMonths": "[[termMonths]]",
+ "reports": {k: [n, p] for (n, p, *_), k in zip(PRODUCTS, PKEY)},
+ "labDays": "[[labDays]]", "rushDays": "[[rushDays.to]]", "taRenoTo": "[[ta.reno.to]]",
+ "offers": {
+  "reassess": {"name": "Annual Asbestos Reassessment", "price": F["reassess"], "unit": "for the first year, per building, priced by size", "page": "building-owners.html",
+     "inc": REASSESS_INC + ["From the second year, the annual fee is billed once a year in advance"]},
+  "contractor": {"name": "Bulk Material Sampling", "price": F["bulk"], "unit": "for the visit, plus [[sample]] a sample", "page": "contractors.html",
+     "inc": ["Testing of the materials your work will disturb, with chain of custody", "A short letter: the result per material, photos, and the work classification if positive", "Results in [[labDays]] business days", "Unexpected-find call-out the same or next business day: [[bulk.callout]] plus [[rush.sample]] a sample, results in [[rushDays]] business days"]},
+  "restoration": {"name": "Unexpected-find call-out", "price": P["bulkSampling"]["callout"], "unit": "for the visit, plus [[rush.sample]] a sample at rush", "page": "contractors.html",
+     "inc": ["Same or next business day", "Rush lab results in [[rushDays]] business days", "Air sampling after a disturbance from [[clr.disturb]]", "Clearance air testing from [[clr.small]] when a Type 3 enclosure comes down"]},
+  "abatement": {"name": "Clearance Air Testing", "price": F["clearance"], "unit": "per event, by enclosure size", "page": "contractors.html",
+     "inc": ["Final visual inspection", "Air samples at the Table 3 count for the enclosure size", "Rush lab analysis, results in [[clr.days]] business days", "Pass/fail certificate formatted for posting; our fee doesn't depend on the result"]},
+  "homeowner": {"name": "Bulk Material Sampling", "price": F["bulk"], "unit": "for the visit, plus [[sample]] a sample", "page": "contractors.html",
+     "inc": ["We test only the materials your renovation will disturb", "Results in [[labDays]] business days", "A short letter with the result per material"]}},
  "entry": {
-  "DSS update": "We review your existing report, walk the building and fill any sampling gaps, from [[from.update]] plus samples. Sign a program within [[creditDays]] days and the update is repriced at your member rate.",
-  "Baseline survey": "An asbestos building survey becomes your on-site record, from [[from.survey]] plus samples. Sign a program before the work starts and it's priced at your member rate, or sign within [[creditDays]] days of receiving it and the difference is credited on your first program invoice.",
-  "First pre-work check": "One limited sampling visit or project report on your next job in an older building, at the list price (from [[from.limited]]), so you see a report before you commit.",
+  "Year 1 setup": "We build your asbestos record from your existing survey. The setup covers the whole first year, from [[from.reassess]] per building.",
+  "Full-building DSS first": "There's no usable survey yet, so the record starts with a full-building designated substance survey, from [[from.full]] plus samples. The Annual Reassessment then keeps it current.",
+  "Book a site visit": "Tell us the address and the materials, and we'll book the visit. Sites are usually visited within [[visitDays]] business days.",
   "Discovery call": "A 30-minute call to scope your buildings or jobs, followed by a written proposal."}}
 q = f"""<section class="hero"><div class="wrap">{crumbs((None, "Obligation Check"))}
 <div class="split" style="align-items:start">
@@ -613,8 +590,7 @@ q = f"""<section class="hero"><div class="wrap">{crumbs((None, "Obligation Check
 </div></div></section>"""
 page("obligation-check.html", "Obligation Check | Which asbestos and designated substance duties apply to you? | Noah Crowley Consulting",
      "A two-minute quiz for building owners, landlords and contractors in Ontario: find out which asbestos and designated substance duties apply and what to do first.", q, None,
-     extra_js=f"<script src=\"assets/ncc-rules.js?v={ASSET_V}\"></script>\n<script>window.NCC_TIERS={json.dumps(deep_fill({k: {kk: v[kk] for kk in ['program', 'name', 'price', 'fits', 'page', 'inc']} for k, v in TIERS.items()}))};"
-              f"window.NCC_PUBLIC={json.dumps(deep_fill(QUIZ_PUBLIC))};</script>\n")
+     extra_js=f"<script src=\"assets/ncc-rules.js?v={ASSET_V}\"></script>\n<script>window.NCC_PUBLIC={json.dumps(deep_fill(QUIZ_PUBLIC))};</script>\n")
 
 # ---------------------------------------------------------------- local pages
 # Each city page carries its own local facts: what that municipality's demolition paperwork actually asks,
@@ -622,8 +598,8 @@ page("obligation-check.html", "Obligation Check | Which asbestos and designated 
 # city pages read to Google as doorway pages. Facts were checked against the linked municipal forms (Nov 2026).
 def local_page(fname, city, region, intro, permit_h2, permit, stock_h2, stock, towns, local_faq, sources):
     items = list(local_faq) + [
-        (f"How much does asbestos testing cost in {city}?", "A limited sampling visit for one to three materials starts at [[from.limited]], and a project-specific designated substance report starts at [[from.project]]. Each report is priced as a report fee plus the samples taken, with the first layer of every sample analyzed by the lab included, so the total depends on the building."),
-        ("How long do results take?", "Lab results take [[labDays]] business days from when the lab receives the samples. If work can't wait, we leave written interim instructions on site."),
+        (f"How much does asbestos testing cost in {city}?", "Testing a few materials starts at [[bulk.visit]] for the visit, and a designated substance survey for one work area starts at [[from.reno]]. Samples are added at [[sample]] each, with the lab's analysis of the first layer included, so the total depends on the building."),
+        ("How long do results take?", "Lab results take [[labDays]] business days from when the lab receives the samples, or [[rushDays]] business days on rush. If work can't wait, we leave written interim instructions on site."),
         ("Are you independent of abatement contractors?", "Yes. We never remove or abate anything and take no referral fees, so our survey results aren't shaped by anyone who profits from removal.")]
     FAQ_HTML, FAQ_SCHEMA = faq(items)
     src = " · ".join(f'<a href="{u}" rel="noopener">{t}</a>' for t, u in sources)
@@ -639,16 +615,16 @@ def local_page(fname, city, region, intro, permit_h2, permit, stock_h2, stock, t
 </div></section>
 <section class="section"><div class="wrap split">
 <div class="prose"><h2>What we do in {region}</h2>{ul([
- '<a href="services.html">Designated substance surveys and reports</a> before renovation, repair or demolition, from [[from.limited]]',
- '<a href="building-owners.html">Building programs</a> that keep your asbestos record current, from [[m.ce]] a month per building',
- '<a href="landlords.html">Suite checks and records</a> for landlords, property managers and condo corporations',
- '<a href="services.html">Abatement specifications, oversight, air monitoring and Type 3 clearance</a>',
- '<a href="contractors.html">A compliance desk for contractors</a>, from [[m.starter]] a month'])}</div>
+ '<a href="services.html">Designated substance surveys</a> before renovation, repair or demolition, from [[from.reno]]',
+ '<a href="building-owners.html">The Annual Asbestos Reassessment</a> that keeps your asbestos record current, from [[from.reassess]] per building',
+ '<a href="landlords.html">Suite testing and records</a> for landlords, property managers and condo corporations',
+ '<a href="services.html">Abatement design and oversight</a>, and <a href="contractors.html">Type 3 clearance air testing</a>',
+ '<a href="contractors.html">Testing for contractors</a>, from [[bulk.visit]] plus samples'])}</div>
 <div class="prose"><h2>Common reasons people call</h2><div class="link-list" style="grid-template-columns:1fr">{"".join(f'<a href="{h}"><strong>{t}</strong></a>' for h, t in TRIGGERS)}</div></div>
 </div></section>
 """ + FAQ_HTML + cta()
     page(fname, f"Asbestos Testing {city}, ON | Designated Substance Surveys | Noah Crowley Consulting",
-         f"Independent asbestos testing and designated substance surveys in {region if region.startswith(city + ' and ') else city + ' and ' + region}. Reports from [[from.limited]] plus samples, lab results in [[labDays]] business days.", body,
+         f"Independent asbestos testing and designated substance surveys in {region if region.startswith(city + ' and ') else city + ' and ' + region}. Testing from [[bulk.visit]] plus samples, lab results in [[labDays]] business days.", body,
          schema=[FAQ_SCHEMA, {"@context": "https://schema.org", "@type": "Service", "name": f"Asbestos testing and designated substance surveys in {city}", "serviceType": "Asbestos testing", "provider": {"@id": BIZ_ID}, "areaServed": {"@type": "City", "name": f"{city}, Ontario"}}])
 
 OHSA_DUTY = "Under Ontario's Occupational Health and Safety Act, the owner must find out which designated substances are present before a renovation or demolition is tendered, and give that list to every contractor who bids."
@@ -691,7 +667,7 @@ local_page("asbestos-testing-chatham.html", "Chatham", "Chatham-Kent",
     "Chatham-Kent's buildings",
     ["Chatham-Kent is one municipality spread across Chatham, Wallaceburg, Blenheim, Ridgetown, Tilbury and dozens of smaller communities, with older main-street commercial blocks, churches, halls and schools in nearly every one of them.",
      "Surplus buildings are being turned into housing. The former St. Agnes Catholic School on Croydon Street in Chatham came down in 2025 to make way for affordable housing. Every project like that starts with a pre-demolition survey.",
-     "Landlords and property managers can book a limited sampling visit before a suite is renovated, so units turn over without surprises."],
+     "Landlords and property managers can book Bulk Material Sampling before a suite is renovated, so units turn over without surprises."],
     "Wallaceburg, Tilbury, Blenheim and Ridgetown",
     [("Who arranges the survey for a demolition in Chatham-Kent, the owner or the contractor?", "The owner. " + OHSA_DUTY + " A contractor can arrange the survey on the owner's behalf, but the duty stays with the owner."),
      ("Do you cover Wallaceburg, Tilbury and the rest of Chatham-Kent?", "Yes: Wallaceburg, Tilbury, Blenheim, Ridgetown and the communities between them, as well as Chatham itself.")],
@@ -705,7 +681,7 @@ local_page("asbestos-testing-sarnia.html", "Sarnia", "Sarnia-Lambton",
      "Our survey covers all 11 designated substances. We record the building's past uses in the report and flag anything outside those 11 for the right specialist."],
     "Sarnia's buildings and trades",
     ["Many Sarnia trades split the year between Chemical Valley turnarounds and building work. Imperial's 2023 Sarnia turnaround alone brought in a peak of about 1,200 contractors.",
-     "On the building side, the Cleared-to-Start Pass gives those contractors a compliance desk: a review of the owner's report before they bid, and a site visit when a job needs testing.",
+     "On the building side, we test the materials those contractors will disturb before they cut, and come out the same or next business day when a job uncovers something.",
      "Downtown Sarnia, Point Edward and the older parts of Lambton County carry the same owner duties as anywhere in Ontario: an asbestos record for buildings that contain it, and a designated substance list before any project is tendered."],
     "Point Edward, Petrolia, Corunna and the rest of Lambton County",
     [("Does Sarnia need a designated substance report before demolition?", "Sarnia's demolition application checklist asks you to check for designated substances under the Occupational Health and Safety Act. " + OHSA_DUTY + " We write the report ready for both the application and the tender."),
@@ -722,7 +698,7 @@ local_page("asbestos-testing-london.html", "London", "London and Middlesex",
     "London's buildings",
     ["Many of London's older neighbourhoods, from Old East Village to Wortley Village, sit inside heritage conservation districts or on the register, so demolition and major renovation there run on a longer clock.",
      "Large national firms are strong on big portfolios and public tenders, but their minimum fees make small jobs unattractive. We work for owners who want one named consultant and a predictable price.",
-     "Contractors working in older London buildings can have the owner's report reviewed before they bid, and book a pre-work check when it falls short."],
+     "Contractors working in older London buildings can have the owner's report peer reviewed before they bid, and book Bulk Material Sampling when it falls short."],
     "Strathroy, St. Thomas and the rest of Middlesex County",
     [("London's demolition form doesn't mention designated substances. Do I still need a survey?", "Yes. The duty comes from the Occupational Health and Safety Act, not the permit form. " + OHSA_DUTY),
      ("How long does demolishing a heritage-listed property in London take?", "At least 60 days from the owner's written notice to council, and longer if council decides to designate the property. London's heritage planner reviews it as part of the demolition clearances.")],
@@ -743,12 +719,12 @@ def rel(*items): return "".join(f'<a href="{h}"><strong>{t}</strong><span>{s}</s
 
 trigger_page("asbestos-testing-before-renovation.html", "Asbestos testing before renovation",
   "Asbestos testing before renovation in Windsor and southwestern Ontario | Noah Crowley Consulting",
-  "Before walls or floors open in an older building, a designated substance survey lists what the work will disturb. From [[from.limited]] plus samples, lab results in [[labDays]] business days. Independent asbestos and designated substances consulting.",
+  "Before walls or floors open in an older building, a designated substance survey lists what the work will disturb. Testing from [[bulk.visit]] plus samples, lab results in [[labDays]] business days. Independent asbestos and designated substances consulting.",
   "Before walls, floors or ceilings open in an older building, Ontario law requires a list of every designated substance in the work area. We survey it, test it and hand you a report ready for the contractor.",
   [("What the law requires", "<p>The project owner must list all designated substances before a renovation, repair or demolition project begins and include the list in the tender (OHSA section 30). An owner who leaves one off is liable to the contractors when it turns up mid-job.</p><p>Any building built before 1990 is a candidate for asbestos-containing materials; newer buildings are much less likely to contain them.</p>"),
    ("What we test for", ul(["Floor tile and mastic, drywall joint compound, plaster and stipple ceilings", "Pipe and boiler insulation, cement board and vermiculite", "Lead in paint, solder, pipes and glazing", "Mercury in thermostats, switches and lamps", "Silica released when concrete, masonry or tile is cut", "All 11 designated substances, as the project list requires"])),
-   ("Price and timing", "<p>A limited sampling visit for one to three materials starts at [[from.limited]]. A project-specific report for a whole work area starts at [[from.project]]. Each report is priced as a report fee plus the samples taken, with the first layer of every sample analyzed by the lab included, so the total depends on the building. Lab results take [[labDays]] business days.</p><p>If the job can't wait, we leave written interim instructions on site: which materials to treat as asbestos-containing and which procedures apply until results are in.</p>"),
-   ("If you renovate often", "<p>Contractors can get the owner's report reviewed before they bid and pay member rates on every check with the <a href=\"contractors.html\">Cleared-to-Start Pass</a>, and owners pay less for every report with a <a href=\"building-owners.html\">building program</a>.</p>")],
+   ("Price and timing", "<p>Bulk Material Sampling for a few materials is a [[bulk.visit]] visit plus [[sample]] a sample. A renovation-scope designated substance survey for a whole work area starts at [[from.reno]] plus samples. The first layer of every sample is analyzed by the lab and included, so the total depends on the building. Lab results take [[labDays]] business days, or [[rushDays]] on rush at double the sample price.</p><p>If the job can't wait, we leave written interim instructions on site: which materials to treat as asbestos-containing and which procedures apply until results are in.</p>"),
+   ("If you renovate often", "<p>Contractors can book <a href=\"contractors.html\">Bulk Material Sampling</a> before every job in an older building, and owners can keep their record current with the <a href=\"building-owners.html\">Annual Asbestos Reassessment</a>.</p>")],
   rel(("guide-demolition-renovation-dss.html", "Demolition and renovation DSS guide", "What a survey covers and what to do if you find suspect material mid-job"),
       ("guide-suite-turnover-checklist.html", "Suite turnover checklist", "The materials to stop and test in older rental suites")))
 
@@ -757,22 +733,22 @@ trigger_page("designated-substance-survey-demolition-permit.html", "Designated s
   "The City of Windsor's demolition permit checklist asks for a designated substance list. We write the pre-demolition survey ready to attach to the permit application and the tender. From [[from.predemo]].",
   "The City of Windsor's demolition permit checklist asks for a list of designated substances. We survey the building and write a report you can attach to the permit application and the demolition tender.",
   [("What the survey covers", "<p>A destructive survey of every space, because the building is coming down: walls opened, flooring lifted and roofs cored, so concealed materials are found before demolition. It covers all 11 designated substances plus PCBs, mould and ozone-depleting refrigerants. The building has to be vacant.</p>"),
-   ("What usually follows", ul(["<strong>Abatement specification:</strong> scope of work, procedure type, quantities and bid review", "<strong>Abatement oversight and air monitoring:</strong> inspections and reports during Type 2 or Type 3 work", "<strong>Type 3 clearance:</strong> visual inspection and air testing before the enclosure comes down"]) + "<p class=\"small\">Each is quoted per project.</p>"),
-   ("Price and timing", "<p>A pre-demolition survey starts at [[from.predemo]], priced as a report fee plus the samples taken. Demolition surveys take more samples than a renovation report because concealed spaces are opened up. The report takes [[ta.predemo.to]] business days after fieldwork, including the lab's [[labDays]] business days. No deposit: results are released once the fieldwork and lab invoices are paid.</p>"),
+   ("What usually follows", ul(["<strong>Abatement specification and tender package:</strong> scope of work, procedure type, quantities and bid comparison, from [[abate.spec]]", "<strong>Site inspections:</strong> pre-start, progress and glove bag checks during the work, [[abate.visit]] a visit", "<strong>Type 3 clearance:</strong> visual inspection and air testing before the enclosure comes down, from [[clr.small]]"]) + "<p class=\"small\">Larger projects are quoted above these prices.</p>"),
+   ("Price and timing", "<p>A pre-demolition survey starts at [[from.predemo]], priced as a report fee plus the samples taken. Demolition surveys take more samples than a renovation report because concealed spaces are opened up. The report takes [[ta.predemo.to]] business days after fieldwork, including the lab's [[labDays]] business days. No deposit: the report is invoiced when it's done and released once the invoice is paid.</p>"),
    ("Independent from the abatement", "<p>We never remove or abate anything and take no referral fees, so the survey, the specification and the clearance are all written by someone with no stake in how much removal there is.</p>")],
   rel(("guide-demolition-renovation-dss.html", "Demolition and renovation DSS guide", "Built around the City of Windsor's demolition permit checklist"),
-      ("services.html", "Reports and prices", "Every report, from a limited sampling visit to a pre-demolition survey")))
+      ("services.html", "Reports and prices", "Every survey and service, with starting prices")))
 
 trigger_page("silica-exposure-assessment.html", "Silica on renovation and demolition projects",
   "Silica on renovation and demolition projects in Ontario | Noah Crowley Consulting",
   "Silica is one of Ontario's 11 designated substances. When a project will cut concrete, masonry or tile, it belongs on the designated substance list and in the contractor's control plan.",
   "Cutting, grinding or coring concrete, masonry and tile releases respirable crystalline silica, one of Ontario's 11 designated substances. If the work will disturb it, it belongs on the project's designated substance list.",
   [("Where it shows up", "<p>Concrete, mortar, brick, block, ceramic tile, drywall and plaster all contain silica. Every project-specific report we write records where silica-containing materials are and what the planned work will do to them.</p>"),
-   ("What the contractor needs", ul(["The designated substance list, with silica-generating work identified", "Work classified by type, with controls such as wet cutting and local exhaust", "Training and respiratory protection where the work calls for it"]) + "<p>We write work-classification letters for silica and lead as a project service.</p>"),
-   ("Price", "<p>Silica is covered in every project-specific report, from [[from.project]]. Exposure monitoring is not available yet. Call <a href=\"tel:+15198909654\">519-890-9654</a> or <a href=\"contact.html\">contact us</a> to be notified when it launches.</p>"),
-   ("For contractors", "<p>Pass holders get [[classLetterOff]] off work-classification letters. See the <a href=\"contractors.html\">Cleared-to-Start Pass</a>.</p>")],
-  rel(("services.html", "Reports and prices", "Every report, from a limited sampling visit to a pre-demolition survey"),
-      ("contractors.html", "Cleared-to-Start Pass", "The compliance desk for contractors")))
+   ("What the contractor needs", ul(["The designated substance list, with silica-generating work identified", "Work classified by type, with controls such as wet cutting and local exhaust", "Training and respiratory protection where the work calls for it"])),
+   ("Price", "<p>Silica is covered in every designated substance survey, from [[from.reno]]. Exposure monitoring is not available yet. Call <a href=\"tel:+15198909654\">519-890-9654</a> or <a href=\"contact.html\">contact us</a> to be notified when it launches.</p>"),
+   ("For contractors", "<p>See <a href=\"contractors.html\">testing and clearance for contractors</a>.</p>")],
+  rel(("services.html", "Reports and prices", "Every survey and service, with starting prices"),
+      ("contractors.html", "Testing and clearance for contractors", "Bulk Material Sampling, call-outs and clearance air testing")))
 
 trigger_page("isocyanate-air-monitoring.html", "Isocyanate air monitoring",
   "Isocyanate air monitoring in southwestern Ontario | Noah Crowley Consulting",
@@ -780,7 +756,7 @@ trigger_page("isocyanate-air-monitoring.html", "Isocyanate air monitoring",
   "Collision and auto body paint booths, paint lines, spray foam installers and polyurethane manufacturers work with isocyanates, one of Ontario's designated substances.",
   [("What the regulation asks", ul(["A written exposure assessment made with your JHSC, redone after any change that could significantly affect exposure", "A control program where health may be affected", "Air monitoring, with results posted for 14 days, copied to the JHSC and kept 5 years", "Medical surveillance, which applies to isocyanates"])),
    ("What we offer", "<p>Exposure monitoring is not available yet. Call <a href=\"tel:+15198909654\">519-890-9654</a> or <a href=\"contact.html\">contact us</a> to be notified when it launches.</p>"),
-   ("Your building", "<p>Older shops also carry the asbestos duties every building owner has. See <a href=\"building-owners.html\">building programs</a>.</p>")],
+   ("Your building", "<p>Older shops also carry the asbestos duties every building owner has. See the <a href=\"building-owners.html\">Annual Asbestos Reassessment</a>.</p>")],
   rel(("guide-designated-substance-self-check.html", "Designated substance self-check", "A one-page test of whether O. Reg. 490/09 applies to you"),
       ("employers.html", "Designated substances at work", "What employers need on file under O. Reg. 490/09")))
 
@@ -791,7 +767,7 @@ def guide_page(fname, h1, title, desc, lede, items, after, cta_href):
 <div class="hero-copy" style="max-width:860px"><h1>{h1}</h1><p class="lede">{lede}</p>
 <div class="btn-row no-print"><button class="btn ghost" type="button" onclick="window.print()">Print this checklist</button><a class="btn amber" href="{cta_href}">Take the Obligation Check</a></div></div></div></section>
 <section class="section white"><div class="wrap"><div class="prose" style="max-width:820px"><ul class="checklist">{lis}</ul>{after}
-<p class="small">Last reviewed {fdate(GUIDES_REVIEWED)} by {e(SITE['founder'])}. This checklist is general guidance, not legal advice. Ontario regulations referenced: O. Reg. 278/05, OHSA section 30 and O. Reg. 490/09.</p></div></div></section>""" + cta("Want someone to check it for you?", "A DSS update brings your existing report current, from [[from.update]] plus samples. Join a program within [[creditDays]] days and it's repriced at your member rate.", cta_href)
+<p class="small">Last reviewed {fdate(GUIDES_REVIEWED)} by {e(SITE['founder'])}. This checklist is general guidance, not legal advice. Ontario regulations referenced: O. Reg. 278/05, OHSA section 30 and O. Reg. 490/09.</p></div></div></section>""" + cta("Want someone to keep it current for you?", "The Annual Asbestos Reassessment builds your record in year one and updates it every year, from [[from.reassess]] per building.", cta_href)
     art = {"@context": "https://schema.org", "@type": "Article", "headline": h1, "description": desc, "url": SITE["domain"] + "/" + fname,
         "datePublished": GUIDES_REVIEWED, "dateModified": GUIDES_REVIEWED, "inLanguage": "en-CA",
         "author": {"@type": "Person", "@id": SITE["domain"] + "/#founder", "name": SITE["founder"]}, "publisher": {"@id": BIZ_ID},
@@ -826,7 +802,7 @@ guide_page("guide-suite-turnover-checklist.html", "Suite turnover checklist",
    ("Mercury thermostats", "Older dial thermostats contain mercury; remove them intact."),
    ("Tell the crew before they start", "Owners must tell workers and contractors what's there before work that may disturb it."),
    ("Keep the result with the suite record", "A written result per suite builds the record and answers the next turnover in minutes.")],
-  "<p>A limited sampling visit before a turnover starts at [[from.limited]], with a written result about [[ta.limited]] business days after the visit. <a href=\"landlords.html\">Building program</a> members pay [[d.min]] to [[d.max]] less.</p>", "obligation-check.html#rental")
+  "<p>Bulk Material Sampling before a turnover is a [[bulk.visit]] visit plus [[sample]] a sample, with results in [[labDays]] business days. See <a href=\"landlords.html\">records and suite testing for landlords</a>.</p>", "obligation-check.html#rental")
 
 guide_page("guide-designated-substance-self-check.html", "Designated substance self-check",
   "Does O. Reg. 490/09 apply to you? A designated substance self-check | Noah Crowley Consulting",
@@ -853,18 +829,18 @@ guide_page("guide-demolition-renovation-dss.html", "Demolition and renovation DS
    ("Type 3 work needs clearance before the enclosure comes down", "Air testing below 0.01 fibres per cc, done by someone independent of the abatement contractor."),
    ("Mid-job find: stop work except to identify the material", "Don't keep cutting or demolishing in that area."),
    ("Mid-job find: notify right away", "The constructor or employer notifies the Ministry, the owner, the contractor and the JHSC."),
-   ("Mid-job find: test or presume", "Wait for lab results, [[labDays]] business days, or treat the material as asbestos-containing and follow the matching procedures."),
+   ("Mid-job find: test or presume", "Wait for lab results, [[labDays]] business days ([[rushDays]] on rush), or treat the material as asbestos-containing and follow the matching procedures."),
    ("Mid-job find: get written interim instructions", "A consultant can tell you on site which materials to treat as asbestos-containing so lawful work can continue.")],
-  "<p>Contractors who check before they cut avoid all of the second half. See the <a href=\"contractors.html\">Cleared-to-Start Pass</a>.</p>", "obligation-check.html#contractor")
+  "<p>Contractors who test before they cut avoid all of the second half. See <a href=\"contractors.html\">testing and clearance for contractors</a>.</p>", "obligation-check.html#contractor")
 
 # ---------------------------------------------------------------- about
 a = f"""<section class="hero"><div class="wrap">{crumbs((None, "How we work"))}
 <div class="hero-copy" style="max-width:860px"><h1>How we work</h1><p class="lede">{e(SITE['online'])} is the online name of {e(SITE['legal'])}, an independent consultancy covering all 11 of Ontario's designated substances across {REGIONS}.</p></div></div></section>
 <section class="section white"><div class="wrap split">
-<div class="prose"><h2>Independence</h2><p>We never remove or abate anything and take no referral fees. We don't sell the Cleared-to-Start Pass to abatement contractors, and we don't do clearance on work a Pass holder abates. It's written into every agreement.</p>
+<div class="prose"><h2>Independence</h2><p>We never remove or abate anything and take no referral fees. When an abatement contractor hires us for a clearance air test, our fee doesn't depend on the result, and the result is reported as found. It's written into our terms.</p>
 <h2>One named consultant</h2><p>You deal with the same person who walks your building, writes your report and answers your pre-work questions.</p></div>
-<div class="prose"><h2>How pricing works</h2><p>Reports are priced as a report fee plus the samples taken. Your quote gives an estimated range of samples, you pay for the samples actually taken, and we ask on site before going over the top of the range. Samples are [[sample.comp]] each ([[sample.demo]] on a demolition survey), including lab analysis of the first layer; extra layers are [[layer]] each. Lab results take [[labDays]] business days; rush analysis is available at extra cost.</p>
-<p>Programs run on [[termMonths]]-month agreements at a monthly fee per building. They keep your record current and give you a member rate on reports; they never include a report themselves.</p>
+<div class="prose"><h2>How pricing works</h2><p>Surveys are priced as a report fee by building size plus the samples taken. Your quote gives an estimated number of samples, you pay for the samples actually taken, and we ask on site before going over the estimate. Samples are [[sample]] each ([[sample.demo]] on a demolition survey), including lab analysis of the first layer; extra layers are [[layer]] each. Lab results take [[labDays]] business days; rush takes [[rushDays]] at double the sample price.</p>
+<p>The Annual Asbestos Reassessment is a yearly fee per building, paid a year in advance. It keeps your record current; it never includes a designated substance survey.</p>
 <h2>Where we work</h2><p>{", ".join(f'<a href="{h}">{t}</a>' for h, t in CITIES)}, and the towns around them.</p></div>
 </div></section>""" + cta()
 page("about.html", "How we work | Independent asbestos consulting | Noah Crowley Consulting", f"An independent asbestos and designated substances consultancy for {REGIONS}. No removal work, no referral fees, one named consultant.", a)
@@ -887,9 +863,10 @@ ct = f"""<section class="hero"><div class="wrap">{crumbs((None, "Contact"))}
 <div class="row2"><label class="field">Your name<input name="name" required autocomplete="name"></label><label class="field">Company<input name="company" autocomplete="organization"></label></div>
 <div class="row2"><label class="field">Email<input name="email" type="email" required autocomplete="email" autocapitalize="none" spellcheck="false"></label><label class="field">Phone<input name="phone" type="tel" inputmode="tel" autocomplete="tel"></label></div>
 <label class="field">What do you need?<select name="need">
-<option>A designated substance survey or report for a project</option><option>Updating the asbestos record for my building</option>
-<option>A building program for one or more buildings</option><option>A suite check before a rental unit is renovated</option>
-<option>The Cleared-to-Start Pass for my contracting business</option><option>Abatement specification, oversight or Type 3 clearance</option><option>Workplace exposure monitoring (not available yet: notify me at launch)</option><option>Something else</option></select></label>
+<option>A designated substance survey for a project</option><option>Testing a few materials before work (Bulk Material Sampling)</option>
+<option>Suspect material found mid-job: a call-out</option><option>Annual asbestos reassessment for my building</option>
+<option>A suite test before a rental unit is renovated</option><option>Abatement design and oversight</option><option>Clearance air testing</option>
+<option>Asbestos instruction and training</option><option>Peer review of a report or specification</option><option>Workplace exposure monitoring (not available yet: notify me at launch)</option><option>Something else</option></select></label>
 <label class="field">Site address (optional)<input name="site_address" autocomplete="street-address"></label>
 <label class="field">Details<textarea name="message" placeholder="Building age, size, what work is planned and when"></textarea></label>
 <label class="check"><input type="checkbox" name="consent_updates" value="yes"> Also send me occasional compliance reminders and updates by email. You can unsubscribe at any time.</label>
@@ -897,7 +874,7 @@ ct = f"""<section class="hero"><div class="wrap">{crumbs((None, "Contact"))}
 <button class="btn block" type="submit">Send message</button>
 <p class="small">We use your details only to reply to this request. See our <a href="privacy.html">privacy notice</a>.</p>
 </form></div></div></section>"""
-page("contact.html", "Contact | Noah Crowley Asbestos and Designated Substances Consulting", f"Ask for a designated substance survey, an asbestos record update, a building program or a contractor Pass quote in {REGIONS}.", ct, "contact.html")
+page("contact.html", "Contact | Noah Crowley Asbestos and Designated Substances Consulting", f"Ask for a designated substance survey, asbestos testing, an annual reassessment or clearance air testing in {REGIONS}.", ct, "contact.html")
 
 # ---------------------------------------------------------------- privacy
 pv = f"""<section class="hero"><div class="wrap">{crumbs((None, "Privacy notice"))}
@@ -928,21 +905,19 @@ open(os.path.join(ROOT, "sitemap.xml"), "w").write(f'<?xml version="1.0" encodin
 open(os.path.join(ROOT, "robots.txt"), "w").write(f"User-agent: *\nAllow: /\nSitemap: {SITE['domain']}/sitemap.xml\n")
 LLMS = f"""# {SITE['online']}
 
-> {SITE['legal']} is an independent asbestos and designated substances consultancy based in {SITE['city']}, Ontario, serving {REGIONS}. It surveys buildings, keeps O. Reg. 278/05 asbestos records, writes abatement specifications, oversees abatement, tests the air and does Type 3 clearance. It never removes asbestos and takes no referral fees.
+> {SITE['legal']} is an independent asbestos and designated substances consultancy based in {SITE['city']}, Ontario, serving {REGIONS}. It surveys buildings, tests materials, keeps O. Reg. 278/05 asbestos records through an annual reassessment, writes abatement specifications, oversees abatement, tests the air and does Type 3 clearance. It never removes asbestos and takes no referral fees.
 
-- Clients: commercial and institutional building owners, landlords and condos, general and restoration contractors.
-- Reports cover all 11 Ontario designated substances and are priced as a report fee plus samples taken. Prices are CAD before HST.
-- Lab results take [[labDays]] business days from the lab's receipt. Rush analysis is available at extra cost.
+- Clients: commercial and institutional building owners, landlords and condos, general, restoration and abatement contractors.
+- Surveys cover all 11 Ontario designated substances and are priced as a report fee by building size plus samples taken. Prices are CAD before HST.
+- Lab results take [[labDays]] business days from the lab's receipt. Rush takes [[rushDays]] business days at double the sample price.
 - Contact: {SITE['phone']}, {SITE['email']}, {SITE['domain']}/contact.html
 
-## Reports (starting prices)
-""" + "".join(f"- {n}: from {money(p)}. {w_}. {t}.\n" for n, p, w_, g, t in REPORTS) + """
-## Programs (monthly, per building)
-""" + "".join(f"- {v['program']}, {v['name']}: from {money(v['price'])} a month. {v['fits']}.\n" for v in TIERS.values()) + f"""
+## Services (starting prices, CAD before HST)
+""" + "".join(f"- {n}: from {money(p)}. {w_}. {t}.\n" for n, p, w_, g, t, pg in PRODUCTS) + f"""
 ## Key pages
 - [Reports and prices]({SITE['domain']}/services.html)
-- [Building programs]({SITE['domain']}/building-owners.html)
-- [Cleared-to-Start Pass for contractors]({SITE['domain']}/contractors.html)
+- [Annual Asbestos Reassessment]({SITE['domain']}/building-owners.html)
+- [Testing and clearance for contractors]({SITE['domain']}/contractors.html)
 - [Obligation Check: which duties apply to you]({SITE['domain']}/obligation-check.html)
 - [How we work]({SITE['domain']}/about.html)
 """ + "".join(f"- [Asbestos testing in {t}]({SITE['domain']}/{h})\n" for h, t in CITIES) + "".join(f"- [{t}]({SITE['domain']}/{h})\n" for h, t, _ in GUIDES)
