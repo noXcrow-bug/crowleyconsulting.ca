@@ -468,6 +468,7 @@ table.tiers tbody tr:nth-child(even) > * { background: #FAFBFA; }
 .faq details { border-bottom: 1px solid var(--line); }
 .faq summary { cursor: pointer; list-style: none; padding: 18px 44px 18px 0; min-height: 56px; font-weight: 600; font-size: 1.06rem; line-height: 1.4; position: relative; -webkit-user-select: none; user-select: none; }
 .faq summary::-webkit-details-marker { display: none; }
+.faq summary h3 { display: inline; font: inherit; letter-spacing: inherit; line-height: inherit; color: inherit; text-wrap: pretty; }
 .faq summary::before, .faq summary::after { content: ""; position: absolute; right: 8px; top: 50%; width: 14px; height: 2px; margin-top: -1px; border-radius: 2px; background: var(--slate); transition: transform 220ms var(--ease-out); }
 .faq summary::after { transform: rotate(90deg); }
 .faq details[open] summary::after { transform: rotate(0deg); }
@@ -554,3 +555,6 @@ table.tiers tbody tr:nth-child(even) > * { background: #FAFBFA; }
 .reg-frame { background: var(--paper); border-radius: var(--r-lg); box-shadow: var(--sh-3); overflow: hidden; outline: 1px solid rgba(20, 35, 58, .06); outline-offset: -1px; }
 .reg-frame iframe { display: block; width: 100%; height: min(86vh, 980px); min-height: 520px; border: 0; }
 @media (max-width: 700px) { .reg-frame { border-radius: var(--r); } .reg-frame iframe { height: 82vh; } }
+/* Byline on content pages: who wrote it and when it last changed (2026-11-25, SEO pass) */
+.byline { font-size: .88rem; color: var(--slate); margin-top: 14px; }
+.section .prose .table-wrap { margin: .4em 0; }

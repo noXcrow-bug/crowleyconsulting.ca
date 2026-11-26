@@ -14,6 +14,7 @@ Plain HTML, CSS and JavaScript, hosted free on GitHub Pages. No build step is ne
 | `obligation-check.html` | The Obligation Check quiz (routing rules in `assets/ncc-rules.js`, shared with NCC Office) |
 | `services.html` | Report menu with public "from" prices |
 | `asbestos-testing-*.html` | Local search pages: Windsor, Leamington, Chatham, Sarnia, London |
+| `designated-substance-survey.html`, `commercial-asbestos-survey.html`, `designated-substance-list-tender.html`, `asbestos-management-program.html`, `designated-substances-ontario.html`, `lead-paint-survey.html`, `asbestos-in-commercial-buildings.html` | Commercial search pages (Nov 25, 2026): one page per thing commercial buyers search for, each with its own FAQ |
 | `asbestos-testing-before-renovation.html` and three more | Trigger pages for search |
 | `guide-*.html` | The four lead-magnet checklists |
 | `about.html`, `contact.html`, `privacy.html`, `404.html` | Supporting pages |
