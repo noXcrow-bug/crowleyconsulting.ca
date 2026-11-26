@@ -326,10 +326,10 @@ home = f"""
 <section class="section tight" id="doors"><div class="wrap">
 <div class="section-head"><h2>Start with what you're responsible for</h2></div>
 <div class="doors">
-<a class="door" href="building-owners.html"><h3>I own or manage a building</h3><p>Keep your asbestos record current every year, with notices sent and a register you can show an inspector.</p><span class="go">Annual Reassessment, from [[from.reassess]]{ICON["chev"]}</span></a>
-<a class="door" href="landlords.html"><h3>I rent out units or run a condo</h3><p>The same yearly record and notices for rental and condo buildings, plus a quick test before a suite is renovated.</p><span class="go">Suite testing, from [[bulk.visit]]{ICON["chev"]}</span></a>
+<a class="door" href="building-owners.html"><h3>I own or manage a building</h3><p>Keep your asbestos record current every year, with notices sent and a register you can show an inspector.</p><span class="go">Annual Asbestos Reassessment{ICON["chev"]}</span></a>
+<a class="door" href="landlords.html"><h3>I rent out units or run a condo</h3><p>The same yearly record and notices for rental and condo buildings, plus a quick test before a suite is renovated.</p><span class="go">Records and suite testing{ICON["chev"]}</span></a>
 <a class="door" href="contractors.html"><h3>I'm about to open walls or floors</h3><p>Test the materials before you cut, a call-out when work uncovers something, and clearance air testing.</p><span class="go">Bulk Material Sampling, from [[bulk.visit]]{ICON["chev"]}</span></a>
-<a class="door" href="designated-substance-survey.html"><h3>I need a report for a project</h3><p>Designated substance surveys for renovation, tenders, purchases and demolition permits.</p><span class="go">Surveys from [[from.reno]]{ICON["chev"]}</span></a>
+<a class="door" href="designated-substance-survey.html"><h3>I need a report for a project</h3><p>Designated substance surveys for renovation, tenders, purchases and demolition permits.</p><span class="go">Designated substance surveys{ICON["chev"]}</span></a>
 </div></div></section>
 
 <section class="section white"><div class="wrap">
@@ -354,9 +354,9 @@ home = f"""
 <section class="section" id="programs"><div class="wrap">
 <div class="section-head"><h2>A report when a project needs one. A yearly reassessment in between.</h2><p class="lede">A designated substance survey is tied to a project, not the calendar, so the Annual Reassessment never includes one. It keeps your record current between projects.</p></div>
 <div class="programs">
-<a class="program" href="designated-substance-survey.html"><h3>Designated substance surveys</h3><span class="price">from [[from.reno]]</span><p>Renovation-scope, full-building and pre-demolition surveys, priced by building size, plus samples as needed.</p></a>
-<a class="program" href="building-owners.html"><h3>Annual Asbestos Reassessment</h3><span class="price">from [[from.reassess]]</span><p>Your O. Reg. 278/05 record built in year one, then re-inspected and updated every year, with notices and a register.</p></a>
-<a class="program" href="contractors.html"><h3>Testing and clearance</h3><span class="price">from [[bulk.visit]]</span><p>Bulk Material Sampling before you cut, same- or next-day call-outs when work uncovers something, and Type 3 clearance air testing.</p></a>
+<a class="program" href="designated-substance-survey.html"><h3>Designated substance surveys</h3><p>Renovation-scope, full-building and pre-demolition surveys, priced by building size, plus samples as needed.</p></a>
+<a class="program" href="building-owners.html"><h3>Annual Asbestos Reassessment</h3><p>Your O. Reg. 278/05 record built in year one, then re-inspected and updated every year, with notices and a register.</p></a>
+<a class="program" href="contractors.html"><h3>Testing and clearance</h3><p>Bulk Material Sampling before you cut, same- or next-day call-outs when work uncovers something, and Type 3 clearance air testing.</p></a>
 </div>
 </div></section>
 
@@ -627,9 +627,9 @@ def local_page(fname, city, region, intro, permit_h2, permit, stock_h2, stock, t
 </div></section>
 <section class="section"><div class="wrap split">
 <div class="prose"><h2>What we do in {region}</h2>{ul([
- '<a href="designated-substance-survey.html">Designated substance surveys</a> before renovation, repair, demolition or a tender, from [[from.reno]]',
+ '<a href="designated-substance-survey.html">Designated substance surveys</a> before renovation, repair, demolition or a tender',
  '<a href="commercial-asbestos-survey.html">Commercial, industrial and institutional surveys</a> for offices, plazas, plants, schools and churches, done while the building operates',
- '<a href="building-owners.html">The Annual Asbestos Reassessment</a> that keeps your <a href="asbestos-management-program.html">asbestos record and management program</a> current, from [[from.reassess]] per building',
+ '<a href="building-owners.html">The Annual Asbestos Reassessment</a> that keeps your <a href="asbestos-management-program.html">asbestos record and management program</a> current',
  '<a href="landlords.html">Suite testing and records</a> for landlords, property managers and condo corporations',
  '<a href="services.html">Abatement design and oversight</a>, and <a href="contractors.html">Type 3 clearance air testing</a>',
  '<a href="contractors.html">Testing for contractors</a>, from [[bulk.visit]] plus samples'])}</div>
