@@ -211,7 +211,7 @@ footer { font-size: 12.5px; color: var(--muted); max-width: 80ch; display: flex;
   const $ = (s) => document.querySelector(s);
   const esc = (v) => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const fmt = (s) => { if (!s) return "—"; const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d).toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" }); };
-  /* 2026-11-13 wording rule: never "no asbestos" / "not asbestos". Lab below 0.5% = None detected; judged by sight = Non-suspect. */
+  /* 2026-11-13 wording rule: never "no asbestos" / "not asbestos". Lab below 0.5% = None detected; not sampled because it cannot contain asbestos, or a documented asbestos-free product = Non-suspect (2026-11-25). */
   const ST = { act: "Act now", monitor: "Monitor", good: "Good", pending: "Awaiting lab", na: "None detected", removed: "Removed" };
   const tag = (k) => `<span class="tag ${esc(k)}">${esc(ST[k] || k)}</span>`;
   const isSus = (x) => x.basis === "visual-non" || /non-suspect|visual/i.test(x.result || "");
@@ -255,7 +255,7 @@ footer { font-size: 12.5px; color: var(--muted); max-width: 80ch; display: flex;
     });
     attn.sort((a, c) => (a.k === "act" ? 0 : 1) - (c.k === "act" ? 0 : 1));
     const row = (x) => `<tr>
-      <td class="c-mat"><div class="mcell">${thumb(x.photo, `${x.mat} · ${x.loc}`)}<div><span class="mat">${esc(x.mat)}</span>${x.desc && x.desc !== x.mat ? `<span class="sub">${esc(x.desc)}</span>` : ""}${x.samples && x.samples.length ? `<span class="sub mono">${esc(x.samples.join(", "))}</span>` : x.why ? `<span class="sub">${x.basis === "prior-nd" ? "From earlier report" : "Not sampled"}: ${esc(x.why)}</span>` : ""}${x.reason ? `<span class="sub">Note: ${esc(x.reason)}</span>` : ""}</div></div></td>
+      <td class="c-mat"><div class="mcell">${thumb(x.photo, `${x.mat} · ${x.loc}`)}<div><span class="mat">${esc(x.mat)}</span>${x.desc && x.desc !== x.mat ? `<span class="sub">${esc(x.desc)}</span>` : ""}${x.samples && x.samples.length ? `<span class="sub mono">${esc(x.samples.join(", "))}</span>` : x.why ? `<span class="sub">${x.basis === "prior-nd" ? "From earlier report" : x.basis === "visual-non" ? "Why non-suspect" : "Not sampled"}: ${esc(x.why)}</span>` : ""}${x.reason ? `<span class="sub">Note: ${esc(x.reason)}</span>` : ""}</div></div></td>
       <td class="c-loc">${esc(x.loc)}</td>
       <td class="c-res"><span class="res">${esc(x.result)}</span>${x.friable ? `<span class="sub">${x.friable === "Friable" ? "Friable" : "Non-friable"}</span>` : ""}<span class="rx"> · ${esc(x.cond || "")}${x.qty ? " · " + esc(x.qty) : ""}</span></td>
       <td class="c-cond">${esc(x.cond || "—")}</td>
@@ -267,7 +267,7 @@ footer { font-size: 12.5px; color: var(--muted); max-width: 80ch; display: flex;
     const excl = b.surveys.map(s => s.exclusions).filter(Boolean);
     const nonSus = non.filter(isSus).length, nonLab = non.length - nonSus;
     const nonLead = non.some(x => !isSus(x) && /^Lead/.test(x.sub || ""));
-    const nonTitle = [nonLab ? `Sampled, none detected${nonLead ? " or below threshold" : ""} (${nonLab})` : "", nonSus ? `Non-suspect, visually assessed (${nonSus})` : ""].filter(Boolean).join(" · ");
+    const nonTitle = [nonLab ? `Sampled, none detected${nonLead ? " or below threshold" : ""} (${nonLab})` : "", nonSus ? `Non-suspect, not sampled (${nonSus})` : ""].filter(Boolean).join(" · ");
     return `<section class="bld" id="${esc(b.slug)}" aria-labelledby="h-${esc(b.slug)}">
       <div class="bhead"><div><div class="eyebrow">${esc(b.address)}</div><h2 id="h-${esc(b.slug)}">${esc(b.name)}</h2></div></div>
       <div class="facts">
@@ -279,7 +279,7 @@ footer { font-size: 12.5px; color: var(--muted); max-width: 80ch; display: flex;
       <div class="block"><h3>Needs attention</h3>${attn.length ? `<div class="attn">${attn.map(a => `<div class="it ${a.k === "act" ? "act" : ""}"><span class="wrow">${thumb(a.p, a.w)}<span class="w">${esc(a.w)}</span></span>${tag(a.k)}<span class="d">${esc(a.d)}</span><span class="a">${esc(a.a)}</span></div>`).join("")}</div>` : `<span class="empty">Nothing needs action right now.</span>`}</div>
       <div class="block"><h3>Asbestos and lead paint</h3><div class="tw"><table class="reg">${head}<tbody>${asb.map(row).join("")}</tbody></table></div></div>
       ${other.length ? `<div class="block"><h3>Other designated substances present</h3><div class="log">${other.map(x => `<div><span class="dt"><span class="tag">${esc(x.result.replace(" present", ""))}</span></span><span><b>${esc(x.sub)}</b><br><span class="muted">${esc(x.desc)}</span></span></div>`).join("")}</div></div>` : ""}
-      ${non.length ? `<details class="more"><summary>${esc(nonTitle)}</summary>${nonSus ? `<p class="note">Non-suspect materials were assessed by sight and not sampled. If work turns up something not described here, such as another layer underneath or older material behind a finish, stop and call before disturbing it.</p>` : ""}<div class="tw"><table class="reg">${head}<tbody>${non.map(row).join("")}</tbody></table></div></details>` : ""}
+      ${non.length ? `<details class="more"><summary>${esc(nonTitle)}</summary>${nonSus ? `<p class="note">Non-suspect materials were not sampled because they cannot contain asbestos or are documented asbestos-free products; the reason is listed for each. If work turns up something not described here, such as another layer underneath or older material behind a finish, stop and call before disturbing it.</p>` : ""}<div class="tw"><table class="reg">${head}<tbody>${non.map(row).join("")}</tbody></table></div></details>` : ""}
       <div class="two">
         <div class="block"><h3>Call-outs and pre-work checks</h3>${b.reviews.length ? `<div class="log">${b.reviews.map(r => `<div><span class="dt">${esc(r.date)}</span><span>${esc(r.what)}</span></div>`).join("")}</div>` : `<span class="empty">None yet this term.</span>`}</div>
         <div class="block"><h3>Surveys</h3><div class="log">${b.surveys.map(s => `<div><span class="dt">${esc(s.date)}</span><span><b>${esc(s.type)}</b> · <span class="mono">${esc(s.projectNo)}</span><br><span class="muted">${esc(s.by)}</span></span></div>`).join("")}</div>

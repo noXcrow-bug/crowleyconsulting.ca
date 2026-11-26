@@ -423,7 +423,7 @@
 "mat": "Pipe insulation",
 "desc": "Fibreglass with ASJ jacket on straight runs",
 "loc": "Mechanical room",
-"result": "Non-suspect · visually assessed",
+"result": "Non-suspect · not sampled",
 "friable": "Friable",
 "cond": "Good",
 "qty": "120 lin m [393.7 lin ft]",
@@ -431,7 +431,7 @@
 "reason": "",
 "basis": "visual-non",
 "samples": [],
-"why": "",
+"why": "Fibreglass, which cannot contain asbestos; the jacket and the fittings are separate materials",
 "spots": [],
 "history": [
 {
@@ -520,7 +520,7 @@
 "type": "Full-building DSS",
 "date": "2026-09-15",
 "by": "Noah Crowley",
-"exclusions": "8 tenant suites not entered; finishes assumed to match the representative suites. Roof membrane not cored. Wall cavities and above-ceiling spaces only viewed where tiles lift.",
+"exclusions": "8 tenant suites not entered; until they are inspected, treat materials in them that could contain asbestos as asbestos-containing. Roof membrane not cored. Wall cavities and above-ceiling spaces only viewed where tiles lift.",
 "scope": "All common areas, mechanical room, stairwells, roof (visual), exterior and 6 of 14 tenant suites (102, 104, 108, 112, 206, 210)."
 }
 ]
@@ -806,7 +806,7 @@
 },
 {
 "date": "2026-10-14",
-"what": "Pre-work check, Unit 5 flooring replacement. Unit 5 floor is ceramic on slab, not the corridor tile. Cleared."
+"what": "Pre-work check, Unit 5 flooring replacement. Unit 5 floor is porcelain tile laid in 2019, not the corridor tile; the landlord's install invoice and the grout and thinset data sheets are on file, so all three layers are documented asbestos-free. Cleared."
 }
 ],
 "surveys": [
@@ -815,7 +815,7 @@
 "type": "Annual Asbestos Reassessment",
 "date": "2026-09-29",
 "by": "Noah Crowley",
-"exclusions": "Units 3 and 7 not entered (tenants unavailable); assumed to match Units 2 and 5.",
+"exclusions": "Units 3 and 7 not entered (tenants unavailable); until they are inspected, treat materials in them that could contain asbestos as asbestos-containing.",
 "scope": "Review of the 2015 report; rear corridor, electrical room, roof (visual), exterior and 6 of 8 units. Gap sampling where the 2015 report fell short of Table 1."
 }
 ]

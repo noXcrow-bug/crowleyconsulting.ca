@@ -5,17 +5,19 @@
    - OHSA s.30 applies before EVERY project, whatever the building's age. Age never decides WHETHER a DSS is needed;
      it decides how big the job is (1990+ = fewer suspect materials = smaller sample estimate = lower quote).
    - The trigger decides the scope (whole building vs the work area), not the age.
-   - Never say "not required". Material wording (2026-11-13): lab results under the asbestos threshold are "none detected"; materials judged by sight
-     are "non-suspect". Never word any result, lab or visual, as the absence of asbestos.
+   - Never say "not required". Material wording (2026-11-13; non-suspect rule 2026-11-25, decision 81): lab results under the asbestos threshold
+     are "none detected"; "non-suspect" only for a material that cannot contain asbestos, or a documented asbestos-free product, never because
+     it looks new. Never word any result as the absence of asbestos.
    - Clearance air testing is sold to abatement contractors (PB-2026.11g); the fee never depends on the result.
    - Lab: results come back in the lab's turnaround from receipt and a renovation-scope survey takes its Guide turnaround start to finish.
      Rush is a paid option at double the sample price (pb.rush.days business days). All numbers come from the price list the page
      passes in (schema 2: pb.labDays, pb.dss.reno.days, pb.rush.days): none are typed here.
+   - R-2026.11j (2026-11-25, decision 81): the wording hint no longer says "judged by sight".
    - R-2026.11i (2026-11-24, PB-2026.11g, decision 64): products are reno | full | predemo | bulk. Retired: programs, Pass, member rates, limited sampling visit, DSS update and asbestos building survey.
    window.NCC_RULES = { version, TRIGGERS, ROLES, USES, REPORTS, AREAS, SCALES, SEGMENT, era, cls, bizDaysUntil, route, fromIntake, recommend, flags, summary } */
 (function (root) {
   "use strict";
-  const version = "R-2026.11i";
+  const version = "R-2026.11j";
 
   const TRIGGERS = [
     ["reno", "Renovation or repairs"], ["demo", "Demolition"], ["claim", "Insurance claim / restoration (fire, flood, mould)"],
@@ -138,7 +140,7 @@
     if (a.payer && a.payer !== "caller") out.push({ lvl: "warn", t: "Someone else signs and pays. Get their name and email, and quote to them.", say: "Who should the quote go to?" });
     if (CONTRACTOR.has(a.role) && a.role !== "abatement") out.push({ lvl: "info", t: "The report is addressed to the building owner, with the contractor as requester. Get the owner's name.", say: "" });
     if (a.report === "unsure") out.push({ lvl: "info", t: "They're not sure about an existing report: ask the owner or property manager to check before you quote.", say: "" });
-    out.push({ lvl: "info", t: "Wording: lab results under the asbestos threshold are \"none detected\"; materials judged by sight are \"non-suspect\". Never call a material clean.", say: "" });
+    out.push({ lvl: "info", t: "Wording: lab results under the asbestos threshold are \"none detected\"; \"non-suspect\" only for a material that can't contain asbestos or a documented asbestos-free product, never because it looks new. Never call a material clean.", say: "" });
     return out;
   }
 
