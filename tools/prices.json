@@ -2,8 +2,8 @@
  "schema": 2,
  "stamp": {
   "pb": "PB-2026.11g",
-  "guideRev": 355,
-  "syncedAt": "2026-11-24",
+  "guideRev": 358,
+  "syncedAt": "2026-11-26",
   "source": "NCC Service Menu & Price Guide (NCC-011), https://claude.ai/artifact/84N2JjXRZs2aPDF4kX7niV",
   "how": "Generated from the Price Guide by claude/pricebook-build-v2.py. Never edit by hand; change the Guide first."
  },
@@ -230,7 +230,8 @@
    3
   ],
   "leadWipe": 950,
-  "disturbance": 950
+  "disturbance": 950,
+  "invalidCredit": 100
  },
  "training": {
   "type12": 2000,
