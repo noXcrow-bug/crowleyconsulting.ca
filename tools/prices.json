@@ -2,7 +2,7 @@
  "schema": 2,
  "stamp": {
   "pb": "PB-2026.11g",
-  "guideRev": 362,
+  "guideRev": 366,
   "syncedAt": "2026-11-26",
   "source": "NCC Service Menu & Price Guide (NCC-011), https://claude.ai/artifact/84N2JjXRZs2aPDF4kX7niV",
   "how": "Generated from the Price Guide by claude/pricebook-build-v2.py. Never edit by hand; change the Guide first."
